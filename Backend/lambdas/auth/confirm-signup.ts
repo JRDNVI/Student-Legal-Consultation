@@ -6,7 +6,6 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { ConfirmSignUpBody } from "../../shared/types";
 
-
 const client = new CognitoIdentityProviderClient({ region: process.env.REGION });
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {

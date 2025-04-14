@@ -22,11 +22,14 @@
     "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@aws-sdk/client-cloudformation": "^3.787.0",
     "@aws-sdk/client-cognito-identity-provider": "^3.787.0",
+    "@aws-sdk/client-secrets-manager": "^3.787.0",
     "aws-cdk-lib": "^2.189.0",
     "axios": "^1.8.4",
     "constructs": "^10.4.2",
     "jsonwebtoken": "^9.0.2",
-    "jwk-to-pem": "^2.0.7"
+    "jwk-to-pem": "^2.0.7",
+    "mysql2": "^3.14.0"
   }
 }
