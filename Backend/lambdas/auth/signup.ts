@@ -5,12 +5,14 @@ import {
   SignUpCommand,
   SignUpCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider"; 
+import { corsHeaders } from "../utils";
 
-const client = new CognitoIdentityProviderClient({ region:  process.env.REGION  });
+const client = new CognitoIdentityProviderClient({ region: process.env.REGION });
 
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   try {
-    console.log("[EVENT]",JSON.stringify(event));
+  
+    console.log("[EVENT]", JSON.stringify(event));
     const body = event.body ? JSON.parse(event.body) : undefined;
 
     const signUpBody = body as SignUpBody;
@@ -27,18 +29,22 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
     const command = new SignUpCommand(params);
     const res = await client.send(command);
+
     return {
       statusCode: 200,
+      headers: corsHeaders,
       body: JSON.stringify({
-        message: res,
+        message: "User registered successfully",
+        data: res,
       }),
     };
   } catch (err) {
     console.error(err);
     return {
       statusCode: 500,
+      headers: corsHeaders,
       body: JSON.stringify({
-        message: err,
+        message: err instanceof Error ? err.message : "Unknown error occurred",
       }),
     };
   }

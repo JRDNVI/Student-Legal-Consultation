@@ -9,6 +9,9 @@ import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as apig from "aws-cdk-lib/aws-apigateway";
 import * as iam from "aws-cdk-lib/aws-iam";
 
+
+// Unfinished
+
 type AppApiProps = {
     userPoolId: string;
     userPoolClientId: string;
@@ -21,7 +24,7 @@ type AppApiProps = {
     constructor(scope: Construct, id: string, props: AppApiProps) {
         super(scope, id);
 
-        ////////////////////////////// RDS DATABASE //////////////////////////////////////
+        //                                     RDS DATABASE 
         // Currrent implementation uses my default VPC, which only contains public subnets.
         // Meaning that the RDS instance is publicly accessible, which is not standered practice.
         // But for to keep the price low, I will use the default VPC. The Secuirty Group is set 
@@ -147,6 +150,5 @@ type AppApiProps = {
 
       this.dbEndpoint = dbInstance.dbInstanceEndpointAddress;
       this.dbSecret = dbCredentialsSecret;
-
     }
   }

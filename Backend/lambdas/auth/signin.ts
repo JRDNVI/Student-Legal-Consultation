@@ -5,6 +5,7 @@ import {
   InitiateAuthCommand,
   InitiateAuthCommandInput,
 } from "@aws-sdk/client-cognito-identity-provider";
+import { corsHeaders } from "../utils";
 
 const client = new CognitoIdentityProviderClient({
   region: process.env.REGION,
@@ -14,7 +15,6 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   try {
     console.log("[EVENT]",JSON.stringify(event));
     const body = event.body ? JSON.parse(event.body) : undefined;
-
 
     const signInBody = body as SignInBody;
 
@@ -33,6 +33,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
     if (!AuthenticationResult) {
       return {
         statusCode: 400,
+        headers: corsHeaders,
         body: JSON.stringify({
           message: "User signin failed",
         }),
@@ -42,11 +43,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
     return {
       statusCode: 200,
-      headers: {
-        "Access-Control-Allow-Headers": "*",
-        "Access-Control-Allow-Origin": "*",
-        "Set-Cookie": `token=${token}; SameSite=None; Secure; HttpOnly; Path=/; Max-Age=3600;`,
-      },
+      headers: corsHeaders,
       body: JSON.stringify({
         message: "Auth successfull",
         token: token,
@@ -57,6 +54,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
 
     return {
       statusCode: 500,
+      headers: corsHeaders,
       body: JSON.stringify({
         message: err,
       }),

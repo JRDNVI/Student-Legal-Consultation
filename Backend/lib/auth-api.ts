@@ -6,6 +6,19 @@ import * as node from "aws-cdk-lib/aws-lambda-nodejs";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 
 
+// This stack creates an API Gateway with multiple routes for authentication and user management.
+//
+//   Routes handled:
+//   - POST /auth/signup          → User registration (Cognito) + User Role (Student, Client, etc)
+//   - POST /auth/confirm_signup  → Account confirmation + DB user addded
+//   - POST /auth/signin          → User login
+//   - GET  /auth/signout         → User logout
+//   
+//   Each route is mapped to a separate Lambda function, 
+//   with shared environment variables and access to my MySQL RDS via Secrets Manager.
+//   
+//   CORS is enabled for http://localhost:3000. (Needs to be changed)
+
 type AuthApiProps = {
   userPoolId: string;
   userPoolClientId: string;
@@ -29,7 +42,9 @@ export class AuthApi extends Construct {
       description: "Authentication Service RestApi",
       endpointTypes: [apig.EndpointType.REGIONAL],
       defaultCorsPreflightOptions: {
-        allowOrigins: apig.Cors.ALL_ORIGINS,
+        allowOrigins: ['http://localhost:3000'],
+        allowMethods: ["OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
+        allowHeaders: ['Content-Type', 'Authorization'],
       },
     });
 
