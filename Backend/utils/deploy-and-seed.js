@@ -45,7 +45,7 @@ const connection = await mysql.createConnection({
   password: password,
   database: 'fypdb',
   port: 3306,
-  multipleStatements: true, // Allow multiple statements in one query (.sql file)
+  multipleStatements: true, //Allow multiple statements in one query (.sql file)
 });
 
 await connection.query(sql);

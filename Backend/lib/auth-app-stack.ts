@@ -1,6 +1,6 @@
 import * as cdk from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { UserPool } from "aws-cdk-lib/aws-cognito";
+import { StringAttribute, UserPool } from "aws-cdk-lib/aws-cognito";
 import { AuthApi } from './auth-api'
 import { AppApi } from './app-stack'
 
@@ -23,6 +23,9 @@ export class AuthAppStack extends cdk.Stack {
       signInAliases: { username: true, email: true },
       selfSignUpEnabled: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
+      customAttributes: {
+        role: new StringAttribute(), 
+      },
     });
 
     const userPoolId = userPool.userPoolId;
@@ -33,14 +36,16 @@ export class AuthAppStack extends cdk.Stack {
 
     const userPoolClientId = appClient.userPoolClientId;
 
-    new AuthApi(this, 'AuthServiceApi', {
+    const appApi = new AppApi(this, 'AppApi', {
       userPoolId: userPoolId,
       userPoolClientId: userPoolClientId,
     });
 
-    new AppApi(this, 'AppApi', {
+    new AuthApi(this, 'AuthServiceApi', {
       userPoolId: userPoolId,
       userPoolClientId: userPoolClientId,
+      dbHost: appApi.dbEndpoint,
+      dbSecret: appApi.dbSecret,
     });
   } 
 }

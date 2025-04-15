@@ -15,6 +15,9 @@ type AppApiProps = {
   };
   
   export class AppApi extends Construct {
+    public readonly dbEndpoint: string;
+    public readonly dbSecret: secretsmanager.ISecret;
+
     constructor(scope: Construct, id: string, props: AppApiProps) {
         super(scope, id);
 
@@ -74,9 +77,76 @@ type AppApiProps = {
 
       /////////////////////////////////////////////////////////////////////////
     
+      const appCommonFnProps = {
+        architecture: lambda.Architecture.ARM_64,
+        timeout: cdk.Duration.seconds(10),
+        memorySize: 128,
+        runtime: lambda.Runtime.NODEJS_18_X,
+        handler: "handler",
+        environment: {
+          DB_ENDPOINT: dbInstance.dbInstanceEndpointAddress,
+          DB_SECRET: "fyp-db-credentials",
+          USER_POOL_ID: props.userPoolId,
+          CLIENT_ID: props.userPoolClientId,
+          REGION: cdk.Aws.REGION,
+        },
+      };
+
+      const authorizerFn = new lambdanode.NodejsFunction(this, "AuthorizerFn", {
+        ...appCommonFnProps,
+        entry: `${__dirname}/../lambdas/auth/authorizer.ts`,
+      });
+
+      const getStudentDataFn = new lambdanode.NodejsFunction(this, "GetStudentDataFn", {
+        ...appCommonFnProps,
+        vpc: vpc,
+        vpcSubnets: {
+          subnetType: ec2.SubnetType.PUBLIC,
+        },
+        allowPublicSubnet: true,
+        securityGroups: [dbSecurityGroup],
+        entry: `${__dirname}/../lambdas/student/getStudentData.ts`,
+      });
+
+      const requestAuthorizer = new apig.RequestAuthorizer(
+        this,
+        "RequestAuthorizer",
+        {
+          identitySources: [apig.IdentitySource.header("cookie")],
+          handler: authorizerFn,
+          resultsCacheTtl: cdk.Duration.minutes(0),
+        }
+      );
+
+
+      const appApi = new apig.RestApi(this, "RestAPI", {
+        description: "Stdent Legal Consultation API",
+        deployOptions: {
+          stageName: "dev",
+        },
+        defaultCorsPreflightOptions: {
+          allowHeaders: ["Content-Type", "X-Amz-Date"],
+          allowMethods: ["OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
+          allowCredentials: true,
+          allowOrigins: ["*"],
+        },
+      });
+
+      const educationEndpoint = appApi.root.addResource("education");
+
+      educationEndpoint.addMethod("GET", new apig.LambdaIntegration(getStudentDataFn, { proxy: true }), {
+        authorizer: requestAuthorizer,
+        authorizationType: apig.AuthorizationType.CUSTOM,
+    });
+
+     const legalEndpoint = appApi.root.addResource("legal");
 
       new cdk.CfnOutput(this, "DBEndpoint", {
         value: dbInstance.dbInstanceEndpointAddress,
       });
+
+      this.dbEndpoint = dbInstance.dbInstanceEndpointAddress;
+      this.dbSecret = dbCredentialsSecret;
+
     }
   }

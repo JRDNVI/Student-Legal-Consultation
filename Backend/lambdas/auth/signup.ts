@@ -19,7 +19,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
       ClientId: process.env.CLIENT_ID!,
       Username: signUpBody.username,
       Password: signUpBody.password,
-      UserAttributes: [{ Name: "email", Value: signUpBody.email }],
+      UserAttributes: [
+        { Name: "email", Value: signUpBody.email },
+        { Name: "custom:role", Value: signUpBody.role },
+      ],
     };
 
     const command = new SignUpCommand(params);
