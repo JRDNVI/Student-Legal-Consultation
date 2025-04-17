@@ -7,7 +7,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://19dydewu1h.execute-api.eu-west-1.amazonaws.com/prod/", 
+  baseURL: "https://8t5k8esi55.execute-api.eu-west-1.amazonaws.com/prod/", 
 });
 
 api.interceptors.request.use((config) => {

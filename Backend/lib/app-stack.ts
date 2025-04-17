@@ -78,8 +78,10 @@ type AppApiProps = {
         deletionProtection: false,
       });
 
-      /////////////////////////////////////////////////////////////////////////
-    
+      this.dbEndpoint = dbInstance.dbInstanceEndpointAddress;
+      this.dbSecret = dbCredentialsSecret;
+
+      // Lmabda functions for Education Side of PWA
       const appCommonFnProps = {
         architecture: lambda.Architecture.ARM_64,
         timeout: cdk.Duration.seconds(10),
@@ -100,27 +102,35 @@ type AppApiProps = {
         entry: `${__dirname}/../lambdas/auth/authorizer.ts`,
       });
 
-      const getStudentDataFn = new lambdanode.NodejsFunction(this, "GetStudentDataFn", {
+      const getUserDataFn = new lambdanode.NodejsFunction(this, "GetStudentDataFn", {
         ...appCommonFnProps,
-        vpc: vpc,
-        vpcSubnets: {
-          subnetType: ec2.SubnetType.PUBLIC,
-        },
-        allowPublicSubnet: true,
-        securityGroups: [dbSecurityGroup],
-        entry: `${__dirname}/../lambdas/student/getStudentData.ts`,
+        entry: `${__dirname}/../lambdas/userCRUD/getUserData.ts`,
+      });
+      
+      const addUserDataFn = new lambdanode.NodejsFunction(this, "AddStudentDataFn", {
+        ...appCommonFnProps,
+        entry: `${__dirname}/../lambdas/userCRUD/addUserData.ts`,
+      });
+      
+      const updateUserDataFn = new lambdanode.NodejsFunction(this, "UpdateStudentDataFn", {
+        ...appCommonFnProps,
+        entry: `${__dirname}/../lambdas/userCRUD/updateUserData.ts`,
+      });
+
+      const deleteUserDataFn = new lambdanode.NodejsFunction(this, "DeleteStudentDataFn", {
+        ...appCommonFnProps, 
+        entry: `${__dirname}/../lambdas/userCRUD/deleteUserData.ts`,
       });
 
       const requestAuthorizer = new apig.RequestAuthorizer(
         this,
         "RequestAuthorizer",
         {
-          identitySources: [apig.IdentitySource.header("cookie")],
+          identitySources: [apig.IdentitySource.header("Authorization")],
           handler: authorizerFn,
           resultsCacheTtl: cdk.Duration.minutes(0),
         }
       );
-
 
       const appApi = new apig.RestApi(this, "RestAPI", {
         description: "Stdent Legal Consultation API",
@@ -135,20 +145,36 @@ type AppApiProps = {
         },
       });
 
+      dbCredentialsSecret.grantRead(getUserDataFn);
+      dbCredentialsSecret.grantRead(addUserDataFn);
+      dbCredentialsSecret.grantRead(updateUserDataFn);
+      dbCredentialsSecret.grantRead(deleteUserDataFn);
+
       const educationEndpoint = appApi.root.addResource("education");
 
-      educationEndpoint.addMethod("GET", new apig.LambdaIntegration(getStudentDataFn, { proxy: true }), {
+      educationEndpoint.addMethod("GET", new apig.LambdaIntegration(getUserDataFn, { proxy: true }), {
         authorizer: requestAuthorizer,
         authorizationType: apig.AuthorizationType.CUSTOM,
     });
 
-     const legalEndpoint = appApi.root.addResource("legal");
+      educationEndpoint.addMethod("POST", new apig.LambdaIntegration(addUserDataFn, { proxy: true }), {
+        authorizer: requestAuthorizer,
+        authorizationType: apig.AuthorizationType.CUSTOM,
+    });
+
+    educationEndpoint.addMethod("PUT", new apig.LambdaIntegration(updateUserDataFn, { proxy: true }), {
+      authorizer: requestAuthorizer,
+      authorizationType: apig.AuthorizationType.CUSTOM,
+    });
+
+    educationEndpoint.addMethod("DELETE", new apig.LambdaIntegration(deleteUserDataFn, { proxy: true }), {
+      authorizer: requestAuthorizer,
+      authorizationType: apig.AuthorizationType.CUSTOM,
+    });
+
 
       new cdk.CfnOutput(this, "DBEndpoint", {
         value: dbInstance.dbInstanceEndpointAddress,
       });
-
-      this.dbEndpoint = dbInstance.dbInstanceEndpointAddress;
-      this.dbSecret = dbCredentialsSecret;
     }
   }
