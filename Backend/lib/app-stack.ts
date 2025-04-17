@@ -138,7 +138,7 @@ type AppApiProps = {
           stageName: "dev",
         },
         defaultCorsPreflightOptions: {
-          allowHeaders: ["Content-Type", "X-Amz-Date"],
+          allowHeaders: ["Content-Type", "X-Amz-Date", "Authorization"],
           allowMethods: ["OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
           allowCredentials: true,
           allowOrigins: ["*"],

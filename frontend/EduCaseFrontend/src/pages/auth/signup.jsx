@@ -1,16 +1,18 @@
 import { useState } from "react";
-import api from "../../api/api";
+import { authApi } from "../../api/api";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function SignupPage() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
     const [role, setRole] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
       e.preventDefault();
       try {
-        const response = await api.post("/auth/signup", {
+        const response = await authApi.post("/auth/signup", {
           username,
           password,
           email,
@@ -18,9 +20,7 @@ export default function SignupPage() {
         });
   
         const data = response.data;
-  
-        alert("Signup successful! Please confirm your email.");
-        window.location.href = "/confirmSignup";
+        navigate("/confirmSignup");
       } catch (err) {
         alert(`Signup failed: ${err.response?.data?.message || err.message}`);
       }

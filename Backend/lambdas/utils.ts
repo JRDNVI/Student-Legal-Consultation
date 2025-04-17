@@ -173,6 +173,59 @@ export const allowedTablesAdd: Record<string, string[]> = {
     }
   };
 
+  export const extendedRoleTableJoins: Record<string, { table: string; join: string; param: string }[]> = {
+    client: [
+      {
+        table: "tasks",
+        join: "JOIN cases ON tasks.case_id = cases.case_id",
+        param: "client_id",
+      },
+      {
+        table: "documents",
+        join: "JOIN cases ON documents.case_id = cases.case_id",
+        param: "client_id",
+      },
+      {
+        table: "notes",
+        join: "JOIN cases ON notes.case_id = cases.case_id",
+        param: "client_id",
+      },
+      {
+        table: "messages",
+        join: "JOIN cases ON messages.case_id = cases.case_id",
+        param: "client_id",
+      },
+    ],
+    solicitor: [
+      {
+        table: "tasks",
+        join: "JOIN cases ON tasks.case_id = cases.case_id",
+        param: "solicitor_id",
+      },
+      {
+        table: "documents",
+        join: "JOIN cases ON documents.case_id = cases.case_id",
+        param: "solicitor_id",
+      },
+      {
+        table: "notes",
+        join: "JOIN cases ON notes.case_id = cases.case_id",
+        param: "solicitor_id",
+      },
+      {
+        table: "messages",
+        join: "JOIN cases ON messages.case_id = cases.case_id",
+        param: "solicitor_id",
+      },
+      {
+        table: "billing",
+        join: "JOIN cases ON billing.case_id = cases.case_id",
+        param: "solicitor_id",
+      },
+    ],
+  };
+  
+
   // Helper functions for lambdas
   type OperationType = "get" | "add" | "delete";
 

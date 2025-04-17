@@ -6,16 +6,18 @@
 
 import axios from "axios";
 
-const api = axios.create({
-  baseURL: "https://8t5k8esi55.execute-api.eu-west-1.amazonaws.com/prod/", 
+export const authApi = axios.create({
+  baseURL: "https://d2wk9ecws2.execute-api.eu-west-1.amazonaws.com/prod/",
 });
 
-api.interceptors.request.use((config) => {
+export const appApi = axios.create({
+  baseURL: "https://pzfd8uck8f.execute-api.eu-west-1.amazonaws.com/dev/",
+});
+
+appApi.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
 });
-
-export default api;

@@ -1,23 +1,26 @@
 import { useState } from "react";
-import api from "../../api/api";
+import { authApi } from "../../api/api";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function ConfirmSignupPage() {
     const [confirmationCode, setConfirmationCode] = useState("");
     const [username, setUsername] = useState("");
+    const Navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-          const response = await api.post("/auth/confirm_signup", {
+          const response = await authApi.post("/auth/confirm_signup", {
             username,
             code: confirmationCode,
           });
-            window.location.href = "/login";
+            Navigate("/login")
         } catch (err) {
           alert(err.response?.data?.message || err.message);
         }
       };      
 
+      //Current Design is from https://tailwindcss.com/plus/ui-blocks/application-ui/forms/sign-in-forms
       return (
         <>
           <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">

@@ -3,6 +3,7 @@ import {
   getDbCredentials,
   getDbConnection,
   getTableAccessByRoleAndType,
+  extendedRoleTableJoins,
   returnStatus,
   corsHeaders
 } from "../utils";
@@ -10,10 +11,10 @@ import {
 // Lambda handler to retrieve user-specific data from allowed tables 
 // based on the authenticated user's role (student, mentor, client, solicitor).
 //
-// - Identifies the user's internal ID via their Cognito ID which is saved in the DB
+// - Identifies the user's ID via their Cognito ID which is saved in the DB
 // - gets the list of allowed tables and filtering column using the user's role
 // - Queries each table for rows matching the user's ID (e.g. student_id, solicitor_id)
-// - Returns both the user record and all related data (Currenrtly if the ID of the user isn't present 
+// - Returns both the users data and all related data (Currenrtly if the ID of the user isn't present 
 //   in the table it won't return the data) Needs to be fixed.
 
 
@@ -63,6 +64,17 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: any) => {
       );
       results[tableName] = data;
     }
+
+
+    const extraJoins = extendedRoleTableJoins[role] || [];
+    for (const { table, join, param } of extraJoins) {
+      const [joinedData] = await connection.execute<any[]>(
+        `SELECT ${table}.* FROM ${table} ${join} WHERE cases.${param} = ?`,
+        [identifier]
+      );      
+      results[table] = [...(results[table] || []), ...joinedData];
+    }
+
 
     await connection.end();
 
