@@ -6,6 +6,9 @@ import * as node from "aws-cdk-lib/aws-lambda-nodejs";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 
 
+// This Requires More Testing: 
+// - If two users try create an account with the same email, it throws an unhandled error.
+
 // This stack creates an API Gateway with multiple routes for authentication and user management.
 //
 //   Routes handled:

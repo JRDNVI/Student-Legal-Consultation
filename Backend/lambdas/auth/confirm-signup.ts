@@ -10,18 +10,15 @@ import mysql from "mysql2/promise";
 import {SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import { corsHeaders } from "../utils";
 
+// This code needs to be improved. 
+
 const client = new CognitoIdentityProviderClient({ region: process.env.REGION });
 
 export const handler: APIGatewayProxyHandler = async (event) => {
-  console.log("Event", event);
   try {
-    console.log("[EVENT]",JSON.stringify(event));
+    
     const body = event.body ? JSON.parse(event.body) : undefined;
-
     const confirmSignUpBody = body as ConfirmSignUpBody;
-    console.log("Confirm Sign Up Body", confirmSignUpBody);
-    console.log("Client ID", process.env.CLIENT_ID);
-    console.log("User Pool ID", process.env.USER_POOL_ID);
 
     const params: ConfirmSignUpCommandInput = {
       ClientId: process.env.CLIENT_ID!,
