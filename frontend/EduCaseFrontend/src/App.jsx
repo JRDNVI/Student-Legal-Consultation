@@ -3,6 +3,8 @@ import { AuthProvider } from './context/AuthContext';
 import LoginPage from './pages/auth/Login';
 import SignupPage from './pages/auth/signup';
 import ConfirmSignupPage from './pages/auth/confirmSignup';
+import Dashboard from './pages/dashboard/dashboard';
+import Assignment from './pages/student/assignment';
 import ProtectedRoute from './context/ProtectedRoute';
 
 // Not finsihed yet - QueryProvider needs to be implemented
@@ -20,7 +22,8 @@ function App() {
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/confirmSignup" element={<ConfirmSignupPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/dashboard" element={<ProtectedRoute></ProtectedRoute>} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
+          <Route path="/assignments" element={<ProtectedRoute><Assignment /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

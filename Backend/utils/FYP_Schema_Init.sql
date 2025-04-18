@@ -1,11 +1,3 @@
-CREATE TABLE students (
-  student_id INT AUTO_INCREMENT PRIMARY KEY,
-  cognito_id VARCHAR(255) NOT NULL UNIQUE,
-  name VARCHAR(100),
-  email VARCHAR(255) UNIQUE,
-  profile_info TEXT
-);
-
 CREATE TABLE mentors (
   mentor_id INT AUTO_INCREMENT PRIMARY KEY,
   cognito_id VARCHAR(255) NOT NULL UNIQUE,
@@ -13,6 +5,79 @@ CREATE TABLE mentors (
   email VARCHAR(255) UNIQUE,
   availability TEXT,
   skills TEXT
+);
+
+CREATE TABLE mentor_skills (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  mentor_id INT,
+  skill VARCHAR(100),
+  FOREIGN KEY (mentor_id) REFERENCES mentors(mentor_id) ON DELETE CASCADE
+);
+
+CREATE TABLE mentor_expertise (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  mentor_id INT,
+  area_of_expertise VARCHAR(100),
+  FOREIGN KEY (mentor_id) REFERENCES mentors(mentor_id) ON DELETE CASCADE
+);
+
+CREATE TABLE mentor_communication_styles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  mentor_id INT,
+  style VARCHAR(100),
+  FOREIGN KEY (mentor_id) REFERENCES mentors(mentor_id) ON DELETE CASCADE
+);
+
+CREATE TABLE mentor_languages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  mentor_id INT,
+  language VARCHAR(100),
+  FOREIGN KEY (mentor_id) REFERENCES mentors(mentor_id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE mentor_availability (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  mentor_id INT,
+  day VARCHAR(20),
+  time_slot VARCHAR(50),
+  FOREIGN KEY (mentor_id) REFERENCES mentors(mentor_id) ON DELETE CASCADE
+);
+
+CREATE TABLE students (
+  student_id INT AUTO_INCREMENT PRIMARY KEY,
+  cognito_id VARCHAR(255) NOT NULL UNIQUE,
+  name VARCHAR(100),
+  email VARCHAR(255) UNIQUE,
+  profile_info TEXT,
+  mentor_id INT, 
+  FOREIGN KEY (mentor_id) REFERENCES mentors(mentor_id) ON DELETE SET NULL
+);
+
+
+CREATE TABLE student_preferences (
+  preference_id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id INT,
+  area_of_study VARCHAR(255),
+  communication_style VARCHAR(100),
+  language VARCHAR(100),
+  mentor_rating FLOAT,
+  FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
+);
+
+CREATE TABLE student_interests (
+  interest_id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id INT,
+  interest VARCHAR(100),
+  FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
+);
+
+CREATE TABLE student_availability (
+  availability_id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id INT,
+  day VARCHAR(20), 
+  time_slot VARCHAR(50), 
+  FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
 );
 
 CREATE TABLE meetings (
@@ -45,7 +110,6 @@ CREATE TABLE assignments (
   due_date DATE,
   mentor_id INT,
   student_id INT,
-  FOREIGN KEY (mentor_id) REFERENCES mentors(mentor_id) ON DELETE CASCADE,
   FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
 );
 
@@ -193,48 +257,56 @@ CREATE TABLE notes (
 );
 
 
-INSERT INTO students (student_id, cognito_id, name, email, profile_info) VALUES (1, '9310a452-8919-4d86-8fd6-12035c3c7c30', 'Rhonda Henderson', 'dhunt@yahoo.com', 'Understand assume design my minute get include.
-Quality likely contain table.');
-INSERT INTO students (student_id, cognito_id, name, email, profile_info) VALUES (2, '1aa3b409-44da-4694-9708-8f9e01395991', 'Melissa Hawkins', 'bmorgan@hotmail.com', 'Best top avoid. Country Congress letter. Probably cell morning bill word.');
-INSERT INTO students (student_id, cognito_id, name, email, profile_info) VALUES (3, 'c18f0351-79b7-4b3d-9c34-eddfa5ca66f7', 'Dustin Summers', 'lauratodd@hotmail.com', 'Hotel event hit region. Kid name every never. Guy decade physical.');
-INSERT INTO students (student_id, cognito_id, name, email, profile_info) VALUES (4, '30367854-398e-4d39-b749-06677a9f3f07', 'Michelle Smith', 'claire03@gmail.com', 'Offer able support position dinner.');
-INSERT INTO students (student_id, cognito_id, name, email, profile_info) VALUES (5, 'd5abbf60-baca-4285-9bad-493bbc4712d5', 'Kevin Anderson', 'chunter@yahoo.com', 'Boy assume physical record before authority. Trouble go somebody.');
-INSERT INTO mentors (mentor_id, cognito_id, name, email, availability, skills) VALUES (1, '398abfb2-140c-44ec-b449-43da00343e9a', 'Brittney Neal', 'edwardstimothy@adams-adams.com', 'Some issue especially significant.', 'job');
-INSERT INTO mentors (mentor_id, cognito_id, name, email, availability, skills) VALUES (2, '8b356801-e048-4a52-ba7a-4b079f5d23aa', 'Deanna Roach', 'arichardson@hotmail.com', 'Mean various list carry head. Almost along money.', 'down');
-INSERT INTO mentors (mentor_id, cognito_id, name, email, availability, skills) VALUES (3, '5d21d2d1-d726-409b-9900-8872ef3c89b6', 'Peter Shaw', 'samuelhensley@hotmail.com', 'Trial region goal we left pass eat.', 'agreement');
-INSERT INTO meetings (meeting_id, student_id, mentor_id, timeslot, status) VALUES (1, 3, 1, '2025-04-25T10:00:47', 'Completed');
-INSERT INTO meetings (meeting_id, student_id, mentor_id, timeslot, status) VALUES (2, 1, 3, '2025-05-02T20:33:13', 'Completed');
-INSERT INTO meetings (meeting_id, student_id, mentor_id, timeslot, status) VALUES (3, 4, 2, '2025-04-21T06:24:39', 'Canceled');
-INSERT INTO meetings (meeting_id, student_id, mentor_id, timeslot, status) VALUES (4, 4, 2, '2025-05-14T18:23:44', 'Scheduled');
-INSERT INTO meetings (meeting_id, student_id, mentor_id, timeslot, status) VALUES (5, 2, 3, '2025-04-27T23:50:44', 'Scheduled');
-INSERT INTO tasks_student (task_id, student_id, mentor_id, title, deadline, completed) VALUES (1, 3, 3, 'Risk recently set finish.', 2025-05-02, True);
-INSERT INTO tasks_student (task_id, student_id, mentor_id, title, deadline, completed) VALUES (2, 4, 2, 'Push necessary drop grow.', 2025-05-06, False);
-INSERT INTO tasks_student (task_id, student_id, mentor_id, title, deadline, completed) VALUES (3, 1, 3, 'Able our.', 2025-04-26, True);
-INSERT INTO tasks_student (task_id, student_id, mentor_id, title, deadline, completed) VALUES (4, 4, 3, 'Manager use.', 2025-04-28, True);
-INSERT INTO tasks_student (task_id, student_id, mentor_id, title, deadline, completed) VALUES (5, 1, 3, 'Strong long I right.', 2025-05-02, False);
-INSERT INTO assignments (assignment_id, title, description, status, grade, due_date, mentor_id, student_id) VALUES (1, 'None tonight.', 'Experience science capital step oil husband.', 'Completed', 63.69, 2025-05-14, 3, 1);
-INSERT INTO assignments (assignment_id, title, description, status, grade, due_date, mentor_id, student_id) VALUES (2, 'Hour memory.', 'Bag yard either ground blue believe lose.', 'Completed', 60.59, 2025-04-18, 2, 5);
-INSERT INTO assignments (assignment_id, title, description, status, grade, due_date, mentor_id, student_id) VALUES (3, 'Natural today.', 'Himself now clearly listen.', 'Due', 95.47, 2025-05-03, 3, 5);
-INSERT INTO assignments (assignment_id, title, description, status, grade, due_date, mentor_id, student_id) VALUES (4, 'Until of white.', 'Usually along increase but center listen.', 'Completed', 69.48, 2025-05-15, 3, 2);
-INSERT INTO assignments (assignment_id, title, description, status, grade, due_date, mentor_id, student_id) VALUES (5, 'Game summer reflect.', 'Use whose describe late even.', 'Due', 69.39, 2025-04-18, 3, 4);
-INSERT INTO student_documents (document_id, assignment_id, filename, url, uploaded_at) VALUES (1, 1, 'file_1.pdf', 'https://example.com/file_1.pdf', '2025-03-26T15:21:16');
-INSERT INTO student_documents (document_id, assignment_id, filename, url, uploaded_at) VALUES (2, 2, 'file_2.pdf', 'https://example.com/file_2.pdf', '2025-03-01T12:37:51');
-INSERT INTO student_documents (document_id, assignment_id, filename, url, uploaded_at) VALUES (3, 3, 'file_3.pdf', 'https://example.com/file_3.pdf', '2025-03-09T14:28:48');
-INSERT INTO student_documents (document_id, assignment_id, filename, url, uploaded_at) VALUES (4, 4, 'file_4.pdf', 'https://example.com/file_4.pdf', '2025-02-12T08:32:44');
-INSERT INTO student_documents (document_id, assignment_id, filename, url, uploaded_at) VALUES (5, 5, 'file_5.pdf', 'https://example.com/file_5.pdf', '2025-01-02T15:38:54');
-INSERT INTO appointments (appointment_id, subject, date, status, student_id) VALUES (1, 'apply', '2025-05-01T06:53:17', 'Completed', 1);
-INSERT INTO appointments (appointment_id, subject, date, status, student_id) VALUES (2, 'race', '2025-04-28T10:31:17', 'Canceled', 1);
-INSERT INTO appointments (appointment_id, subject, date, status, student_id) VALUES (3, 'too', '2025-04-21T04:24:16', 'Scheduled', 1);
-INSERT INTO appointments (appointment_id, subject, date, status, student_id) VALUES (4, 'item', '2025-05-08T22:01:43', 'Scheduled', 3);
-INSERT INTO appointments (appointment_id, subject, date, status, student_id) VALUES (5, 'tax', '2025-05-11T07:47:14', 'Canceled', 5);
-INSERT INTO student_calendar (calendar_id, name, student_id) VALUES (1, 'Calendar 1', 3);
-INSERT INTO student_calendar (calendar_id, name, student_id) VALUES (2, 'Calendar 2', 4);
-INSERT INTO student_calendar (calendar_id, name, student_id) VALUES (3, 'Calendar 3', 3);
-INSERT INTO student_event (event_id, title, description, type, creation_date, due_date, calendar_id) VALUES (1, 'Event 1', 'North include theory.', 'Reminder', '2025-04-16T01:56:50.962420', '2025-04-21T01:56:50.962422', 2);
-INSERT INTO student_event (event_id, title, description, type, creation_date, due_date, calendar_id) VALUES (2, 'Event 2', 'Floor take impact front. Thought fight five too.', 'Reminder', '2025-04-16T01:56:50.962447', '2025-04-21T01:56:50.962447', 3);
-INSERT INTO student_event (event_id, title, description, type, creation_date, due_date, calendar_id) VALUES (3, 'Event 3', 'Else listen well decision eight today.', 'Reminder', '2025-04-16T01:56:50.962464', '2025-04-21T01:56:50.962465', 2);
-INSERT INTO student_event (event_id, title, description, type, creation_date, due_date, calendar_id) VALUES (4, 'Event 4', 'These middle herself study church why.', 'Reminder', '2025-04-16T01:56:50.962480', '2025-04-21T01:56:50.962480', 2);
-INSERT INTO student_event (event_id, title, description, type, creation_date, due_date, calendar_id) VALUES (5, 'Event 5', 'Market believe weight option have question ever.', 'Reminder', '2025-04-16T01:56:50.962497', '2025-04-21T01:56:50.962497', 3);
+-- Sample data for Students
+
+INSERT INTO mentors (mentor_id, cognito_id, name, email, availability, skills) VALUES (1, 'c9cfd40d-4052-4a27-973f-f54f9cc3056a', 'Donna Schneider', 'jillfernandez@daniel.com', 'Weekdays', 'Communication, Time Management');
+INSERT INTO mentor_skills (mentor_id, skill) VALUES (1, 'Leadership'), (1, 'Critical Thinking');
+INSERT INTO mentor_expertise (mentor_id, area_of_expertise) VALUES (1, 'Computer Science'), (1, 'AI');
+INSERT INTO mentor_communication_styles (mentor_id, style) VALUES (1, 'Email'), (1, 'Video Call');
+INSERT INTO mentor_languages (mentor_id, language) VALUES (1, 'English'), (1, 'Spanish');
+INSERT INTO mentor_availability (mentor_id, day, time_slot) VALUES (1, 'Monday', '09:00-11:00'), (1, 'Wednesday', '14:00-16:00');
+INSERT INTO mentors (mentor_id, cognito_id, name, email, availability, skills) VALUES (2, '1609c862-0834-423e-b531-22c63208df6e', 'Christopher Joyce', 'james19@gmail.com', 'Weekdays', 'Communication, Time Management');
+INSERT INTO mentor_skills (mentor_id, skill) VALUES (2, 'Leadership'), (2, 'Critical Thinking');
+INSERT INTO mentor_expertise (mentor_id, area_of_expertise) VALUES (2, 'Computer Science'), (2, 'AI');
+INSERT INTO mentor_communication_styles (mentor_id, style) VALUES (2, 'Email'), (2, 'Video Call');
+INSERT INTO mentor_languages (mentor_id, language) VALUES (2, 'English'), (2, 'Spanish');
+INSERT INTO mentor_availability (mentor_id, day, time_slot) VALUES (2, 'Monday', '09:00-11:00'), (2, 'Wednesday', '14:00-16:00');
+INSERT INTO mentors (mentor_id, cognito_id, name, email, availability, skills) VALUES (3, 'ff772a83-bcb9-4b06-bc7c-2f473ec5d12d', 'Kevin Lane', 'huffmonica@meyer-ross.biz', 'Weekdays', 'Communication, Time Management');
+INSERT INTO mentor_skills (mentor_id, skill) VALUES (3, 'Leadership'), (3, 'Critical Thinking');
+INSERT INTO mentor_expertise (mentor_id, area_of_expertise) VALUES (3, 'Computer Science'), (3, 'AI');
+INSERT INTO mentor_communication_styles (mentor_id, style) VALUES (3, 'Email'), (3, 'Video Call');
+INSERT INTO mentor_languages (mentor_id, language) VALUES (3, 'English'), (3, 'Spanish');
+INSERT INTO mentor_availability (mentor_id, day, time_slot) VALUES (3, 'Monday', '09:00-11:00'), (3, 'Wednesday', '14:00-16:00');
+INSERT INTO students (student_id, cognito_id, name, email, profile_info, mentor_id) VALUES (1, 'ffe1f81a-a2c0-407d-9a96-6d100b5bbe83', 'Ryan Johnson', 'connieroberts@burgess.com', 'Interested in web development and databases.', 3);
+INSERT INTO student_preferences (student_id, area_of_study, communication_style, language, mentor_rating) VALUES (1, 'Software Engineering', 'Video Call', 'English', 4.7);
+INSERT INTO student_interests (student_id, interest) VALUES (1, 'Backend Development'), (1, 'Machine Learning');
+INSERT INTO student_availability (student_id, day, time_slot) VALUES (1, 'Tuesday', '10:00-12:00'), (1, 'Thursday', '13:00-15:00');
+INSERT INTO students (student_id, cognito_id, name, email, profile_info, mentor_id) VALUES (2, '162b8a2a-948c-4567-b0b4-3a514dd683f8', 'Phillip Taylor', 'rodriguezeddie@gmail.com', 'Interested in web development and databases.', 2);
+INSERT INTO student_preferences (student_id, area_of_study, communication_style, language, mentor_rating) VALUES (2, 'Software Engineering', 'Video Call', 'English', 4.8);
+INSERT INTO student_interests (student_id, interest) VALUES (2, 'Backend Development'), (2, 'Machine Learning');
+INSERT INTO student_availability (student_id, day, time_slot) VALUES (2, 'Tuesday', '10:00-12:00'), (2, 'Thursday', '13:00-15:00');
+INSERT INTO students (student_id, cognito_id, name, email, profile_info, mentor_id) VALUES (3, '2a1396f6-df2b-4dcc-86d8-67eebe3977e3', 'Rebecca Thomas', 'erinhenry@schultz.com', 'Interested in web development and databases.', 1);
+INSERT INTO student_preferences (student_id, area_of_study, communication_style, language, mentor_rating) VALUES (3, 'Software Engineering', 'Video Call', 'English', 4.4);
+INSERT INTO student_interests (student_id, interest) VALUES (3, 'Backend Development'), (3, 'Machine Learning');
+INSERT INTO student_availability (student_id, day, time_slot) VALUES (3, 'Tuesday', '10:00-12:00'), (3, 'Thursday', '13:00-15:00');
+INSERT INTO assignments (assignment_id, title, description, status, grade, due_date, mentor_id, student_id) VALUES (1, 'Assignment 1', 'Complete this task.', 'Due', 64.36, '2025-05-21', 1, 1);
+INSERT INTO tasks_student (task_id, student_id, mentor_id, title, deadline, completed) VALUES (1, 1, 1, 'Task 1', '2025-05-11', FALSE);
+INSERT INTO assignments (assignment_id, title, description, status, grade, due_date, mentor_id, student_id) VALUES (2, 'Assignment 2', 'Complete this task.', 'Due', 63.21, '2025-05-22', 2, 2);
+INSERT INTO tasks_student (task_id, student_id, mentor_id, title, deadline, completed) VALUES (2, 2, 2, 'Task 2', '2025-05-12', FALSE);
+INSERT INTO assignments (assignment_id, title, description, status, grade, due_date, mentor_id, student_id) VALUES (3, 'Assignment 3', 'Complete this task.', 'Due', 61.89, '2025-05-23', 3, 3);
+INSERT INTO tasks_student (task_id, student_id, mentor_id, title, deadline, completed) VALUES (3, 3, 3, 'Task 3', '2025-05-13', FALSE);
+INSERT INTO meetings (meeting_id, student_id, mentor_id, timeslot, status) VALUES (1, 1, 1, '2025-05-11 10:00:00', 'Scheduled');
+INSERT INTO meetings (meeting_id, student_id, mentor_id, timeslot, status) VALUES (2, 2, 2, '2025-05-12 10:00:00', 'Scheduled');
+INSERT INTO meetings (meeting_id, student_id, mentor_id, timeslot, status) VALUES (3, 3, 3, '2025-05-13 10:00:00', 'Scheduled');
+INSERT INTO appointments (appointment_id, subject, date, status, student_id) VALUES (1, 'Consult', '2025-05-21 15:00:00', 'Scheduled', 1);
+INSERT INTO appointments (appointment_id, subject, date, status, student_id) VALUES (2, 'Consult', '2025-05-22 15:00:00', 'Scheduled', 2);
+INSERT INTO appointments (appointment_id, subject, date, status, student_id) VALUES (3, 'Consult', '2025-05-23 15:00:00', 'Scheduled', 3);
+INSERT INTO student_documents (assignment_id, filename, url) VALUES (1, 'assignment_1.pdf', 'https://example.com/docs/assignment_1.pdf');
+INSERT INTO student_documents (assignment_id, filename, url) VALUES (2, 'assignment_2.pdf', 'https://example.com/docs/assignment_2.pdf');
+INSERT INTO student_documents (assignment_id, filename, url) VALUES (3, 'assignment_3.pdf', 'https://example.com/docs/assignment_3.pdf');
+
+
+-- Sample data for solicitors 
 
 INSERT INTO solicitors (cognito_id, name, email, password, specialty, availability, experience_years) VALUES
 ('s1-abc', 'Alice Lawman', 'alice@example.com', 'hashedpassword1', 'Family Law', 'Weekdays 9-5', 5),
@@ -287,3 +359,123 @@ INSERT INTO billing (case_id, amount_due, amount_paid, billing_status, billing_d
 INSERT INTO notes (case_id, note_name, note_type, creation_date, content) VALUES
 (1, 'Client Overview', 'summary', '2025-04-15', 'Client needs urgent legal help.'),
 (2, 'Case Strategy', 'strategy', '2025-04-16', 'Plan to settle before trial.');
+
+
+-- MY test data Stduent
+
+-- INSERT INTO meetings (student_id, mentor_id, timeslot, status)
+-- VALUES
+-- (6, 1, '2025-04-18 10:00:00', 'confirmed'),
+-- (6, 2, '2025-04-20 14:00:00', 'pending');
+
+
+-- INSERT INTO tasks_student (student_id, mentor_id, title, deadline, completed)
+-- VALUES
+-- (6, 1, 'Write project outline', '2025-04-22', FALSE),
+-- (6, 1, 'Submit draft', '2025-04-25', FALSE);
+
+
+-- INSERT INTO assignments (title, description, status, grade, due_date, mentor_id, student_id)
+-- VALUES
+-- ('Database Assignment', 'Design a relational schema', 'pending', NULL, '2025-04-28', 1, 6),
+-- ('Security Report', 'Write report on OWASP top 10', 'submitted', 80, '2025-04-30', 2, 6);
+
+
+-- INSERT INTO student_documents (assignment_id, filename, url, uploaded_at)
+-- VALUES
+-- (1, 'db_assignment.pdf', 'https://example.com/files/db_assignment.pdf', NOW()),
+-- (2, 'security_report.docx', 'https://example.com/files/security_report.docx', NOW());
+
+
+-- INSERT INTO student_calendar (name, student_id)
+-- VALUES
+-- ('Semester Calendar', 6);
+
+
+-- INSERT INTO student_event (title, description, type, creation_date, due_date, calendar_id)
+-- VALUES
+-- ('Assignment Deadline', 'Database assignment due', 'deadline', NOW(), '2025-04-28 23:59:59', 1),
+-- ('Mentor Check-in', 'Progress meeting with mentor', 'meeting', NOW(), '2025-04-19 15:00:00', 1);
+
+
+
+-- -- Create a dummy client to associate with the case
+-- INSERT INTO clients (cognito_id, name, email, password, legal_needs, budget)
+-- VALUES ('client-xyz-3', 'Test Client', 'test.client3@example.com', 'hashedpass', 'Property Dispute', 2000.00);
+
+-- -- Insert a case involving solicitor_id = 3 and the new client (assume client_id = LAST_INSERT_ID())
+-- SET @clientId := LAST_INSERT_ID();
+
+-- INSERT INTO cases (client_id, solicitor_id, status, total_billing)
+-- VALUES (@clientId, 3, 'Open', 500.00);
+
+-- SET @caseId := LAST_INSERT_ID();
+
+-- -- Insert a calendar for solicitor 3
+-- INSERT INTO calendar (name, solicitor_id)
+-- VALUES ('Solicitor 3 Calendar', 3);
+
+-- SET @calendarId := LAST_INSERT_ID();
+
+-- -- Insert events for the calendar
+-- INSERT INTO event (title, description, type, creation_date, due_date, calendar_id)
+-- VALUES 
+-- ('Client Meeting', 'Meeting with client about property case', 'meeting', NOW(), '2025-05-05 10:00:00', @calendarId),
+-- ('Court Hearing', 'First court appearance', 'court', NOW(), '2025-05-12 09:00:00', @calendarId);
+
+-- -- Insert tasks
+-- INSERT INTO tasks (case_id, title, due_date, completed)
+-- VALUES 
+-- (@caseId, 'Review Case Documents', '2025-04-28', FALSE),
+-- (@caseId, 'Draft Legal Argument', '2025-05-01', FALSE);
+
+-- -- Insert documents
+-- INSERT INTO documents (case_id, filename, url)
+-- VALUES 
+-- (@caseId, 'property-dispute-evidence.pdf', 'https://example.com/documents/evidence.pdf'),
+-- (@caseId, 'client-statement.docx', 'https://example.com/documents/statement.docx');
+
+-- -- Insert billing entries
+-- INSERT INTO billing (case_id, amount_due, amount_paid, billing_status, billing_date)
+-- VALUES 
+-- (@caseId, 300.00, 150.00, 'partial', '2025-04-26'),
+-- (@caseId, 200.00, 0.00, 'unpaid', '2025-05-01');
+
+-- -- Insert notes
+-- INSERT INTO notes (case_id, note_name, note_type, creation_date, content)
+-- VALUES 
+-- (@caseId, 'Initial Interview', 'summary', '2025-04-20', 'Client described issue and expectations.'),
+-- (@caseId, 'Court Prep', 'strategy', '2025-04-30', 'Outline legal strategy for court.');
+
+-- -- Insert messages
+-- INSERT INTO messages (case_id, sender_id, recipient_id, content)
+-- VALUES 
+-- (@caseId, 3, @clientId, 'Please review the attached case documents.'),
+-- (@caseId, @clientId, 3, 'I’ve reviewed the files and added comments.');
+
+
+-- SET FOREIGN_KEY_CHECKS = 0;
+
+-- DROP TABLE IF EXISTS
+--   notes,
+--   billing,
+--   solicitor_cases,
+--   event,
+--   calendar,
+--   messages,
+--   documents,
+--   tasks,
+--   cases,
+--   clients,
+--   solicitors,
+--   student_event,
+--   student_calendar,
+--   appointments,
+--   student_documents,
+--   assignments,
+--   tasks_student,
+--   meetings,
+--   mentors,
+--   students;
+
+-- SET FOREIGN_KEY_CHECKS = 1;

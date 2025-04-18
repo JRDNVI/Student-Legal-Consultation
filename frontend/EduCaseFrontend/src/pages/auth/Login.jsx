@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import api from "../../api/api";
+import { authApi } from "../../api/api";
 import { jwtDecode } from "jwt-decode";
+import { Navigate, useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const { userLogin } = useAuth(); 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const Navigate = useNavigate(); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
   try {
-    const response = await api.post("/auth/signin", {
+    const response = await authApi.post("/auth/signin", {
       username,
       password,
     });
@@ -20,9 +22,9 @@ export default function LoginPage() {
     const decoded = jwtDecode(token);
 
     userLogin(token, decoded); 
-    console.log(decoded);
+    //console.log(decoded);
+    Navigate("/dashboard")
 
-    // window.location.href = "/dashboard";
   } catch (err) {
     alert(err.response?.data?.message || err.message);
   }

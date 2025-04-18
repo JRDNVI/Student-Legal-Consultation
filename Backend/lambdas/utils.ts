@@ -82,43 +82,69 @@ export const createPolicy = (
 
 // Education data tables and their allowed columns for add and delete operations
 export const allowedTablesAdd: Record<string, string[]> = {
-    students: ["cognito_id", "name", "email", "profile_info"],
-    mentors: ["cognito_id", "name", "email", "profile_info"],
-    meetings: ["student_id", "mentor_id", "timeslot", "status"],
-    tasks_student: ["student_id", "mentor_id", "title", "deadline", "completed"],
-    assignments: ["title", "description", "status", "grade", "due_date", "mentor_id", "student_id"],
-    student_documents: ["assignment_id", "filename", "url", "uploaded_at"],
-    appointments: ["subject", "date", "status", "student_id"],
-    student_calendar: ["name", "student_id"],
-    student_event: ["title", "description", "type", "creation_date", "due_date", "calendar_id"]
-  };
+  students: ["cognito_id", "name", "email", "profile_info", "mentor_id"],
+  student_preferences: ["student_id", "area_of_study", "communication_style", "language", "mentor_rating"],
+  student_interests: ["student_id", "interest"],
+  student_availability: ["student_id", "day", "time_slot"],
+  mentors: ["cognito_id", "name", "email", "availability", "skills"],
+  mentor_skills: ["mentor_id", "skill"],
+  mentor_expertise: ["mentor_id", "area_of_expertise"],
+  mentor_communication_styles: ["mentor_id", "style"],
+  mentor_languages: ["mentor_id", "language"],
+  mentor_availability: ["mentor_id", "day", "time_slot"],
+  meetings: ["student_id", "mentor_id", "timeslot", "status"],
+  tasks_student: ["student_id", "mentor_id", "title", "deadline", "completed"],
+  assignments: ["title", "description", "status", "grade", "due_date", "mentor_id", "student_id"],
+  student_documents: ["assignment_id", "filename", "url", "uploaded_at"],
+  appointments: ["subject", "date", "status", "student_id"],
+  student_calendar: ["name", "student_id"],
+  student_event: ["title", "description", "type", "creation_date", "due_date", "calendar_id"]
+};
 
-  export const allowedTablesDelete: Record<string, string[]> = {
-    students: ["student_id"],
-    mentors: ["mentor_id"],
-    meetings: ["meeting_id"],
-    tasks_student: ["task_id"],
-    assignments: ["assignment_id"],
-    student_documents: ["document_id"],
-    appointments: ["appointment_id"],
-    student_calendar: ["calendar_id"],
-    student_event: ["event_id"],
-  };
+
+export const allowedTablesDelete: Record<string, string[]> = {
+  students: ["student_id"],
+  student_preferences: ["preference_id"],
+  student_interests: ["interest_id"],
+  student_availability: ["availability_id"],
+  mentors: ["mentor_id"],
+  mentor_skills: ["id"],
+  mentor_expertise: ["id"],
+  mentor_communication_styles: ["id"],
+  mentor_languages: ["id"],
+  mentor_availability: ["id"],
+  meetings: ["meeting_id"],
+  tasks_student: ["task_id"],
+  assignments: ["assignment_id"],
+  student_documents: ["document_id"],
+  appointments: ["appointment_id"],
+  student_calendar: ["calendar_id"],
+  student_event: ["event_id"]
+};
 
   export const getEducationDataTable: Record<string, { tables: string[]; column: string }> = {
     student: {
       tables: [
         "students",
+        "student_preferences",
+        "student_interests",
+        "student_availability",
         "meetings",
         "tasks_student",
         "assignments",
         "appointments",
-        "student_calendar",
       ],
       column: "student_id",
     },
     mentor: {
       tables: [
+        "mentors",
+        "students",
+        "mentor_skills",
+        "mentor_expertise",
+        "mentor_communication_styles",
+        "mentor_languages",
+        "mentor_availability",
         "meetings",
         "tasks_student",
         "assignments"
@@ -126,6 +152,7 @@ export const allowedTablesAdd: Record<string, string[]> = {
       column: "mentor_id",
     }
   };
+  
 
   // Legal data tables and their allowed columns for add and delete operations
   export const allowedLegalTablesAdd: Record<string, string[]> = {
@@ -172,6 +199,87 @@ export const allowedTablesAdd: Record<string, string[]> = {
       column: "client_id",
     }
   };
+
+
+  // Created a mapping for different roles to their tables that contains data related to them, but doesn't contain the user ID.
+  export const extendedRoleTableJoins: Record<string, { table: string; join: string; param: string; baseTable: string }[]> = {
+  student: [
+    {
+      table: "mentors",
+      join: "JOIN students ON mentors.mentor_id = students.mentor_id",
+      param: "student_id",
+      baseTable: "students"
+    },
+    {
+      table: "student_documents",
+      join: "JOIN assignments ON student_documents.assignment_id = assignments.assignment_id",
+      param: "student_id",
+      baseTable: "assignments"
+    }
+  ],
+
+  client: [
+    {
+      table: "tasks",
+      join: "JOIN cases ON tasks.case_id = cases.case_id",
+      param: "client_id",
+      baseTable: "cases"
+    },
+    {
+      table: "documents",
+      join: "JOIN cases ON documents.case_id = cases.case_id",
+      param: "client_id",
+      baseTable: "cases"
+    },
+    {
+      table: "notes",
+      join: "JOIN cases ON notes.case_id = cases.case_id",
+      param: "client_id",
+      baseTable: "cases"
+    },
+    {
+      table: "messages",
+      join: "JOIN cases ON messages.case_id = cases.case_id",
+      param: "client_id",
+      baseTable: "cases"
+    }
+  ],
+
+  solicitor: [
+    {
+      table: "tasks",
+      join: "JOIN cases ON tasks.case_id = cases.case_id",
+      param: "solicitor_id",
+      baseTable: "cases"
+    },
+    {
+      table: "documents",
+      join: "JOIN cases ON documents.case_id = cases.case_id",
+      param: "solicitor_id",
+      baseTable: "cases"
+    },
+    {
+      table: "notes",
+      join: "JOIN cases ON notes.case_id = cases.case_id",
+      param: "solicitor_id",
+      baseTable: "cases"
+    },
+    {
+      table: "messages",
+      join: "JOIN cases ON messages.case_id = cases.case_id",
+      param: "solicitor_id",
+      baseTable: "cases"
+    },
+    {
+      table: "billing",
+      join: "JOIN cases ON billing.case_id = cases.case_id",
+      param: "solicitor_id",
+      baseTable: "cases"
+    }
+  ]
+};
+
+  
 
   // Helper functions for lambdas
   type OperationType = "get" | "add" | "delete";
