@@ -153,9 +153,16 @@ type AppApiProps = {
       const educationEndpoint = appApi.root.addResource("education");
 
       educationEndpoint.addMethod("GET", new apig.LambdaIntegration(getUserDataFn, { proxy: true }), {
-        authorizer: requestAuthorizer,
-        authorizationType: apig.AuthorizationType.CUSTOM,
+        // authorizer: requestAuthorizer,
+        // authorizationType: apig.AuthorizationType.CUSTOM,
     });
+
+      // For Testing only, will be removed later.
+      const educationByIdAndRole = educationEndpoint
+      .addResource("{id}")
+      .addResource("{role}");
+  
+      educationByIdAndRole.addMethod("GET", new apig.LambdaIntegration(getUserDataFn));
 
       educationEndpoint.addMethod("POST", new apig.LambdaIntegration(addUserDataFn, { proxy: true }), {
         authorizer: requestAuthorizer,

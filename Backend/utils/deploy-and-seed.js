@@ -12,7 +12,7 @@ const region = "eu-west-1";
 const stackName = "Auth-App-API";
 const sqlFilePath = "./utils/FYP_Schema_Init.sql";
 
-// //Deploy CDK stack
+//Deploy CDK stack
 // console.log("Deploying CDK stack");
 // execSync('cdk deploy --require-approval never', { stdio: 'inherit' });
 
