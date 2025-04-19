@@ -1,0 +1,35 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
+DROP TABLE IF EXISTS 
+  mentor_skills,
+  mentor_expertise,
+  mentor_communication_styles,
+  mentor_languages,
+  mentor_availability,
+  student_preferences,
+  student_interests,
+  student_availability,
+  meetings,
+  tasks_student,
+  student_documents,
+  assignments,
+  student_event,
+  student_calendar,
+  appointments,
+  students,
+  mentors,
+
+  billing,
+  notes,
+  solicitor_cases,
+  event,
+  calendar,
+  messages,
+  documents,
+  tasks,
+  cases,
+  clients,
+  solicitors;
+
+-- Re-enable foreign key checks
+SET FOREIGN_KEY_CHECKS = 1;

@@ -122,6 +122,12 @@ type AppApiProps = {
         entry: `${__dirname}/../lambdas/userCRUD/deleteUserData.ts`,
       });
 
+      const matchStudentFn = new lambdanode.NodejsFunction(this, "MatchStudentFn", {
+        ...appCommonFnProps,
+        entry: `${__dirname}/../lambdas/matchingAlgo/match-student.ts`,
+      });
+
+
       const requestAuthorizer = new apig.RequestAuthorizer(
         this,
         "RequestAuthorizer",
@@ -149,20 +155,30 @@ type AppApiProps = {
       dbCredentialsSecret.grantRead(addUserDataFn);
       dbCredentialsSecret.grantRead(updateUserDataFn);
       dbCredentialsSecret.grantRead(deleteUserDataFn);
+      dbCredentialsSecret.grantRead(matchStudentFn);
 
       const educationEndpoint = appApi.root.addResource("education");
 
       educationEndpoint.addMethod("GET", new apig.LambdaIntegration(getUserDataFn, { proxy: true }), {
-        // authorizer: requestAuthorizer,
-        // authorizationType: apig.AuthorizationType.CUSTOM,
+        authorizer: requestAuthorizer,
+        authorizationType: apig.AuthorizationType.CUSTOM,
+    });
+
+      const matchStudentEndpoint = educationEndpoint.addResource("match-student")
+      // .addResource("{id}")
+      // .addResource("{role}");
+
+      matchStudentEndpoint.addMethod("GET", new apig.LambdaIntegration(matchStudentFn, { proxy: true }), {
+        authorizer: requestAuthorizer,
+        authorizationType: apig.AuthorizationType.CUSTOM,
     });
 
       // For Testing only, will be removed later.
-      const educationByIdAndRole = educationEndpoint
-      .addResource("{id}")
-      .addResource("{role}");
+      // const educationByIdAndRole = educationEndpoint
+      // .addResource("{id}")
+      // .addResource("{role}");
   
-      educationByIdAndRole.addMethod("GET", new apig.LambdaIntegration(getUserDataFn));
+      // educationByIdAndRole.addMethod("GET", new apig.LambdaIntegration(getUserDataFn));
 
       educationEndpoint.addMethod("POST", new apig.LambdaIntegration(addUserDataFn, { proxy: true }), {
         authorizer: requestAuthorizer,

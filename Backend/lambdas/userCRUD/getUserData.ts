@@ -23,6 +23,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: any) => {
     const { username, password } = await getDbCredentials();
     const connection = await getDbConnection(username, password, process.env.DB_ENDPOINT!);
 
+    // || is used for testing using postman
     const userId = event.requestContext?.authorizer?.sub || event.pathParameters?.id;
     const role = event.requestContext?.authorizer?.role || event.pathParameters?.role;
 

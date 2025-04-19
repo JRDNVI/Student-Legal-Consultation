@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import Sidebar from "../../components/dashboard/sidebar";
 import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import Model from "../../components/general/Modal";
-import AssignmentForm from "../../components/items/AssignmentForm";
+import AssignmentForm from "../../components/forms/AssignmentForm";
 
 // Not finshed - Really bad code
 

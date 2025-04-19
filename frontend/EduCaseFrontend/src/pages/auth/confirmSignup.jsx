@@ -16,7 +16,7 @@ export default function ConfirmSignupPage() {
           });
             Navigate("/login")
         } catch (err) {
-          alert(err.response?.data?.message || err.message);
+          alert(err.response || err.message);
         }
       };      
 

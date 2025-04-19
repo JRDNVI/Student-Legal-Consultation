@@ -1,4 +1,3 @@
-// components/general/Modal.jsx
 import React from "react";
 
 export default function Modal({ isOpen, onClose, children, title }) {

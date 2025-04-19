@@ -10,9 +10,14 @@ import fs from 'fs/promises';
 const secretName = "fyp-db-credentials";
 const region = "eu-west-1";
 const stackName = "Auth-App-API";
-const sqlFilePath = "./utils/FYP_Schema_Init.sql";
+const sqlFilePath = [
+  "./utils/FYP_Schema_Init.sql", 
+  "./utils/education-seed-data.sql", 
+  "./utils/legal-seed-data.sql"
+  // "./utils/drop-database.sql"
+]
 
-//Deploy CDK stack
+// //Deploy CDK stack
 // console.log("Deploying CDK stack");
 // execSync('cdk deploy --require-approval never', { stdio: 'inherit' });
 
@@ -33,11 +38,14 @@ const smCommand = new GetSecretValueCommand({ SecretId: secretName });
 const smResponse = await smClient.send(smCommand);
 const { username, password } = JSON.parse(smResponse.SecretString);
 
-//Read schema SQL file
-console.log("Reading schema SQL file");
-const sql = await fs.readFile(sqlFilePath, "utf-8");
+let sql = "";
 
-//Connect and run schema
+for (const file of sqlFilePath) {
+  const fileContent = await fs.readFile(file, "utf-8");
+  sql += "\n" + fileContent;
+}
+
+
 console.log("Connecting to database and executing schema");
 const connection = await mysql.createConnection({
   host: dbEndpoint,
