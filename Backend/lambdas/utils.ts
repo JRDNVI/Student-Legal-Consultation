@@ -79,7 +79,6 @@ export const createPolicy = (
   };
 };
 
-
 // Education data tables and their allowed columns for add and delete operations
 export const allowedTablesAdd: Record<string, string[]> = {
   students: ["cognito_id", "name", "email", "profile_info", "mentor_id"],
@@ -125,7 +124,7 @@ export const allowedTablesDelete: Record<string, string[]> = {
   export const getEducationDataTable: Record<string, { tables: string[]; column: string }> = {
     student: {
       tables: [
-        "students",
+        "students", 
         "student_preferences",
         "student_interests",
         "student_availability",

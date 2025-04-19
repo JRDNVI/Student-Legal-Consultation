@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { authApi } from "../../api/api";
 import { jwtDecode } from "jwt-decode";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
   const { userLogin } = useAuth(); 
@@ -19,12 +19,11 @@ export default function LoginPage() {
     });
 
     const token = response.data.token;
-    const decoded = jwtDecode(token);
+    var decoded = jwtDecode(token);
+    decoded = { ...decoded, onboarded: false }; 
 
     userLogin(token, decoded); 
-    //console.log(decoded);
-    Navigate("/dashboard")
-
+    Navigate("/student-matching"); 
   } catch (err) {
     alert(err.response?.data?.message || err.message);
   }

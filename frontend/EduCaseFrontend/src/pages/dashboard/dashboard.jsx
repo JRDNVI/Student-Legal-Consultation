@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useAuth } from "../../context/AuthContext";
 import { FaTasks, FaUserGraduate, FaCalendarAlt, FaBriefcase } from "react-icons/fa";
 import Sidebar from "../../components/dashboard/sidebar";
@@ -12,12 +12,19 @@ import useDashboardData from "../../hooks/useDashboardData";
 // The data and role is then passed to the OverviewCard component, the role determines which data to show on the card. 
 // The events are built by checking if a date is present in the data, if it is, it is added to the events array.
 
-
 export default function Dashboard() {
   const { user } = useAuth();
   const role = user["custom:role"];
 
   const { data, loading, refetch } = useDashboardData(user);
+
+  if (user.onbaorded === false) {
+    user.onbaorded = true
+  }
+
+  useEffect(() => {
+    refetch();
+  }, []); 
 
   if (loading) return <LoadingSpinner title="Loading your dashboard..." />;
 
@@ -36,6 +43,9 @@ export default function Dashboard() {
         }))
       : []
   );
+
+  console.log(user)
+  console.log(data)
 
   return (
     <div className="flex">

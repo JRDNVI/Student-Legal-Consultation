@@ -24,10 +24,8 @@ export default function useDashboardData(user) {
   };
 
   useEffect(() => {
-    if (!dashboardData && user) {
       fetchData();
-    }
-  }, [user]);
+  }, []);
 
   return { data: localData, loading, refetch: fetchData };
 }
