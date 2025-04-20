@@ -15,6 +15,9 @@ import MentorTasks from './pages/mentor/mentees'
 import MentorMeeting from './pages/mentor/meetings'
 import StudentMeeting from './pages/student/student-meeting'
 import StudentProfile from './pages/student/studentProfile'
+import ClientOnboarding from './pages/client/onboarding/clientNeeds';
+import MeetSolicitor from './pages/client/onboarding/clientMatching';
+import SolicitorOnboarding from './pages/solicitor/onboarding/solicitorOnboarding';
 
 // Not finsihed yet - QueryProvider needs to be implemented
 
@@ -42,6 +45,9 @@ function App() {
           <Route path='/mentor-meetings' element={<ProtectedRoute><MentorMeeting /></ProtectedRoute>} />
           <Route path='/student-meetings' element={<ProtectedRoute><StudentMeeting /></ProtectedRoute>} />
           <Route path='/student-profile' element={<ProtectedRoute><StudentProfile /></ProtectedRoute>} />
+          <Route path='/client-onboarding' element={<ProtectedRoute><ClientOnboarding /></ProtectedRoute>} />
+          <Route path='/match-solicitor' element={<ProtectedRoute><MeetSolicitor /></ProtectedRoute>} />
+          <Route path='/solicitor-onboarding' element={<ProtectedRoute><SolicitorOnboarding /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

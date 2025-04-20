@@ -13,13 +13,13 @@ const stackName = "Auth-App-API";
 const sqlFilePath = [
   "./utils/FYP_Schema_Init.sql", 
   // "./utils/education-seed-data.sql", 
-  // "./utils/legal-seed-data.sql"
+  "./utils/legal-seed-data.sql"
   // "./utils/drop-database.sql"
 ]
 
 // //Deploy CDK stack
-// console.log("Deploying CDK stack");
-// execSync('cdk deploy --require-approval never', { stdio: 'inherit' });
+console.log("Deploying CDK stack");
+execSync('cdk deploy --require-approval never', { stdio: 'inherit' });
 
 //Get DB endpoint from CloudFormation
 //https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/cloudformation/command/DescribeStacksCommand/

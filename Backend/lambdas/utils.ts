@@ -155,8 +155,15 @@ export const allowedTablesDelete: Record<string, string[]> = {
 
   // Legal data tables and their allowed columns for add and delete operations
   export const allowedLegalTablesAdd: Record<string, string[]> = {
-    solicitors: ["cognito_id", "name", "email", "password", "specialty", "availability", "experience_years"],
-    clients: ["cognito_id", "name", "email", "password", "legal_needs", "budget"],
+    solicitors: ["cognito_id", "name", "email", "hourly_rate", "experience_years"],
+    solicitor_languages: ["solicitor_id", "language"],
+    solicitor_communication_styles: ["solicitor_id", "style"],
+    solicitor_specialisations: ["solicitor_id", "specialization"],
+    solicitor_availability: ["solicitor_id", "day_of_week", "time_slot"],
+  
+    clients: ["cognito_id", "name", "language", "communcation_style", "budget"],
+    client_legal_needs: ["client_id", "legal_topic"],
+  
     cases: ["client_id", "solicitor_id", "status", "created_at", "total_billing"],
     tasks: ["case_id", "title", "due_date", "completed"],
     documents: ["case_id", "filename", "url", "uploaded_at"],
@@ -167,10 +174,17 @@ export const allowedTablesDelete: Record<string, string[]> = {
     billing: ["case_id", "amount_due", "amount_paid", "billing_status", "billing_date"],
     notes: ["case_id", "note_name", "note_type", "creation_date", "content"]
   };
-
+  
   export const allowedLegalTablesDelete: Record<string, string[]> = {
     solicitors: ["solicitor_id"],
+    solicitor_languages: ["solicitor_id"],
+    solicitor_communication_styles: ["solicitor_id"],
+    solicitor_specialisations: ["solicitor_id"],
+    solicitor_availability: ["solicitor_id"],
+  
     clients: ["client_id"],
+    client_legal_needs: ["client_id"],
+  
     cases: ["case_id"],
     tasks: ["task_id"],
     documents: ["document_id"],
@@ -179,7 +193,7 @@ export const allowedTablesDelete: Record<string, string[]> = {
     event: ["event_id"],
     billing: ["billing_id"],
     notes: ["note_id"]
-  };
+  }
 
   export const getLegalDataTable: Record<string, { tables: string[]; column: string }> = {
     solicitor: {

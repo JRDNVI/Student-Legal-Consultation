@@ -81,7 +81,7 @@ type AppApiProps = {
       this.dbEndpoint = dbInstance.dbInstanceEndpointAddress;
       this.dbSecret = dbCredentialsSecret;
 
-      // Lmabda functions for Education Side of PWA
+      
       const appCommonFnProps = {
         architecture: lambda.Architecture.ARM_64,
         timeout: cdk.Duration.seconds(10),
@@ -96,6 +96,8 @@ type AppApiProps = {
           REGION: cdk.Aws.REGION,
         },
       };
+
+      // Lmabda functions for Education Side of PWA
 
       const authorizerFn = new lambdanode.NodejsFunction(this, "AuthorizerFn", {
         ...appCommonFnProps,
@@ -127,6 +129,11 @@ type AppApiProps = {
         entry: `${__dirname}/../lambdas/matchingAlgo/match-student.ts`,
       });
 
+      const matchClientFn = new lambdanode.NodejsFunction(this, "MatchClientFn",  {
+        ...appCommonFnProps,
+        entry: `${__dirname}/../lambdas/matchingAlgo/legal-matching.ts`
+      });
+
 
       const requestAuthorizer = new apig.RequestAuthorizer(
         this,
@@ -156,6 +163,7 @@ type AppApiProps = {
       dbCredentialsSecret.grantRead(updateUserDataFn);
       dbCredentialsSecret.grantRead(deleteUserDataFn);
       dbCredentialsSecret.grantRead(matchStudentFn);
+      dbCredentialsSecret.grantRead(matchClientFn)
 
       const educationEndpoint = appApi.root.addResource("education");
 
@@ -202,6 +210,14 @@ type AppApiProps = {
     });
 
     educationEndpoint.addMethod("DELETE", new apig.LambdaIntegration(deleteUserDataFn, { proxy: true }), {
+      authorizer: requestAuthorizer,
+      authorizationType: apig.AuthorizationType.CUSTOM,
+    });
+
+    const matchClientEndpoint = educationEndpoint.addResource("match-client")
+
+
+    matchClientEndpoint.addMethod("GET", new apig.LambdaIntegration(matchClientFn, { proxy: true }), {
       authorizer: requestAuthorizer,
       authorizationType: apig.AuthorizationType.CUSTOM,
     });

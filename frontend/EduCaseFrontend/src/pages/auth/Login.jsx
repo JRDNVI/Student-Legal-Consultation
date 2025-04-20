@@ -28,6 +28,10 @@ export default function LoginPage() {
       Navigate("/student-matching"); 
     } else if (role == "mentor"){
       Navigate("/mentor-setup")
+    } else if (role == "client") {
+      Navigate("/client-onboarding")
+    } else {
+      Navigate("/solicitor-onboarding")
     }
   } catch (err) {
     alert(err.response?.data?.message || err.message);
