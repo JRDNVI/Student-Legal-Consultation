@@ -139,37 +139,61 @@ CREATE TABLE student_calendar (
   FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
 );
 
-CREATE TABLE student_event (
-  event_id INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(32),
-  description VARCHAR(255),
-  type VARCHAR(16),
-  creation_date DATETIME,
-  due_date DATETIME,
-  calendar_id INT,
-  FOREIGN KEY (calendar_id) REFERENCES student_calendar(calendar_id) ON DELETE CASCADE
-);
-
 -- Legal Case Management Tables
+-- Expanded the tables so it was normalised and provided more data to match on
 CREATE TABLE solicitors (
   solicitor_id INT AUTO_INCREMENT PRIMARY KEY,
   cognito_id VARCHAR(255) NOT NULL UNIQUE,
   name VARCHAR(100),
   email VARCHAR(255) UNIQUE,
-  password VARCHAR(255),
-  specialty VARCHAR(100),
-  availability TEXT,
+  hourly_rate DECIMAL(10, 2),
   experience_years INT
+);
+
+CREATE TABLE solicitor_languages (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  solicitor_id INT,
+  language VARCHAR(50),
+  FOREIGN KEY (solicitor_id) REFERENCES solicitors(solicitor_id) ON DELETE CASCADE
+);
+
+CREATE TABLE solicitor_communication_styles (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  solicitor_id INT,
+  style VARCHAR(50),
+  FOREIGN KEY (solicitor_id) REFERENCES solicitors(solicitor_id) ON DELETE CASCADE
+);
+
+CREATE TABLE solicitor_specialisations (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  solicitor_id INT,
+  specialization VARCHAR(100),
+  FOREIGN KEY (solicitor_id) REFERENCES solicitors(solicitor_id) ON DELETE CASCADE
+);
+
+CREATE TABLE solicitor_availability (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  solicitor_id INT,
+  day_of_week VARCHAR(10),
+  time_slot VARCHAR(50),
+  FOREIGN KEY (solicitor_id) REFERENCES solicitors(solicitor_id) ON DELETE CASCADE
 );
 
 CREATE TABLE clients (
   client_id INT AUTO_INCREMENT PRIMARY KEY,
   cognito_id VARCHAR(255) NOT NULL UNIQUE,
   name VARCHAR(100),
+  language VARCHAR(25),
+  communcation_style VARCHAR(50),
   email VARCHAR(255) UNIQUE,
-  password VARCHAR(255),
-  legal_needs TEXT,
   budget DECIMAL(10, 2)
+);
+
+CREATE TABLE client_legal_needs (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  client_id INT,
+  legal_topic VARCHAR(100),
+  FOREIGN KEY (client_id) REFERENCES clients(client_id) ON DELETE CASCADE
 );
 
 CREATE TABLE cases (

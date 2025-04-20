@@ -1,6 +1,7 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS 
+  -- Education-related
   mentor_skills,
   mentor_expertise,
   mentor_communication_styles,
@@ -19,9 +20,15 @@ DROP TABLE IF EXISTS
   students,
   mentors,
 
+  -- Legal-related
+  solicitor_languages,
+  solicitor_communication_styles,
+  solicitor_specialisations,
+  solicitor_availability,
+  client_legal_needs,
   billing,
   notes,
-  solicitor_cases,
+  solicitor_cases, 
   event,
   calendar,
   messages,

@@ -26,8 +26,14 @@ export default function AssignmentForm({ onSubmit, onCancel, initialData = {} })
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className="block text-sm font-medium">Title</label>
-        <input type="text" name="title" value={form.title} onChange={handleChange}
-          required className="w-full border border-gray-300 rounded px-3 py-2"/>
+        <input
+          type="text"
+          name="title"
+          value={form.title}
+          onChange={handleChange}
+          required
+          className="w-full border border-gray-300 rounded px-3 py-2"
+        />
       </div>
 
       <div>
