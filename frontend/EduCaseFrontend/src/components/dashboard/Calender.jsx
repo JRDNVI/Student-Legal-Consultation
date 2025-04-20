@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import dayjs from "dayjs";
 
 // This calender is based of this example https://medium.com/%40kapaak/custom-calendar-with-react-and-dayjs-dcdbba89e577
-
-export default function Calendar({ events = [] }) {
+// Allowed the ability to click on a day, currently added for mentors to add meetings
+export default function Calendar({ events = [], onDateClick }) {
   const [currentDate, setCurrentDate] = useState(dayjs());
 
   const startOfMonth = currentDate.startOf("month").startOf("week");
@@ -43,6 +43,7 @@ export default function Calendar({ events = [] }) {
           return (
             <div
               key={index}
+              onClick={() => onDateClick(date)}
               className={`relative flex flex-col items-start justify-start min-h-[50px] p-2 rounded-lg border border-gray-200 overflow-hidden ${
                 date.isSame(dayjs(), "day")
                   ? "bg-purple-100 text-purple-700"

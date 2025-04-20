@@ -18,7 +18,7 @@ export default function Dashboard() {
 
   const { data, loading, refetch } = useDashboardData(user);
 
-  if (user.onbaorded === false) {
+  if (user.onbaorded == false) {
     user.onbaorded = true
   }
 
@@ -37,10 +37,12 @@ export default function Dashboard() {
 
   const calendarEvents = calendarSources.flatMap(({ key, emoji, dateField }) =>
     Array.isArray(data[key])
-      ? data[key].map((item) => ({
-          title: `${emoji} ${item.title || key}`,
-          date: item[dateField]?.split("T")[0],
-        }))
+      ? data[key]
+          .filter((item) => item.status !== "available") 
+          .map((item) => ({
+            title: `${emoji} ${item.title || key}`,
+            date: item[dateField]?.split("T")[0],
+          }))
       : []
   );
 

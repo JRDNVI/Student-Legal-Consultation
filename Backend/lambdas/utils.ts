@@ -87,7 +87,7 @@ export const allowedTablesAdd: Record<string, string[]> = {
   student_availability: ["student_id", "day", "time_slot"],
   mentors: ["cognito_id", "name", "email", "availability", "skills"],
   mentor_skills: ["mentor_id", "skill"],
-  mentor_expertise: ["mentor_id", "area_of_expertise"],
+  mentor_expertise: ["mentor_id", "area_of_expertise", "topic_area"],
   mentor_communication_styles: ["mentor_id", "style"],
   mentor_languages: ["mentor_id", "language"],
   mentor_availability: ["mentor_id", "day", "time_slot"],
@@ -214,6 +214,30 @@ export const allowedTablesDelete: Record<string, string[]> = {
       join: "JOIN assignments ON student_documents.assignment_id = assignments.assignment_id",
       param: "student_id",
       baseTable: "assignments"
+    },
+    {
+      table: "mentor_skills",
+      join: "JOIN mentors ON mentor_skills.mentor_id = mentors.mentor_id JOIN students ON mentors.mentor_id = students.mentor_id",
+      param: "student_id",
+      baseTable: "students",
+    },
+    {
+      table: "mentor_expertise",
+      join: "JOIN mentors ON mentor_expertise.mentor_id = mentors.mentor_id JOIN students ON mentors.mentor_id = students.mentor_id",
+      param: "student_id",
+      baseTable: "students",
+    },
+    {
+      table: "mentor_languages",
+      join: "JOIN mentors ON mentor_languages.mentor_id = mentors.mentor_id JOIN students ON mentors.mentor_id = students.mentor_id",
+      param: "student_id",
+      baseTable: "students",
+    },
+    {
+      table: "mentor_communication_styles",
+      join: "JOIN mentors ON mentor_communication_styles.mentor_id = mentors.mentor_id JOIN students ON mentors.mentor_id = students.mentor_id",
+      param: "student_id",
+      baseTable: "students",
     }
   ],
 

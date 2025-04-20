@@ -12,7 +12,7 @@ export default function OverviewSection({ title, data, icon, role }) {
     },
     mentor: {
       tasks: ["title", "deadline", "completed"],
-      assignments: ["title", "status", "due_date"],
+      //assignments: ["title", "status", "due_date"],
       meetings: ["timeslot", "status"],
     },
     solicitor: {
@@ -41,11 +41,13 @@ export default function OverviewSection({ title, data, icon, role }) {
 
       {data && data.length > 0 ? (
         <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 snap-x snap-mandatory">
-        {data.map((item, index) => (
-          <div className="snap-start min-w-[250px]">
-            <MiniCard key={index} item={item} fields={fieldsToShow} />
+        {data
+        .filter((item) => item.status !== "available") 
+        .map((item, index) => (
+          <div className="snap-start min-w-[250px]" key={index}>
+            <MiniCard item={item} fields={fieldsToShow} />
           </div>
-          ))}
+        ))}
         </div>
       ) : (
         <p className="text-gray-400 italic">No {title.toLowerCase()} available.</p>

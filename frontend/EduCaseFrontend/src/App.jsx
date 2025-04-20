@@ -8,6 +8,13 @@ import Assignment from './pages/student/assignment';
 import ProtectedRoute from './context/ProtectedRoute';
 import StudentMatching from './pages/student/onboarding/studentMatching';
 import MeetMentor  from './pages/student/onboarding/meetMentor';
+import Mentor from './pages/student/mentor'
+import MentorSetup from './pages/mentor/onboarding/mentorSetup'
+import MentorProfile from './pages/mentor/mentorProfile'
+import MentorTasks from './pages/mentor/mentees'
+import MentorMeeting from './pages/mentor/meetings'
+import StudentMeeting from './pages/student/student-meeting'
+import StudentProfile from './pages/student/studentProfile'
 
 // Not finsihed yet - QueryProvider needs to be implemented
 
@@ -28,6 +35,13 @@ function App() {
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>}/>
           <Route path="/assignments" element={<ProtectedRoute><Assignment /></ProtectedRoute>} />
           <Route path="/meet-mentor" element={<ProtectedRoute><MeetMentor /></ProtectedRoute>} />
+          <Route path='/mentor' element={<ProtectedRoute><Mentor /></ProtectedRoute>} />
+          <Route path='/mentor-setup' element={<ProtectedRoute><MentorSetup /></ProtectedRoute>} />
+          <Route path='/mentees' element={<ProtectedRoute><MentorTasks /></ProtectedRoute>} />
+          <Route path='/mentor-profile' element={<ProtectedRoute><MentorProfile /></ProtectedRoute>} />
+          <Route path='/mentor-meetings' element={<ProtectedRoute><MentorMeeting /></ProtectedRoute>} />
+          <Route path='/student-meetings' element={<ProtectedRoute><StudentMeeting /></ProtectedRoute>} />
+          <Route path='/student-profile' element={<ProtectedRoute><StudentProfile /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
