@@ -34,24 +34,23 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: any) => {
     }
 
     const { tables, column: idColumn } = accessMeta;
+    console.log(accessMeta)
 
-    const table =
-      tables.includes("students") ? "students" :
-      tables.includes("mentors") ? "mentors" :
-      tables.includes("clients") ? "clients" :
-      tables.includes("solicitors") ? "solicitors" :
-      null;
+    const table = tables[0]
+    console.log(table)
 
     if (!table) {
       return returnStatus(400, "Unable to resolve base user table");
     }
+
+    console.log(table)
 
     const [rows] = await connection.execute(
       `SELECT ${idColumn} FROM ${table} WHERE cognito_id = ?`,
       [userId]
     );
 
-    console.log(rows)
+    console.log(rows[0])
 
     const identifier = rows[0]?.[idColumn];
     if (!identifier) {
@@ -61,11 +60,19 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: any) => {
     const results: Record<string, any> = {};
 
     // Loop through all tables and get the data for using the user's ID
+    // Modified to show availabile meetings set by a students mentor and if 
+    // they have accepted the meeting
     for (const tableName of tables) {
-      const [data] = await connection.execute(
-        `SELECT * FROM ${tableName} WHERE ${idColumn} = ?`,
-        [identifier]
-      );
+      let query, params;
+      if (role === "student" && tableName === "meetings") {
+          query = `SELECT * FROM ${tableName} WHERE (student_id IS NULL AND status = 'available') OR student_id = ?`;
+          params = [identifier];
+      } else {
+        query = `SELECT * FROM ${tableName} WHERE ${idColumn} = ?`;
+        params = [identifier];
+      }
+    
+      const [data] = await connection.execute(query, params);
       results[tableName] = data;
     }
 

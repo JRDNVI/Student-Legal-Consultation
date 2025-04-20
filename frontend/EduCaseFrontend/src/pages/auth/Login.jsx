@@ -5,7 +5,7 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
-  const { userLogin } = useAuth(); 
+  const { userLogin, user } = useAuth(); 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const Navigate = useNavigate(); 
@@ -23,7 +23,12 @@ export default function LoginPage() {
     decoded = { ...decoded, onboarded: false }; 
 
     userLogin(token, decoded); 
-    Navigate("/student-matching"); 
+    const role = user["custom:role"];
+    if (role == "student") {
+      Navigate("/student-matching"); 
+    } else if (role == "mentor"){
+      Navigate("/mentor-setup")
+    }
   } catch (err) {
     alert(err.response?.data?.message || err.message);
   }

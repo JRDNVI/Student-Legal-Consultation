@@ -1,5 +1,5 @@
 import { useLocation, Link } from "react-router-dom";
-import { FaHome, FaUserGraduate, FaTasks, FaCalendarAlt, FaBriefcase, FaGavel, FaSignOutAlt, FaMale, FaPersonBooth } from "react-icons/fa";
+import { FaHome, FaUserGraduate, FaTasks, FaCalendarAlt, FaBriefcase, FaGavel, FaSignOutAlt, FaMale, FaPersonBooth, FaUserFriends } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 
 
@@ -12,14 +12,15 @@ export default function Sidebar({ role }) {
     student: [
       { icon: <FaHome />, label: "Dashboard", path: "/dashboard" },
       { icon: <FaUserGraduate />, label: "Assignments", path: "/assignments" },
-      { icon: <FaTasks />, label: "Tasks", path: "/tasks" },
-      { icon: <FaCalendarAlt />, label: "Meetings", path: "/meetings" },
-      { icon: <FaPersonBooth />, label: "Mentor", path: "/mentot" },
+      { icon: <FaCalendarAlt />, label: "Meetings", path: "/student-meetings" },
+      { icon: <FaPersonBooth />, label: "Mentor", path: "/mentor" },
+      {  icon: <FaUserFriends />, label: "Profile", path: "/student-profile"}
     ],
     mentor: [
       { icon: <FaHome />, label: "Dashboard", path: "/dashboard" },
-      { icon: <FaTasks />, label: "Student Tasks", path: "/tasks" },
-      { icon: <FaCalendarAlt />, label: "Mentor Meetings", path: "/meetings" },
+      { icon: <FaTasks />, label: "Student Tasks", path: "/mentees" },
+      { icon: <FaCalendarAlt />, label: "Mentor Meetings", path: "/mentor-meetings" },
+      { icon: <FaUserFriends />, label: "Profile", path: "/mentor-profile"},
     ],
     client: [
       { icon: <FaHome />, label: "Dashboard", path: "/dashboard" },

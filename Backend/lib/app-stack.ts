@@ -164,6 +164,17 @@ type AppApiProps = {
         authorizationType: apig.AuthorizationType.CUSTOM,
     });
 
+    // Commented code is for testing purposes 
+
+    //   const getAvailableStudentMeetings = educationEndpoint
+    //   .addResource("student-meetings")
+    //   .addResource("{id}")
+
+    //   getAvailableStudentMeetings.addMethod("GET", new apig.LambdaIntegration(getUserDataFn, { proxy: true }), {
+    //     authorizer: requestAuthorizer,
+    //     authorizationType: apig.AuthorizationType.CUSTOM,
+    // }); 
+       
       const matchStudentEndpoint = educationEndpoint.addResource("match-student")
       // .addResource("{id}")
       // .addResource("{role}");
@@ -173,7 +184,7 @@ type AppApiProps = {
         authorizationType: apig.AuthorizationType.CUSTOM,
     });
 
-      // For Testing only, will be removed later.
+      // // For Testing only, will be removed later.
       // const educationByIdAndRole = educationEndpoint
       // .addResource("{id}")
       // .addResource("{role}");

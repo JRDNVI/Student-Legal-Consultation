@@ -48,7 +48,7 @@ export default function AssignmentPage() {
       closeModal();
       await refetch();
     } catch (err) {
-      console.error("Failed to save assignment:", err.response?.data || err.message);
+      console.error("Failed to save assignment:", err.message);
     }
   };
 
