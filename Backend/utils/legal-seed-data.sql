@@ -1,5 +1,20 @@
 -- -- Sample data for solicitors 
 
+-- -- Requested Cases
+-- INSERT INTO cases (client_id, solicitor_id, status, created_at, total_billing)
+-- VALUES 
+--   (1, 1, 'Requested', NOW(), 0.00),
+--   (1, 1, 'Requested', NOW(), 0.00),
+--   (1, 1, 'Requested', NOW(), 0.00);
+
+-- -- Ongoing Cases
+-- INSERT INTO cases (client_id, solicitor_id, status, created_at, total_billing)
+-- VALUES 
+--   (1, 1, 'Ongoing', NOW(), 0.00),
+--   (1, 1, 'Ongoing', NOW(), 0.00),
+--   (1, 1, 'Ongoing', NOW(), 0.00);
+
+
 -- INSERT INTO solicitors (cognito_id, name, email, hourly_rate, experience_years) VALUES
 -- ('sol-1', 'Alice Byrne', 'alice@lawfirm.ie', 120.00, 10),
 -- ('sol-2', 'Brian O’Connell', 'brian@justice.ie', 95.00, 6),

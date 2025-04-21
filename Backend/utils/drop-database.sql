@@ -1,7 +1,7 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
 DROP TABLE IF EXISTS 
-  -- Education-related
+  -- Education
   mentor_skills,
   mentor_expertise,
   mentor_communication_styles,
@@ -20,7 +20,7 @@ DROP TABLE IF EXISTS
   students,
   mentors,
 
-  -- Legal-related
+  -- Legal
   solicitor_languages,
   solicitor_communication_styles,
   solicitor_specialisations,
@@ -38,5 +38,4 @@ DROP TABLE IF EXISTS
   clients,
   solicitors;
 
--- Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;

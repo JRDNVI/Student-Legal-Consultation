@@ -211,6 +211,7 @@ CREATE TABLE tasks (
   task_id INT AUTO_INCREMENT PRIMARY KEY,
   case_id INT,
   title VARCHAR(255),
+  recipient VARCHAR(25),
   due_date DATE,
   completed BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (case_id) REFERENCES cases(case_id) ON DELETE CASCADE

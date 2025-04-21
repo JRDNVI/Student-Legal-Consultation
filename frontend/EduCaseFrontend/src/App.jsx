@@ -18,7 +18,8 @@ import StudentProfile from './pages/student/studentProfile'
 import ClientOnboarding from './pages/client/onboarding/clientNeeds';
 import MeetSolicitor from './pages/client/onboarding/clientMatching';
 import SolicitorOnboarding from './pages/solicitor/onboarding/solicitorOnboarding';
-
+import CaseListPage from './pages/solicitor/cases';
+import CaseDetailPage from './pages/solicitor/caseDetail'
 // Not finsihed yet - QueryProvider needs to be implemented
 
 // This is the main entry point of the application.
@@ -48,6 +49,8 @@ function App() {
           <Route path='/client-onboarding' element={<ProtectedRoute><ClientOnboarding /></ProtectedRoute>} />
           <Route path='/match-solicitor' element={<ProtectedRoute><MeetSolicitor /></ProtectedRoute>} />
           <Route path='/solicitor-onboarding' element={<ProtectedRoute><SolicitorOnboarding /></ProtectedRoute>} />
+          <Route path='/cases' element={<ProtectedRoute><CaseListPage /></ProtectedRoute>} />        
+          <Route path="/cases/:caseId" element={<ProtectedRoute><CaseDetailPage /></ProtectedRoute>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
