@@ -165,7 +165,7 @@ export const allowedTablesDelete: Record<string, string[]> = {
     client_legal_needs: ["client_id", "legal_topic"],
   
     cases: ["client_id", "solicitor_id", "status", "created_at", "total_billing"],
-    tasks: ["case_id", "title", "due_date", "completed"],
+    tasks: ["case_id", "title", "due_date", "completed", "recipient"],
     documents: ["case_id", "filename", "url", "uploaded_at"],
     messages: ["case_id", "sender_id", "recipient_id", "timestamp", "content"],
     calendar: ["name", "solicitor_id"],

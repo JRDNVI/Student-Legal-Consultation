@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import Calendar from "../../components/dashboard/Calender";
 import Modal from "../../components/general/Modal";
 import { appApi } from "../../api/api";
-import Sidebar from "../../components/dashboard/sidebar"; // ✅ Import Sidebar
+import Sidebar from "../../components/dashboard/sidebar"; 
 import { useAuth } from "../../context/AuthContext";
 import  useDashboardData  from "../../hooks/useDashboardData"
 
 const MentorCalendarPage = () => {
   const { user } = useAuth();
   const { data, loading } = useDashboardData(user);
-  const mentorId = data?.mentors?.[0]?.mentor_id; // Adjust based on how you store IDs
-
+  const mentorId = data?.mentors?.[0]?.mentor_id; 
   const [selectedDate, setSelectedDate] = useState(null);
   const [timeSlot, setTimeSlot] = useState("");
   const [showModal, setShowModal] = useState(false);
