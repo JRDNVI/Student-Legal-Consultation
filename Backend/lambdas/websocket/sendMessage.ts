@@ -1,6 +1,6 @@
 import { APIGatewayProxyEventV2WithRequestContext } from "aws-lambda";
 import { DynamoDBClient, QueryCommand, PutItemCommand } from "@aws-sdk/client-dynamodb";
-import {ApiGatewayManagementApiClient,PostToConnectionCommand } from "@aws-sdk/client-apigatewaymanagementapi";
+import { ApiGatewayManagementApiClient, PostToConnectionCommand } from "@aws-sdk/client-apigatewaymanagementapi";
 
 
 const ddb = new DynamoDBClient({ region: process.env.REGION });
@@ -9,7 +9,7 @@ const apiClient = new ApiGatewayManagementApiClient({
   endpoint: `https://${process.env.DOMAIN_NAME}/${process.env.STAGE}`,
 });
 
-export const handler = async (event: APIGatewayProxyEventV2WithRequestContext<any>)=> {
+export const handler = async (event: APIGatewayProxyEventV2WithRequestContext<any>) => {
 
   const body = JSON.parse(event.body || "{}");
   const { recipientEmail, senderEmail, message } = body;
@@ -49,7 +49,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithRequestContext<an
     const timestamp = new Date().toISOString();
 
     // Thought I would need this to fetch all messages but I didn't
-    const chatId = [senderEmail, recipientEmail].sort().join("--"); 
+    const chatId = [senderEmail, recipientEmail].sort().join("--");
 
     // Add the message and other details to message table
     await ddb.send(
@@ -77,7 +77,7 @@ export const handler = async (event: APIGatewayProxyEventV2WithRequestContext<an
         })),
       })
     );
-    
+
 
     return { statusCode: 200, body: "Message sent" };
   } catch (err) {

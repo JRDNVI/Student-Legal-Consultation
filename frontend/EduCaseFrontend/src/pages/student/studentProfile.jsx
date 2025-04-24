@@ -8,7 +8,7 @@ import Modal from "../../components/general/Modal";
 
 const StudentProfilePage = () => {
   const { user } = useAuth();
-  const role = user["custom:role"]; 
+  const role = user["custom:role"];
   const { data, loading, refetch } = useDashboardData(user);
 
   const [showEdit, setShowEdit] = useState(false);

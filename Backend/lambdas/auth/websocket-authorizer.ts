@@ -1,25 +1,25 @@
-import {APIGatewayAuthorizerResult,APIGatewayRequestAuthorizerEvent} from "aws-lambda";
+import { APIGatewayAuthorizerResult, APIGatewayRequestAuthorizerEvent } from "aws-lambda";
 import { verifyWebSocketToken } from "../utils";
-  
-export const handler = async (event: APIGatewayRequestAuthorizerEvent)=> {
+
+export const handler = async (event: APIGatewayRequestAuthorizerEvent) => {
   const token = event.queryStringParameters?.token;
-  
+
   if (!token) {
     console.warn("Missing token");
     return deny("unauthorised", event.methodArn);
   }
-  
+
   const verifiedJwt = await verifyWebSocketToken(
     token,
     process.env.USER_POOL_ID!,
     process.env.REGION!
   );
-  
+
   if (!verifiedJwt) {
     console.warn("Invalid token");
     return deny("unauthorized", event.methodArn);
   }
-  
+
   return {
     principalId: verifiedJwt.sub,
     policyDocument: {
@@ -28,7 +28,7 @@ export const handler = async (event: APIGatewayRequestAuthorizerEvent)=> {
         {
           Effect: "Allow",
           Action: "execute-api:Invoke",
-          Resource: [event.methodArn], 
+          Resource: [event.methodArn],
         },
       ],
     },
@@ -39,7 +39,7 @@ export const handler = async (event: APIGatewayRequestAuthorizerEvent)=> {
     },
   };
 };
-  
+
 const deny = (principalId: string, methodArn: string): APIGatewayAuthorizerResult => ({
   principalId,
   policyDocument: {

@@ -69,9 +69,9 @@ const SolicitorOnboarding = () => {
           name,
           experience_years,
           hourly_rate,
-        }, 
+        },
         where: {
-            cognito_id: user.sub
+          cognito_id: user.sub
         }
       });
 

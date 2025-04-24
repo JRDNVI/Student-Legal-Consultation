@@ -5,40 +5,37 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
-  const { userLogin, user } = useAuth(); 
+  const { userLogin, user } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const Navigate = useNavigate(); 
+  const Navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  try {
-    const response = await authApi.post("/auth/signin", {
-      username,
-      password,
-    });
+    try {
+      const response = await authApi.post("/auth/signin", {
+        username,
+        password,
+      });
 
-    const token = response.data.token;
-    var decoded = jwtDecode(token);
-    decoded = { ...decoded, onboarded: false }; 
+      const token = response.data.token;
+      var decoded = jwtDecode(token);
+      decoded = { ...decoded, onboarded: false };
 
-    userLogin(token, decoded); 
-    const role = user["custom:role"];
-    if (role == "student") {
-      Navigate("/student-matching"); 
-    } else if (role == "mentor"){
-      Navigate("/mentor-setup")
-    } else if (role == "client") {
-      Navigate("/client-onboarding")
-    } else {
-      Navigate("/solicitor-onboarding")
+      userLogin(token, decoded);
+      const role = decoded["custom:role"];
+
+      if (role == "student") Navigate("/onboarding");
+      else if (role == "mentor") Navigate("/mentor-setup")
+      else if (role == "client") Navigate("/client-onboarding")
+      else Navigate("/solicitor-onboarding")
+
+    } catch (err) {
+      alert(err.response?.data?.message || err.message);
     }
-  } catch (err) {
-    alert(err.response?.data?.message || err.message);
-  }
-};
+  };
 
-//Current Design is from https://tailwindcss.com/plus/ui-blocks/application-ui/forms/sign-in-forms
+  //Current Design is from https://tailwindcss.com/plus/ui-blocks/application-ui/forms/sign-in-forms
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -52,7 +49,7 @@ export default function LoginPage() {
             Sign in to your account
           </h2>
         </div>
-  
+
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
@@ -73,7 +70,7 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-  
+
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-900">
                 Password
@@ -92,7 +89,7 @@ export default function LoginPage() {
                 />
               </div>
             </div>
-  
+
             <div>
               <button
                 type="submit"
@@ -102,7 +99,7 @@ export default function LoginPage() {
               </button>
             </div>
           </form>
-  
+
           <p className="mt-10 text-center text-sm text-gray-500">
             Don't have an account?{' '}
             <a href="/signup" className="font-semibold text-indigo-600 hover:text-indigo-500">
@@ -113,5 +110,5 @@ export default function LoginPage() {
       </div>
     </>
   );
-  
+
 }

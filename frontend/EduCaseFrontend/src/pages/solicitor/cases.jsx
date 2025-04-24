@@ -41,12 +41,11 @@ const CaseListPage = () => {
   };
 
   const renderCaseCard = (c, isClickable = false, withActions = false) => (
-    
+
     <div
       key={c.case_id}
-      className={`bg-white shadow-md rounded-xl p-6 border border-gray-200 transition ${
-        isClickable ? "hover:shadow-lg cursor-pointer" : ""
-      }`}
+      className={`bg-white shadow-md rounded-xl p-6 border border-gray-200 transition ${isClickable ? "hover:shadow-lg cursor-pointer" : ""
+        }`}
       onClick={() => isClickable && Navigate(`/cases/${c.case_id}`)}
     >
       <p><span className="font-semibold">📂 Case ID:</span> {c.case_id}</p>

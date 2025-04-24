@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   };
-  
+
   const value = useMemo(() => ({
     token,
     user,
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     isAuthenticated: !!token,
   }), [token, user, dashboardData]);
-  
+
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

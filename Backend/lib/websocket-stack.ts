@@ -12,7 +12,7 @@ type AppApiProps = {
 };
 
 export class WebSocketAPI extends Construct {
-  public readonly messagesTable : dynamodb.Table;
+  public readonly messagesTable: dynamodb.Table;
 
   constructor(scope: Construct, id: string, props: AppApiProps) {
     super(scope, id);
@@ -31,7 +31,7 @@ export class WebSocketAPI extends Construct {
       partitionKey: { name: "email", type: dynamodb.AttributeType.STRING },
       projectionType: dynamodb.ProjectionType.ALL,
     });
-    
+
 
     const messagesTable = new dynamodb.Table(this, "WebSocketMessages", {
       partitionKey: { name: "chatId", type: dynamodb.AttributeType.STRING },
@@ -41,7 +41,7 @@ export class WebSocketAPI extends Construct {
     });
 
     this.messagesTable = messagesTable
- 
+
 
     const commonLambdaProps = {
       architecture: lambda.Architecture.ARM_64,
@@ -95,9 +95,9 @@ export class WebSocketAPI extends Construct {
       name: "WebSocketLambdaRequestAuthorizer",
       authorizerType: "REQUEST",
       authorizerUri: `arn:aws:apigateway:${region}:lambda:path/2015-03-31/functions/${authorizerFn.functionArn}/invocations`,
-      identitySource: ["route.request.querystring.token"], 
+      identitySource: ["route.request.querystring.token"],
     });
-    
+
 
     const connectIntegration = new apigwv2.CfnIntegration(this, "ConnectIntegration", {
       apiId: webSocketApi.ref,
@@ -135,7 +135,7 @@ export class WebSocketAPI extends Construct {
       apiId: webSocketApi.ref,
       routeKey: "sendMessage",
       target: `integrations/${sendMessageIntegration.ref}`,
-      authorizationType: "NONE", 
+      authorizationType: "NONE",
     });
 
 
@@ -167,11 +167,11 @@ export class WebSocketAPI extends Construct {
       new iam.PolicyStatement({
         actions: ["dynamodb:Query"],
         resources: [
-          connectionsTable.tableArn + "/index/email-index", 
+          connectionsTable.tableArn + "/index/email-index",
         ],
       })
     );
-    
+
     new cdk.CfnOutput(this, "WebSocketEndpoint", {
       value: `wss://${webSocketApi.ref}.execute-api.${region}.amazonaws.com/${stage.stageName}`,
     });

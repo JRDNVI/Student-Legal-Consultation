@@ -1,9 +1,9 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import {
   getTableAccessByRoleAndType,
-  getDbCredentials, 
-  getDbConnection, 
-  returnStatus 
+  getDbCredentials,
+  getDbConnection,
+  returnStatus
 } from "../utils";
 
 // This Lambda is used to delete a row from an allowed table 
@@ -32,7 +32,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: any) => {
 
     const allowedCols = allowedTables[tableName];
     if (!allowedCols) return returnStatus(400, "Table not allowed");
-       
+
     const whereKeys = Object.keys(where);
     if (!whereKeys.every((key) => allowedCols.includes(key))) {
       return returnStatus(400, "One or more invalid fields for this table");

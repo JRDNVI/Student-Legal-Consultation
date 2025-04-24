@@ -81,6 +81,14 @@ CREATE TABLE student_availability (
   FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
 );
 
+CREATE TABLE student_suggested_course (
+  course_id INT AUTO_INCREMENT PRIMARY KEY,
+  student_id INT,
+  title VARCHAR(100),
+  reason TEXT,
+  FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
+);
+
 CREATE TABLE meetings (
   meeting_id INT AUTO_INCREMENT PRIMARY KEY,
   student_id INT,

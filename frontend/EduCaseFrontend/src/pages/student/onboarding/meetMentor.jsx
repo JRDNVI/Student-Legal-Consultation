@@ -4,13 +4,16 @@ import { useAuth } from "../../../context/AuthContext";
 import useDashboardData from "../../../hooks/useDashboardData";
 import LoadingSpinner from "../../../components/general/LoadingSpinner";
 import MentorCard from "../../../components/general/mentorCard";
+import { useLocation } from "react-router-dom";
 
 const MeetMentor = () => {
   const { user } = useAuth();
+  const location = useLocation()
+  const { fullOnboarding } = location.state || {};
   const { data, loading: dashboardLoading } = useDashboardData(user);
   const [matches, setMatches] = useState([]);
   const [matchLoading, setMatchLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error] = useState("");
 
   useEffect(() => {
     const fetchMatches = async () => {
@@ -27,7 +30,7 @@ const MeetMentor = () => {
     fetchMatches();
   }, [user]);
 
-  if (dashboardLoading || matchLoading) return <LoadingSpinner />;
+  if (dashboardLoading || matchLoading) return <LoadingSpinner title="Loading Mentors" />;
   if (error) return <p className="text-red-500">{error}</p>;
 
   const studentId = data?.students?.[0]?.student_id;
@@ -39,7 +42,7 @@ const MeetMentor = () => {
         <p className="text-gray-600">No mentor matches found.</p>
       ) : (
         matches.slice(0, 3).map((match) => (
-          <MentorCard key={match.mentor_id} match={match} studentId={studentId} />
+          <MentorCard match={match} studentId={studentId} showCourseForm={fullOnboarding} />
         ))
       )}
     </div>

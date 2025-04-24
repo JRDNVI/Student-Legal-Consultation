@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS
   mentor_availability,
   student_preferences,
   student_interests,
+  student_suggested_course,
   student_availability,
   meetings,
   tasks_student,

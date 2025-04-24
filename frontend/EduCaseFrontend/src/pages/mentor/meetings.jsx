@@ -3,12 +3,12 @@ import Calendar from "../../components/dashboard/Calender";
 import Modal from "../../components/general/Modal";
 import { appApi } from "../../api/api";
 import { useAuth } from "../../context/AuthContext";
-import  useDashboardData  from "../../hooks/useDashboardData"
+import useDashboardData from "../../hooks/useDashboardData"
 
 const MentorCalendarPage = () => {
   const { user } = useAuth();
   const { data, loading } = useDashboardData(user);
-  const mentorId = data?.mentors?.[0]?.mentor_id; 
+  const mentorId = data?.mentors?.[0]?.mentor_id;
   const [selectedDate, setSelectedDate] = useState(null);
   const [timeSlot, setTimeSlot] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -21,24 +21,24 @@ const MentorCalendarPage = () => {
   const fullDateTime = selectedDate?.format("YYYY-MM-DD") + "T" + timeSlot;
 
   const meetingEvents = (data.meetings || [])
-  .filter(m => m.mentor_id === mentorId && m.status === "available")
-  .map(m => ({
-    date: m.timeslot, 
-    title: "Available Slot",
-    type: "meeting" 
-  }));
+    .filter(m => m.mentor_id === mentorId && m.status === "available")
+    .map(m => ({
+      date: m.timeslot,
+      title: "Available Slot",
+      type: "meeting"
+    }));
 
 
   const handleSubmit = async () => {
     try {
-        await appApi.post("education/", {
-            tableName: "meetings",
-            data: {
-              mentor_id: mentorId,
-              timeslot: fullDateTime,
-              status: "available"
-            }
-          });
+      await appApi.post("education/", {
+        tableName: "meetings",
+        data: {
+          mentor_id: mentorId,
+          timeslot: fullDateTime,
+          status: "available"
+        }
+      });
       setShowModal(false);
       alert("Availability added!");
     } catch (err) {

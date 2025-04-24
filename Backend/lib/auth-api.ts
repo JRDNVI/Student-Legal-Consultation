@@ -54,10 +54,10 @@ export class AuthApi extends Construct {
     this.auth = api.root.addResource("auth");
 
     this.addAuthRoute(
-        "signup", 
-        "POST", 
-        "SignupFn", 
-        "signup.ts"
+      "signup",
+      "POST",
+      "SignupFn",
+      "signup.ts"
     );
 
     this.addAuthRoute(
@@ -68,17 +68,17 @@ export class AuthApi extends Construct {
     );
 
     this.addAuthRoute(
-        "signout", 
-        "GET", 
-        "SignoutFn", 
-        "signout.ts"
+      "signout",
+      "GET",
+      "SignoutFn",
+      "signout.ts"
     );
-    
+
     this.addAuthRoute(
-        "signin", 
-        "POST", 
-        "SigninFn", 
-        "signin.ts"
+      "signin",
+      "POST",
+      "SigninFn",
+      "signin.ts"
     );
   }
 

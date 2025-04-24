@@ -65,13 +65,13 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: any) => {
     for (const tableName of tables) {
       let query, params;
       if (role === "student" && tableName === "meetings") {
-          query = `SELECT * FROM ${tableName} WHERE (student_id IS NULL AND status = 'available') OR student_id = ?`;
-          params = [identifier];
+        query = `SELECT * FROM ${tableName} WHERE (student_id IS NULL AND status = 'available') OR student_id = ?`;
+        params = [identifier];
       } else {
         query = `SELECT * FROM ${tableName} WHERE ${idColumn} = ?`;
         params = [identifier];
       }
-    
+
       const [data] = await connection.execute(query, params);
       results[tableName] = data;
     }
@@ -81,10 +81,10 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: any) => {
     // that are joined to the base table and the join conditions. 
     const extraJoins = extendedRoleTableJoins[role] || [];
     for (const { table, join, baseTable, param } of extraJoins) {
-    const sql = `SELECT ${table}.* FROM ${table} ${join} WHERE ${baseTable}.${param} = ?`
-    const [joinedData] = await connection.execute<any[]>(sql, [identifier]);
-    results[table] = [...(results[table] || []), ...joinedData];
-}
+      const sql = `SELECT ${table}.* FROM ${table} ${join} WHERE ${baseTable}.${param} = ?`
+      const [joinedData] = await connection.execute<any[]>(sql, [identifier]);
+      results[table] = [...(results[table] || []), ...joinedData];
+    }
 
     await connection.end();
 

@@ -1,4 +1,4 @@
-import {APIGatewayProxyEventV2WithRequestContext } from "aws-lambda";
+import { APIGatewayProxyEventV2WithRequestContext } from "aws-lambda";
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 
 const ddb = new DynamoDBClient({ region: process.env.REGION });

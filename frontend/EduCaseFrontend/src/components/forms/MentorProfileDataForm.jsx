@@ -190,7 +190,7 @@ export default function MentorProfileDataForm({ role, initialData, onSubmit, onC
           + Add Style
         </button>
       </div>
-    
+
       <div>
         <h2 className="text-xl font-semibold mb-2">📅 Availability</h2>
         {(form.availability || []).map((slot, index) => (

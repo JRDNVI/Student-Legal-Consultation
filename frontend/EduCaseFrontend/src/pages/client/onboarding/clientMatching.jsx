@@ -3,7 +3,7 @@ import { appApi } from "../../../api/api";
 import { useAuth } from "../../../context/AuthContext";
 import useDashboardData from "../../../hooks/useDashboardData";
 import LoadingSpinner from "../../../components/general/LoadingSpinner";
-import SolicitorCard from "../../../components/general/SolicitorCard"; 
+import SolicitorCard from "../../../components/general/SolicitorCard";
 
 const MeetSolicitor = () => {
   const { user } = useAuth();
@@ -28,7 +28,7 @@ const MeetSolicitor = () => {
     fetchMatches();
   }, [user]);
 
-  if (dashboardLoading || matchLoading) return <LoadingSpinner title="Matching Solicitors"/>;
+  if (dashboardLoading || matchLoading) return <LoadingSpinner title="Matching Solicitors" />;
   if (error) return <p className="text-red-500">{error}</p>;
 
   const clientId = data?.clients?.[0]?.client_id;

@@ -1,10 +1,10 @@
 import {
-    APIGatewayRequestAuthorizerEvent,
-    APIGatewayAuthorizerEvent,
-    PolicyDocument,
-    APIGatewayProxyEvent,
-    StatementEffect,
-  } from "aws-lambda";
+  APIGatewayRequestAuthorizerEvent,
+  APIGatewayAuthorizerEvent,
+  PolicyDocument,
+  APIGatewayProxyEvent,
+  StatementEffect,
+} from "aws-lambda";
 
 import axios from "axios"
 import jwt from 'jsonwebtoken'
@@ -71,7 +71,7 @@ type JwtTokens = {
   [key: string]: any;
 };
 
-let cachedJwks: Record<string, string> = {}; 
+let cachedJwks: Record<string, string> = {};
 
 export const verifyWebSocketToken = async (
   token: string,
@@ -138,6 +138,7 @@ export const allowedTablesAdd: Record<string, string[]> = {
   student_preferences: ["student_id", "area_of_study", "communication_style", "language", "mentor_rating"],
   student_interests: ["student_id", "interest"],
   student_availability: ["student_id", "day", "time_slot"],
+  student_suggested_course: ["student_id", "title", "reason"],
   mentors: ["cognito_id", "name", "email", "availability", "skills"],
   mentor_skills: ["mentor_id", "skill"],
   mentor_expertise: ["mentor_id", "area_of_expertise", "topic_area"],
@@ -174,101 +175,102 @@ export const allowedTablesDelete: Record<string, string[]> = {
   student_event: ["event_id"]
 };
 
-  export const getEducationDataTable: Record<string, { tables: string[]; column: string }> = {
-    student: {
-      tables: [
-        "students", 
-        "student_preferences",
-        "student_interests",
-        "student_availability",
-        "meetings",
-        "tasks_student",
-        "assignments",
-        "appointments",
-      ],
-      column: "student_id",
-    },
-    mentor: {
-      tables: [
-        "mentors",
-        "students",
-        "mentor_skills",
-        "mentor_expertise",
-        "mentor_communication_styles",
-        "mentor_languages",
-        "mentor_availability",
-        "meetings",
-        "tasks_student",
-        "assignments"
-      ],
-      column: "mentor_id",
-    }
-  };
-  
-
-  // Legal data tables and their allowed columns for add and delete operations
-  export const allowedLegalTablesAdd: Record<string, string[]> = {
-    solicitors: ["cognito_id", "name", "email", "hourly_rate", "experience_years"],
-    solicitor_languages: ["solicitor_id", "language"],
-    solicitor_communication_styles: ["solicitor_id", "style"],
-    solicitor_specialisations: ["solicitor_id", "specialization"],
-    solicitor_availability: ["solicitor_id", "day_of_week", "time_slot"],
-  
-    clients: ["cognito_id", "name", "language", "communcation_style", "budget"],
-    client_legal_needs: ["client_id", "legal_topic"],
-  
-    cases: ["client_id", "solicitor_id", "status", "created_at", "total_billing"],
-    tasks: ["case_id", "title", "due_date", "completed", "recipient"],
-    documents: ["case_id", "filename", "url", "uploaded_at"],
-    messages: ["case_id", "sender_id", "recipient_id", "timestamp", "content"],
-    calendar: ["name", "solicitor_id"],
-    event: ["title", "description", "type", "creation_date", "due_date", "calendar_id"],
-    solicitor_cases: ["solicitor_id", "case_id"],
-    billing: ["case_id", "amount_due", "amount_paid", "billing_status", "billing_date"],
-    notes: ["case_id", "note_name", "note_type", "creation_date", "content"]
-  };
-  
-  export const allowedLegalTablesDelete: Record<string, string[]> = {
-    solicitors: ["solicitor_id"],
-    solicitor_languages: ["solicitor_id"],
-    solicitor_communication_styles: ["solicitor_id"],
-    solicitor_specialisations: ["solicitor_id"],
-    solicitor_availability: ["solicitor_id"],
-  
-    clients: ["client_id"],
-    client_legal_needs: ["client_id"],
-  
-    cases: ["case_id"],
-    tasks: ["task_id"],
-    documents: ["document_id"],
-    messages: ["message_id"],
-    calendar: ["calendar_id"],
-    event: ["event_id"],
-    billing: ["billing_id"],
-    notes: ["note_id"]
+export const getEducationDataTable: Record<string, { tables: string[]; column: string }> = {
+  student: {
+    tables: [
+      "students",
+      "student_preferences",
+      "student_interests",
+      "student_availability",
+      "meetings",
+      "tasks_student",
+      "assignments",
+      "appointments",
+      "student_suggested_course",
+    ],
+    column: "student_id",
+  },
+  mentor: {
+    tables: [
+      "mentors",
+      "students",
+      "mentor_skills",
+      "mentor_expertise",
+      "mentor_communication_styles",
+      "mentor_languages",
+      "mentor_availability",
+      "meetings",
+      "tasks_student",
+      "assignments"
+    ],
+    column: "mentor_id",
   }
-
-  export const getLegalDataTable: Record<string, { tables: string[]; column: string }> = {
-    solicitor: {
-      tables: [
-        "solicitors",
-        "cases",
-        "calendar",
-      ],
-      column: "solicitor_id",
-    },
-    client: {
-      tables: [
-        "clients",
-        "cases",
-      ],
-      column: "client_id",
-    }
-  };
+};
 
 
-  // Created a mapping for different roles to their tables that contains data related to them, but doesn't contain the user ID.
-  export const extendedRoleTableJoins: Record<string, { table: string; join: string; param: string; baseTable: string }[]> = {
+// Legal data tables and their allowed columns for add and delete operations
+export const allowedLegalTablesAdd: Record<string, string[]> = {
+  solicitors: ["cognito_id", "name", "email", "hourly_rate", "experience_years"],
+  solicitor_languages: ["solicitor_id", "language"],
+  solicitor_communication_styles: ["solicitor_id", "style"],
+  solicitor_specialisations: ["solicitor_id", "specialization"],
+  solicitor_availability: ["solicitor_id", "day_of_week", "time_slot"],
+
+  clients: ["cognito_id", "name", "language", "communcation_style", "budget"],
+  client_legal_needs: ["client_id", "legal_topic"],
+
+  cases: ["client_id", "solicitor_id", "status", "created_at", "total_billing"],
+  tasks: ["case_id", "title", "due_date", "completed", "recipient"],
+  documents: ["case_id", "filename", "url", "uploaded_at"],
+  messages: ["case_id", "sender_id", "recipient_id", "timestamp", "content"],
+  calendar: ["name", "solicitor_id"],
+  event: ["title", "description", "type", "creation_date", "due_date", "calendar_id"],
+  solicitor_cases: ["solicitor_id", "case_id"],
+  billing: ["case_id", "amount_due", "amount_paid", "billing_status", "billing_date"],
+  notes: ["case_id", "note_name", "note_type", "creation_date", "content"],
+};
+
+export const allowedLegalTablesDelete: Record<string, string[]> = {
+  solicitors: ["solicitor_id"],
+  solicitor_languages: ["solicitor_id"],
+  solicitor_communication_styles: ["solicitor_id"],
+  solicitor_specialisations: ["solicitor_id"],
+  solicitor_availability: ["solicitor_id"],
+
+  clients: ["client_id"],
+  client_legal_needs: ["client_id"],
+
+  cases: ["case_id"],
+  tasks: ["task_id"],
+  documents: ["document_id"],
+  messages: ["message_id"],
+  calendar: ["calendar_id"],
+  event: ["event_id"],
+  billing: ["billing_id"],
+  notes: ["note_id"]
+}
+
+export const getLegalDataTable: Record<string, { tables: string[]; column: string }> = {
+  solicitor: {
+    tables: [
+      "solicitors",
+      "cases",
+      "calendar",
+    ],
+    column: "solicitor_id",
+  },
+  client: {
+    tables: [
+      "clients",
+      "cases",
+    ],
+    column: "client_id",
+  }
+};
+
+
+// Created a mapping for different roles to their tables that contains data related to them, but doesn't contain the user ID.
+export const extendedRoleTableJoins: Record<string, { table: string; join: string; param: string; baseTable: string }[]> = {
   student: [
     {
       table: "mentors",
@@ -369,77 +371,77 @@ export const allowedTablesDelete: Record<string, string[]> = {
   ]
 };
 
-  
 
-  // Helper functions for lambdas
-  type OperationType = "get" | "add" | "delete";
 
-  export const getTableAccessByRoleAndType = (
-    role: string,
-    operation: OperationType
-  ): Record<string, any> | null => {
-    const isEducation = role === "student" || role === "mentor";
-    const isLegal = role === "client" || role === "solicitor";
-  
-    if (operation === "get") {
-      if (isEducation) return getEducationDataTable[role];
-      if (isLegal) return getLegalDataTable[role];
-    }
-  
-    if (operation === "add") {
-      if (isEducation) return allowedTablesAdd;
-      if (isLegal) return allowedLegalTablesAdd;
-    }
-  
-    if (operation === "delete") {
-      if (isEducation) return allowedTablesDelete;
-      if (isLegal) return allowedLegalTablesDelete;
-    }
-  
-    return null;
-  };
+// Helper functions for lambdas
+type OperationType = "get" | "add" | "delete";
 
-  export const getDbConnection = async (username, password, endpoint) => {
-    return mysql.createConnection({
-      host: endpoint,
-      user: username,
-      password,
-      database: "fypdb",
-      port: 3306,
-    });
-  };
-  
-  export const getDbCredentials = async () => {
-    const smClient = new SecretsManagerClient({ region: "eu-west-1" });
-    const smCommand = new GetSecretValueCommand({ SecretId: "fyp-db-credentials" });
-  
-    const secret = await smClient.send(smCommand);
-  
-    if (!secret.SecretString) {
-      throw new Error("Failed to retrieve DB credentials");
-    }
-  
-    const { username, password } = JSON.parse(secret.SecretString);
-    return { username, password };
-  };
+export const getTableAccessByRoleAndType = (
+  role: string,
+  operation: OperationType
+): Record<string, any> | null => {
+  const isEducation = role === "student" || role === "mentor";
+  const isLegal = role === "client" || role === "solicitor";
 
-  export const corsHeaders = {
-    "Access-Control-Allow-Origin": "http://localhost:3000", //This will change
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Methods": "OPTIONS,POST",
-  };
+  if (operation === "get") {
+    if (isEducation) return getEducationDataTable[role];
+    if (isLegal) return getLegalDataTable[role];
+  }
 
-  export const returnStatus = (
-    statusCode: number,
-    message: string,
-    extraData?: Record<string, any>
-  ) => {
-    return {
-      statusCode,
-      headers: corsHeaders,
-      body: JSON.stringify({
-        message,
-        ...(extraData || {}),
-      }),
-    };
+  if (operation === "add") {
+    if (isEducation) return allowedTablesAdd;
+    if (isLegal) return allowedLegalTablesAdd;
+  }
+
+  if (operation === "delete") {
+    if (isEducation) return allowedTablesDelete;
+    if (isLegal) return allowedLegalTablesDelete;
+  }
+
+  return null;
+};
+
+export const getDbConnection = async (username, password, endpoint) => {
+  return mysql.createConnection({
+    host: endpoint,
+    user: username,
+    password,
+    database: "fypdb",
+    port: 3306,
+  });
+};
+
+export const getDbCredentials = async () => {
+  const smClient = new SecretsManagerClient({ region: "eu-west-1" });
+  const smCommand = new GetSecretValueCommand({ SecretId: "fyp-db-credentials" });
+
+  const secret = await smClient.send(smCommand);
+
+  if (!secret.SecretString) {
+    throw new Error("Failed to retrieve DB credentials");
+  }
+
+  const { username, password } = JSON.parse(secret.SecretString);
+  return { username, password };
+};
+
+export const corsHeaders = {
+  "Access-Control-Allow-Origin": "http://localhost:3000", //This will change
+  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Methods": "OPTIONS,POST",
+};
+
+export const returnStatus = (
+  statusCode: number,
+  message: string,
+  extraData?: Record<string, any>
+) => {
+  return {
+    statusCode,
+    headers: corsHeaders,
+    body: JSON.stringify({
+      message,
+      ...(extraData || {}),
+    }),
   };
+};

@@ -5,7 +5,7 @@ import mysql from 'mysql2/promise';
 import fs from 'fs/promises';
 
 // This script deploys the CDK stack, fetches the database endpoint and credentials from AWS Secrets Manager,
-// and then applies the SQL schema to the database.
+// and then applies the SQL schema to the database and seeds the database.
 
 const secretName = "fyp-db-credentials";
 const region = "eu-west-1";
@@ -13,11 +13,11 @@ const stackName = "Auth-App-API";
 const sqlFilePath = [
   "./utils/FYP_Schema_Init.sql", 
   "./utils/education-seed-data.sql", 
-  "./utils/legal-seed-data.sql"
+  "./utils/legal-seed-data.sql",
   // "./utils/drop-database.sql"
 ]
 
-// //Deploy CDK stack
+// // //Deploy CDK stack
 console.log("Deploying CDK stack");
 execSync('cdk deploy --require-approval never', { stdio: 'inherit' });
 

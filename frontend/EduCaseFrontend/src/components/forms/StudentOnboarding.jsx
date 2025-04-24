@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { appApi } from "../../api/api";
-import { useAuth } from "../../context/AuthContext";
 import useDashboardData from "../../hooks/useDashboardData";
 import { useNavigate } from "react-router-dom";
 
@@ -10,9 +9,8 @@ const topicOptions = {
   "Cybersecurity": ["Pen Testing", "Network Security"]
 };
 
-const StudentOnboarding = () => {
-  const { user } = useAuth();
-  const { data, loading, refetch } = useDashboardData(user);
+const StudentOnboarding = ({both}) => {
+  const { data } = useDashboardData();
   const [topicArea, setTopicArea] = useState("");
   const [form, setForm] = useState({
     area_of_study: "",
@@ -87,12 +85,12 @@ const StudentOnboarding = () => {
 
     try {
       await appApi.post("education/", requestBody);
-      Navigate("/meet-mentor");
+      Navigate("/meet-mentor", { state: { fullOnboarding: both } });
     } catch (err) {
-      console.error("❌ Error submitting onboarding form:", err.response?.data || err.message);
+      console.error("Error submitting onboarding form:", err.response?.data || err.message);
     }
   };
-
+  
   // https://flowbite.com/docs/components/forms/ 
   // All Tailwind CSS was picked from the above site. 
   return (

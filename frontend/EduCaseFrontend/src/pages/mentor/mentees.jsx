@@ -2,12 +2,11 @@ import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import useDashboardData from "../../hooks/useDashboardData";
 import LoadingSpinner from "../../components/general/LoadingSpinner";
-import AddStudentTask from "../../components/forms/AddStudentTaskForm"; 
+import AddStudentTask from "../../components/forms/AddStudentTaskForm";
 
 const MentorTaskPage = () => {
   const { user } = useAuth();
   const { data, loading } = useDashboardData(user);
-  const role = user["custom:role"];
 
   if (loading) return <LoadingSpinner title="Add Student Task" />;
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { appApi } from "../../api/api";
 
-const AddTask = ({ tasks, caseId, refetch, closeModal }) => {
+const AddTask = ({ caseId, refetch, closeModal }) => {
   const [newTask, setNewTask] = useState({
     title: "",
     due_date: "",
@@ -25,9 +25,9 @@ const AddTask = ({ tasks, caseId, refetch, closeModal }) => {
 
       setNewTask({ title: "", due_date: "", recipient: "" });
       await refetch();
-      if (closeModal) closeModal(); // ✅ Close the modal after successful submission
+      if (closeModal) closeModal();
     } catch (err) {
-      console.error("❌ Failed to add task:", err);
+      console.error("Failed to add task:", err);
     }
   };
 

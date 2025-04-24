@@ -1,10 +1,10 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { 
-  getDbConnection, 
-  getDbCredentials, 
-  returnStatus, 
-  getTableAccessByRoleAndType 
-} from "../utils"; 
+import {
+  getDbConnection,
+  getDbCredentials,
+  returnStatus,
+  getTableAccessByRoleAndType
+} from "../utils";
 
 // This Lambda handles inserting data into multiple allowed tables based on user role.
 // It supports both single-table and multi-table inserts using the `multiInsert` flag.
