@@ -1,34 +1,14 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { userFields } from "../../util/appMapping";
 
-const USER_FIELDS = {
-  mentor: [
-    { label: "Name", key: "name" },
-    { label: "Email", key: "email" },
-    { label: "Availability", key: "availability" },
-    { label: "Skills", key: "mentor_skills", isArray: true, subKey: "skill" },
-    { label: "Expertise", key: "mentor_expertise", isArray: true, format: (item) => `${item.topic_area} → ${item.area_of_expertise}` },
-    { label: "Communication Styles", key: "mentor_communication_styles", isArray: true, subKey: "style" },
-    { label: "Languages", key: "mentor_languages", isArray: true, subKey: "language" }
-  ],
-  student: [
-    { label: "Name", key: "name" },
-    { label: "Email", key: "email" },
-    { label: "Interests", key: "student_interests", isArray: true, subKey: "interest" },
-    { label: "Availability", key: "student_availability", isArray: true, format: (item) => `${item.day} (${item.time_slot})` },
-    { label: "Preferences", key: "student_preferences", isArray: true, format: (item) => `${item.area_of_study}, ${item.language}, ${item.communication_style}` }
-  ],
 
-};
-
-const ProfileOverview = ({ role, data, sidebar: Sidebar, onEdit }) => {
+const ProfileOverview = ({ role, data, onEdit }) => {
   const navigate = useNavigate();
-  const fields = USER_FIELDS[role] || [];
+  const fields = userFields[role] || [];
 
   return (
-    <div className="flex">
-      {Sidebar && <Sidebar role={role} />}
-      <main className="flex-1 p-8 bg-gray-100 min-h-screen">
+      <main className="flex-1 p-8 min-h-screen">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold text-purple-700 capitalize">{role} Profile</h1>
@@ -99,7 +79,6 @@ const ProfileOverview = ({ role, data, sidebar: Sidebar, onEdit }) => {
           )}
         </div>
       </main>
-    </div>
   );
 };
 

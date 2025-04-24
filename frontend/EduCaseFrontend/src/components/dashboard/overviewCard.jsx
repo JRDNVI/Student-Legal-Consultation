@@ -1,33 +1,10 @@
 import React from "react";
 import MiniCard from "./MiniCard";
+import { fieldMap } from "../../util/appMapping";
 
 // The OverviewSection is a reusable component that displays different sections of the dashboard based on the user's role.
 
 export default function OverviewSection({ title, data, icon, role }) {
-  const fieldMap = {
-    student: {
-      assignments: ["title", "status", "due_date"],
-      tasks: ["title", "completed", "deadline"],
-      meetings: ["timeslot", "status"],
-    },
-    mentor: {
-      tasks: ["title", "deadline", "completed"],
-      //assignments: ["title", "status", "due_date"],
-      meetings: ["timeslot", "status"],
-    },
-    solicitor: {
-      cases: ["status", "total_billing", "created_at"],
-      tasks: ["title", "due_date", "completed"],
-      notes: ["note_name", "note_type", "creation_date"],
-      billing: ["billing_status", "amount_due", "billing_date"],
-    },
-    client: {
-      cases: ["status", "total_billing", "created_at"],
-      tasks: ["title", "due_date", "completed"],
-      notes: ["note_name", "note_type", "creation_date"],
-      billing: ["billing_status", "amount_due", "billing_date"],
-    },
-  };
   
   const lowerTitle = title.toLowerCase();
   const fieldsToShow = fieldMap[role]?.[lowerTitle] || [];

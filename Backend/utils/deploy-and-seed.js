@@ -12,7 +12,7 @@ const region = "eu-west-1";
 const stackName = "Auth-App-API";
 const sqlFilePath = [
   "./utils/FYP_Schema_Init.sql", 
-  // "./utils/education-seed-data.sql", 
+  "./utils/education-seed-data.sql", 
   "./utils/legal-seed-data.sql"
   // "./utils/drop-database.sql"
 ]

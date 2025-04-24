@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import Calendar from "../../components/dashboard/Calender";
 import Modal from "../../components/general/Modal";
 import { appApi } from "../../api/api";
-import Sidebar from "../../components/dashboard/sidebar"; 
 import { useAuth } from "../../context/AuthContext";
 import  useDashboardData  from "../../hooks/useDashboardData"
 
@@ -50,7 +49,6 @@ const MentorCalendarPage = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <Sidebar role="mentor" />
 
       <main className="flex-1 p-8">
         <h1 className="text-2xl font-bold text-purple-700 mb-4">

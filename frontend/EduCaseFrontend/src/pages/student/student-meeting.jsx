@@ -1,13 +1,11 @@
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import useDashboardData from "../../hooks/useDashboardData";
-import Sidebar from "../../components/dashboard/sidebar";
 import LoadingSpinner from "../../components/general/LoadingSpinner";
 import { appApi } from "../../api/api";
 
 const StudentMeetings = () => {
   const { user } = useAuth();
-  const role = user["custom:role"];
   const { data, loading, refetch } = useDashboardData(user);
 
   if (loading) return <LoadingSpinner title="Meetings" />;
@@ -47,9 +45,7 @@ const StudentMeetings = () => {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <Sidebar role={role} />
-      <main className="flex-1 p-8 space-y-8">
+      <main className="space-y-8">
         <section>
           <h1 className="text-2xl font-bold text-purple-700 mb-4">Available Meetings</h1>
           {availableMeetings.length > 0 ? (
@@ -96,7 +92,6 @@ const StudentMeetings = () => {
           )}
         </section>
       </main>
-    </div>
   );
 };
 

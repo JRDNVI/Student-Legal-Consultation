@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { appApi } from "../../api/api";
+import { renderExplanation } from "../../util/appMapping";
 
 const explanationOrder = [
   "area_of_study",
@@ -10,68 +11,7 @@ const explanationOrder = [
   "interest_overlap"
 ];
 
-const renderExplanation = (key, value) => {
-  switch (key) {
-    case "area_of_study":
-      return (
-        <p>
-          Area of Study Match: <strong>{value.studentStudy}</strong> → Mentor Expertise:{" "}
-          <strong>{value.mentorExpertise.join(", ")}</strong>
-          {value.mentorTopics?.length > 0 && (
-            <>
-              <br />
-              Mentor Topic Areas: <strong>{value.mentorTopics.join(", ")}</strong>
-            </>
-          )}
-          {value.type && (
-            <>
-              <br />
-              Matched on: <span className="italic">{value.type}</span>
-            </>
-          )}
-        </p>
-      );
 
-    case "availability":
-      return (
-        <p>
-          Days Available — Student: <strong>{value.studentAvail.join(", ")}</strong>, Mentor:{" "}
-          <strong>{value.mentorAvail.join(", ")}</strong>
-        </p>
-      );
-
-    case "language":
-      return (
-        <p>
-          Preferred Languages — Student: <strong>{value.studentLangs.join(", ")}</strong>, Mentor:{" "}
-          <strong>{value.mentorLangs.join(", ")}</strong>
-        </p>
-      );
-
-    case "interest_overlap":
-      return (
-        <p>
-          Common Interests:{" "}
-          {value.matchedCount > 0 ? (
-            <strong>{value.matchedN.join(", ")}</strong>
-          ) : (
-            <span className="italic text-gray-500">None</span>
-          )}
-        </p>
-      );
-
-    case "communication_style":
-      return (
-        <p>
-          Communication Style — Student: <strong>{value.studentStyle}</strong>, Mentor:{" "}
-          <strong>{value.mentorStyles.join(", ")}</strong>
-        </p>
-      );
-
-    default:
-      return null;
-  }
-};
 
 const MentorCard = ({  match, studentId }) => {
   const { mentor_profile, mentor_id, score, explanation } = match;
@@ -101,8 +41,8 @@ const MentorCard = ({  match, studentId }) => {
 
   return (
     <div className="border border-gray-200 p-4 rounded mb-4 bg-white shadow-md transition hover:shadow-lg">
-      <h2 className="text-xl font-semibold text-gray-800">{mentor_profile.name}</h2>
-      <p className="text-sm text-gray-600">📧 {mentor_profile.email}</p>
+      <h2 className="text-xl font-semibold text-gray-800">{mentor_profile?.name ?? "Bob Booby"}</h2>
+      <p className="text-sm text-gray-600">📧 {mentor_profile?.email ?? "bob@bob.gmail"}</p>
       <p className="text-sm text-purple-700 font-medium mt-1">Match Score: {score}</p>
 
       <details className="mt-4 cursor-pointer text-sm">

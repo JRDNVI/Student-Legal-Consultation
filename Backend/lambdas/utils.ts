@@ -63,6 +63,59 @@ export const verifyToken = async (
   }
 };
 
+
+
+type JwtTokens = {
+  sub: string;
+  email?: string;
+  [key: string]: any;
+};
+
+let cachedJwks: Record<string, string> = {}; 
+
+export const verifyWebSocketToken = async (
+  token: string,
+  userPoolId: string,
+  region: string
+): Promise<JwtTokens | null> => {
+  try {
+    const decoded = jwt.decode(token, { complete: true }) as jwt.Jwt | null;
+    if (!decoded || typeof decoded === "string" || !decoded.header.kid) {
+      throw new Error("Invalid JWT format");
+    }
+
+    const kid = decoded.header.kid;
+
+    // If we haven't cached this kid yet, fetch all JWKs
+    if (!cachedJwks[kid]) {
+      const jwksUrl = `https://cognito-idp.${region}.amazonaws.com/${userPoolId}/.well-known/jwks.json`;
+      const { data } = await axios.get(jwksUrl);
+
+      for (const key of data.keys) {
+        const pem = jwkToPem(key);
+        cachedJwks[key.kid] = pem;
+      }
+    }
+
+    const pem = cachedJwks[kid];
+    if (!pem) {
+      throw new Error("Unable to find matching key for JWT");
+    }
+
+    // Verify token with proper key and issuer
+    const verified = jwt.verify(token, pem, {
+      algorithms: ["RS256"],
+      issuer: `https://cognito-idp.${region}.amazonaws.com/${userPoolId}`,
+    });
+
+    return verified as JwtTokens;
+  } catch (err) {
+    console.error("JWT verification failed:", err);
+    return null;
+  }
+};
+
+
 export const createPolicy = (
   event: APIGatewayAuthorizerEvent,
   effect: StatementEffect

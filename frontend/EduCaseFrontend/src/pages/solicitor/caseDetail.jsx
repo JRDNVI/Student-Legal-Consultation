@@ -6,7 +6,6 @@ import LoadingSpinner from "../../components/general/LoadingSpinner";
 import Modal from "../../components/general/Modal";
 import { appApi } from "../../api/api";
 import AddTask from "../../components/forms/AddTask";
-import Sidebar from "../../components/dashboard/sidebar";
 
 const CaseDetailPage = () => {
   const { caseId } = useParams();
@@ -42,7 +41,6 @@ const CaseDetailPage = () => {
   if (!legalCase) {
     return (
       <div className="flex">
-        <Sidebar role={role} />
         <main className="flex-1 p-10 bg-gray-100 min-h-screen">
           <h1 className="text-2xl font-bold text-purple-700">Case Not Found</h1>
         </main>

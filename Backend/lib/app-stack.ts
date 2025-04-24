@@ -1,20 +1,18 @@
 import * as cdk from "aws-cdk-lib";
 import * as lambdanode from "aws-cdk-lib/aws-lambda-nodejs";
 import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as custom from "aws-cdk-lib/custom-resources";
 import { Construct } from "constructs";
 import * as rds from "aws-cdk-lib/aws-rds";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as apig from "aws-cdk-lib/aws-apigateway";
-import * as iam from "aws-cdk-lib/aws-iam";
-
-
+import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
 // Unfinished
 
 type AppApiProps = {
     userPoolId: string;
     userPoolClientId: string;
+    messageTable: dynamodb.ITable
   };
   
   export class AppApi extends Construct {
@@ -134,6 +132,15 @@ type AppApiProps = {
         entry: `${__dirname}/../lambdas/matchingAlgo/legal-matching.ts`
       });
 
+      const getHistoryFn = new lambdanode.NodejsFunction(this, "GetChatHistory", {
+        ...appCommonFnProps,
+        entry: `${__dirname}/../lambdas/UserCRUD/getChatHistory.ts`,
+        environment: {
+          ...appCommonFnProps.environment,
+          MESSAGE_TABLE: props.messageTable.tableName
+        }
+      })
+
 
       const requestAuthorizer = new apig.RequestAuthorizer(
         this,
@@ -164,6 +171,7 @@ type AppApiProps = {
       dbCredentialsSecret.grantRead(deleteUserDataFn);
       dbCredentialsSecret.grantRead(matchStudentFn);
       dbCredentialsSecret.grantRead(matchClientFn)
+      props.messageTable.grantReadWriteData(getHistoryFn)
 
       const educationEndpoint = appApi.root.addResource("education");
 
@@ -171,33 +179,13 @@ type AppApiProps = {
         authorizer: requestAuthorizer,
         authorizationType: apig.AuthorizationType.CUSTOM,
     });
-
-    // Commented code is for testing purposes 
-
-    //   const getAvailableStudentMeetings = educationEndpoint
-    //   .addResource("student-meetings")
-    //   .addResource("{id}")
-
-    //   getAvailableStudentMeetings.addMethod("GET", new apig.LambdaIntegration(getUserDataFn, { proxy: true }), {
-    //     authorizer: requestAuthorizer,
-    //     authorizationType: apig.AuthorizationType.CUSTOM,
-    // }); 
        
       const matchStudentEndpoint = educationEndpoint.addResource("match-student")
-      // .addResource("{id}")
-      // .addResource("{role}");
 
       matchStudentEndpoint.addMethod("GET", new apig.LambdaIntegration(matchStudentFn, { proxy: true }), {
         authorizer: requestAuthorizer,
         authorizationType: apig.AuthorizationType.CUSTOM,
     });
-
-      // // For Testing only, will be removed later.
-      // const educationByIdAndRole = educationEndpoint
-      // .addResource("{id}")
-      // .addResource("{role}");
-  
-      // educationByIdAndRole.addMethod("GET", new apig.LambdaIntegration(getUserDataFn));
 
       educationEndpoint.addMethod("POST", new apig.LambdaIntegration(addUserDataFn, { proxy: true }), {
         authorizer: requestAuthorizer,
@@ -208,6 +196,14 @@ type AppApiProps = {
       authorizer: requestAuthorizer,
       authorizationType: apig.AuthorizationType.CUSTOM,
     });
+
+    const chatHistoryEndpoint = educationEndpoint.addResource("chat-history");
+
+    chatHistoryEndpoint.addMethod("GET", new apig.LambdaIntegration(getHistoryFn, { proxy: true }), {
+      authorizer: requestAuthorizer,
+      authorizationType: apig.AuthorizationType.CUSTOM,
+    });
+
 
     educationEndpoint.addMethod("DELETE", new apig.LambdaIntegration(deleteUserDataFn, { proxy: true }), {
       authorizer: requestAuthorizer,

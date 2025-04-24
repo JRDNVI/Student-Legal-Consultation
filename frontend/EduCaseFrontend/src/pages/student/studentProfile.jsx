@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Sidebar from "../../components/dashboard/sidebar";
 import { useAuth } from "../../context/AuthContext";
 import useDashboardData from "../../hooks/useDashboardData";
 import LoadingSpinner from "../../components/general/LoadingSpinner";
@@ -27,7 +26,6 @@ const StudentProfilePage = () => {
       <ProfileOverview
         role={role}
         data={data}
-        sidebar={Sidebar}
         onEdit={() => setShowEdit(true)}
       />
 

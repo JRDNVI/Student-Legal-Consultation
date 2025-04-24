@@ -5,7 +5,7 @@ import OverviewCard from "../../components/dashboard/overviewCard";
 import Calendar from "../../components/dashboard/Calender";
 import LoadingSpinner from "../../components/general/LoadingSpinner";
 import useDashboardData from "../../hooks/useDashboardData";
-import Sidebar from "../../components/dashboard/sidebar";
+import { useMessageHistory } from "../../hooks/messageHistory";
 
 // The dashbaord page was designed to work with any role.
 // The user data is fetched using useDashboardData hook, which is a  hook that fetches the data from the API.
@@ -16,7 +16,8 @@ export default function Dashboard() {
   const { user } = useAuth();
   const role = user["custom:role"];
 
-  const { data, loading, refetch } = useDashboardData(user);
+  const { data, loading, refetch } = useDashboardData();
+  const {messages, setMessages, loading: messageLoading, error} = useMessageHistory()
 
   if (user.onbaorded == false) {
     user.onbaorded = true
@@ -26,7 +27,9 @@ export default function Dashboard() {
     refetch();
   }, []); 
 
-  if (loading) return <LoadingSpinner title="Loading your dashboard..." />;
+  if (loading || messageLoading) return <LoadingSpinner title="Loading your dashboard..." />;
+
+  console.log(messages)
 
   const calendarSources = [
     { key: "assignments", emoji: "📘", dateField: "due_date" },
@@ -50,9 +53,7 @@ export default function Dashboard() {
   console.log(data)
 
   return (
-    <div className="flex">
-      <Sidebar role={role} />
-      <main className="flex-1 bg-gray-100 p-10 space-y-6">
+    <main className="space-y-6">
       <OverviewCard
         title="Assignments"
         data={data.assignments}
@@ -105,7 +106,7 @@ export default function Dashboard() {
           <Calendar events={calendarEvents} />
         </div>
       )}
-      </main>
-   </div>
+    </main>
   );
+  
 }  

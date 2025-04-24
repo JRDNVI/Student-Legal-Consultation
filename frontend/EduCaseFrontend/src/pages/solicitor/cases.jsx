@@ -2,7 +2,6 @@ import React from "react";
 import useDashboardData from "../../hooks/useDashboardData";
 import { useAuth } from "../../context/AuthContext";
 import LoadingSpinner from "../../components/general/LoadingSpinner";
-import Sidebar from "../../components/dashboard/sidebar";
 import { useNavigate } from "react-router-dom";
 import { appApi } from "../../api/api";
 
@@ -83,7 +82,6 @@ const CaseListPage = () => {
 
   return (
     <div className="flex">
-      <Sidebar role={role} />
       <main className="flex-1 p-10 bg-gray-100 min-h-screen space-y-10">
         <div>
           <h1 className="text-3xl font-bold text-purple-700 mb-4">Active Cases</h1>
