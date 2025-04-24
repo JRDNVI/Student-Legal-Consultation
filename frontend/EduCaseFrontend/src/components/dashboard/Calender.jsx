@@ -44,11 +44,10 @@ export default function Calendar({ events = [], onDateClick }) {
             <div
               key={index}
               onClick={() => onDateClick(date)}
-              className={`relative flex flex-col items-start justify-start min-h-[50px] p-2 rounded-lg border border-gray-200 overflow-hidden ${
-                date.isSame(dayjs(), "day")
+              className={`relative flex flex-col items-start justify-start min-h-[50px] p-2 rounded-lg border border-gray-200 overflow-hidden ${date.isSame(dayjs(), "day")
                   ? "bg-purple-100 text-purple-700"
                   : "text-gray-700 bg-white"
-              }`}
+                }`}
             >
               <div className="text-sm font-semibold">{date.date()}</div>
 
@@ -57,11 +56,10 @@ export default function Calendar({ events = [], onDateClick }) {
                   {eventOnDay.slice(0, 2).map((event, i) => (
                     <div
                       key={i}
-                      className={`text-[10px] px-1 py-0.5 rounded-full truncate font-medium text-white ${
-                        event.type === "assignment"
+                      className={`text-[10px] px-1 py-0.5 rounded-full truncate font-medium text-white ${event.type === "assignment"
                           ? "bg-blue-500"
                           : "bg-purple-500"
-                      }`}
+                        }`}
                     >
                       {event.title}
                     </div>

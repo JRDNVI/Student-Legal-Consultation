@@ -10,7 +10,7 @@ export default function MessagePanel() {
   const role = user["custom:role"];
   const [selectedUser, setSelectedUser] = useState(null);
   const { unread } = useSocket();
-  
+
   console.log(selectedUser)
 
   const users = {
@@ -28,7 +28,7 @@ export default function MessagePanel() {
         list.map((person, id) => {
           const name = person.name || "Unknown";
           const isUnread = unread?.[person.email];
-  
+
           return (
             <div
               key={id}

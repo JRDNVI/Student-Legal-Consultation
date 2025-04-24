@@ -6,27 +6,26 @@ import { appApi } from "../api/api";
 // The messagesScreen component uses this to load past conversations.
 
 export const useMessageHistory = () => {
-    const [messages, setMessages] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-  
-    useEffect(() => {
-      const fetchMessages = async () => {
-        try {
-          const response = await appApi.get("education/chat-history");
-          const messages = response.data
-          setMessages(messages);
+  const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-        } catch (err) {
-          setError(err.message || "Failed to fetch messages");
-        } finally {
-          setLoading(false);
-        }
-      };
-  
-     fetchMessages();
-    }, []);
-  
-    return { messages, setMessages, loading, error };
-  };
-  
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await appApi.get("education/chat-history");
+        const messages = response.data
+        setMessages(messages);
+
+      } catch (err) {
+        setError(err.message || "Failed to fetch messages");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMessages();
+  }, []);
+
+  return { messages, setMessages, loading, error };
+};

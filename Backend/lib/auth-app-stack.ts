@@ -30,7 +30,7 @@ export class AuthAppStack extends cdk.Stack {
       selfSignUpEnabled: true,
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       customAttributes: {
-        role: new StringAttribute(), 
+        role: new StringAttribute(),
       },
     });
 
@@ -42,7 +42,7 @@ export class AuthAppStack extends cdk.Stack {
 
     const userPoolClientId = appClient.userPoolClientId;
 
-   const websocketAPI = new WebSocketAPI(this, 'WebSocket', {
+    const websocketAPI = new WebSocketAPI(this, 'WebSocket', {
       userPoolId: userPoolId,
       userPoolClientId: userPoolClientId
     })
@@ -59,6 +59,6 @@ export class AuthAppStack extends cdk.Stack {
       dbHost: appApi.dbEndpoint,
       dbSecret: appApi.dbSecret,
     });
-  } 
+  }
 }
-  
+

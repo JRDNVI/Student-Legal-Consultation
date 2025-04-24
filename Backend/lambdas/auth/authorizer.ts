@@ -32,10 +32,10 @@ export const handler: APIGatewayRequestAuthorizerHandler = async (event) => {
     policyDocument: createPolicy(event, verifiedJwt ? "Allow" : "Deny"),
     context: verifiedJwt
       ? {
-          sub: verifiedJwt.sub,
-          email: verifiedJwt.email,
-          role: verifiedJwt["custom:role"] || "",
-        }
+        sub: verifiedJwt.sub,
+        email: verifiedJwt.email,
+        role: verifiedJwt["custom:role"] || "",
+      }
       : {},
   };
 };

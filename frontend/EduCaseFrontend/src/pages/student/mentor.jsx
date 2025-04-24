@@ -4,11 +4,9 @@ import useDashboardData from "../../hooks/useDashboardData";
 import LoadingSpinner from "../../components/general/LoadingSpinner";
 
 const StudentMentorPage = () => {
-  const { user } = useAuth();
-  const { data, loading, refetch } = useDashboardData(user);
-  const role = user["custom:role"];
+  const { data, loading } = useDashboardData();
 
-  if (loading) return <LoadingSpinner title="Loading Mentor Page"/>;
+  if (loading) return <LoadingSpinner title="Loading Mentor Page" />;
   if (!data.mentors?.length) {
     return <p className="text-center text-gray-600 mt-10">No mentor assigned yet.</p>;
   }

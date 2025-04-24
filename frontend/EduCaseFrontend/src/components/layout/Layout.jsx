@@ -14,7 +14,7 @@ export default function Layout({ children }) {
   const { unread, markAsRead } = useSocket();
   const [showMessagePanel, setShowMessagePanel] = useState(false);
 
-  
+
 
   const navItems = items[role] || [];
   const currentPath = location.pathname;
@@ -39,9 +39,8 @@ export default function Layout({ children }) {
                 <Link
                   key={index}
                   to={item.path}
-                  className={`flex items-center gap-2 px-2 py-1 rounded-md transition-colors duration-200 ${
-                    isActive ? "bg-purple-100 text-purple-700 font-semibold" : "text-gray-700 hover:text-purple-600"
-                  }`}
+                  className={`flex items-center gap-2 px-2 py-1 rounded-md transition-colors duration-200 ${isActive ? "bg-purple-100 text-purple-700 font-semibold" : "text-gray-700 hover:text-purple-600"
+                    }`}
                 >
                   <span>{item.icon}</span>
                   <span>{item.label}</span>

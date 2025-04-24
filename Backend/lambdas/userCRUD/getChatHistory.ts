@@ -9,7 +9,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: any) => {
   const userEmail = event.requestContext?.authorizer?.email;
 
   if (!userEmail) {
-    return returnStatus( 403, "Unauthorized" );
+    return returnStatus(403, "Unauthorized");
   }
 
   try {
@@ -51,6 +51,6 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: any) => {
   } catch (err) {
     console.error("getFullConversationHistory error", err);
     return returnStatus(500, "Internal server error")
-   
+
   }
 };

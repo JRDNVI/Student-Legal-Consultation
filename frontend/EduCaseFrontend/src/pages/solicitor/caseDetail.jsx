@@ -78,13 +78,13 @@ const CaseDetailPage = () => {
               {tasks.length === 0
                 ? <p>No tasks.</p>
                 : tasks.map((t) => (
-                    <div key={t.task_id} className="p-3 border rounded shadow-sm bg-gray-50">
-                      <p><strong>{t.title}</strong></p>
-                      <p>Due: {new Date(t.due_date).toLocaleDateString()}</p>
-                      <p>Status: {t.completed ? "✅ Completed" : "❌ Incomplete"}</p>
-                      <p className="text-sm text-gray-500">For: {t.recipient}</p>
-                    </div>
-                  ))
+                  <div key={t.task_id} className="p-3 border rounded shadow-sm bg-gray-50">
+                    <p><strong>{t.title}</strong></p>
+                    <p>Due: {new Date(t.due_date).toLocaleDateString()}</p>
+                    <p>Status: {t.completed ? "✅ Completed" : "❌ Incomplete"}</p>
+                    <p className="text-sm text-gray-500">For: {t.recipient}</p>
+                  </div>
+                ))
               }
             </div>
           </section>

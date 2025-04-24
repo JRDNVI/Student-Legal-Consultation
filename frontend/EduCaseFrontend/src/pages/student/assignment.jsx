@@ -10,12 +10,11 @@ import AssignmentForm from "../../components/forms/AssignmentForm";
 
 export default function AssignmentPage() {
   const { user } = useAuth();
-  const { data, loading, refetch } = useDashboardData(user);
+  const { data, refetch } = useDashboardData(user);
   const [isModalOpen, setModalOpen] = useState(false);
   const [editingAssignment, setEditingAssignment] = useState(null);
-
-  const role = user["custom:role"];
   const assignments = data?.assignments || [];
+
 
   const openModal = (assignment = null) => {
     setEditingAssignment(assignment);

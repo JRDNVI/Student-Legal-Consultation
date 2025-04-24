@@ -10,9 +10,6 @@ const AddStudentTask = ({ students = [], mentorId }) => {
     completed: false
   });
 
-  const { user } = useAuth();
-  const role = user["custom:role"];
-
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     const newValue = type === "checkbox" ? checked : value;

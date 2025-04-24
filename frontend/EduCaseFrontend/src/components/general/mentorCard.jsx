@@ -11,9 +11,7 @@ const explanationOrder = [
   "interest_overlap"
 ];
 
-
-
-const MentorCard = ({  match, studentId }) => {
+const MentorCard = ({ match, studentId, showCourseForm }) => {
   const { mentor_profile, mentor_id, score, explanation } = match;
   const navigate = useNavigate();
 
@@ -30,8 +28,10 @@ const MentorCard = ({  match, studentId }) => {
         }
       };
 
-      const response = await appApi.put("education/", payload);
-      if(response.status === 200) {
+      await appApi.put("education/", payload);
+      if (showCourseForm) {
+        navigate("/course-form", { state: { studentId } });
+      } else {
         navigate("/dashboard");
       }
     } catch (err) {

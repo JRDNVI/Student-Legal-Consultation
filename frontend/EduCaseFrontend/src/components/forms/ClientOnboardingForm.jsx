@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { appApi } from "../../api/api";
 import { useAuth } from "../../context/AuthContext";
-import useDashboardData from "../../hooks/useDashboardData";
 import { useNavigate } from "react-router-dom";
 
 const legalOptions = [
@@ -21,7 +20,6 @@ const legalOptions = [
 
 const ClientOnboarding = () => {
   const { user } = useAuth();
-  const { data } = useDashboardData(user);
   const Navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -75,7 +73,7 @@ const ClientOnboarding = () => {
           budget
         },
         where: {
-            cognito_id: user.sub
+          cognito_id: user.sub
         }
       });
 

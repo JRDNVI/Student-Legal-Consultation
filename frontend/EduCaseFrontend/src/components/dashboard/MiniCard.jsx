@@ -7,9 +7,9 @@ export default function MiniCard({ item, fields }) {
         item[field] !== undefined && (
           <p key={field} className="text-sm text-gray-700 truncate">
             <strong className="capitalize">{field.replace("_", " ")}:</strong>{" "}
-            {typeof item[field] === "string" && item[field].includes("T") 
-            ? item[field].slice(0, 10) 
-            : String(item[field])}
+            {typeof item[field] === "string" && item[field].includes("T")
+              ? item[field].slice(0, 10)
+              : String(item[field])}
           </p>
         )
       ))}

@@ -7,7 +7,7 @@ import {
 } from "@aws-sdk/client-cognito-identity-provider";
 import { ConfirmSignUpBody } from "../../shared/types";
 import mysql from "mysql2/promise";
-import {SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
+import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import { corsHeaders } from "../utils";
 
 // This code needs to be improved. 
@@ -16,7 +16,7 @@ const client = new CognitoIdentityProviderClient({ region: process.env.REGION })
 
 export const handler: APIGatewayProxyHandler = async (event) => {
   try {
-    
+
     const body = event.body ? JSON.parse(event.body) : undefined;
     const confirmSignUpBody = body as ConfirmSignUpBody;
 
@@ -35,12 +35,12 @@ export const handler: APIGatewayProxyHandler = async (event) => {
         Username: confirmSignUpBody.username,
       })
     );
-    
+
     const role = getUserRes.UserAttributes?.find(attr => attr.Name === "custom:role")?.Value;
     const cognitoId = getUserRes.UserAttributes?.find(attr => attr.Name === "sub")?.Value;
     const email = getUserRes.UserAttributes?.find(attr => attr.Name === "email")?.Value;
 
-    const smClient = new SecretsManagerClient({ region: "eu-west-1" }); 
+    const smClient = new SecretsManagerClient({ region: "eu-west-1" });
     const smCommand = new GetSecretValueCommand({ SecretId: "fyp-db-credentials" });
     const smResponse = await smClient.send(smCommand);
 
@@ -60,7 +60,7 @@ export const handler: APIGatewayProxyHandler = async (event) => {
       database: "fypdb",
       port: 3306,
     });
-    
+
     switch (role) {
       case "student":
         await connection.execute(
@@ -68,28 +68,28 @@ export const handler: APIGatewayProxyHandler = async (event) => {
           [cognitoId, email]
         );
         break;
-    
+
       case "solicitor":
         await connection.execute(
           `INSERT INTO solicitors (cognito_id, email) VALUES (?, ?)`,
           [cognitoId, email]
         );
         break;
-    
+
       case "client":
         await connection.execute(
           `INSERT INTO clients (cognito_id, email) VALUES (?, ?)`,
           [cognitoId, email]
         );
         break;
-    
+
       case "mentor":
         await connection.execute(
           `INSERT INTO mentors (cognito_id, email) VALUES (?, ?)`,
           [cognitoId, email]
         );
         break;
-    
+
       default:
         return {
           statusCode: 400,
