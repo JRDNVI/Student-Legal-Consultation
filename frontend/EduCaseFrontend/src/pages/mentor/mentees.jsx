@@ -1,5 +1,4 @@
 import React from "react";
-import Sidebar from "../../components/dashboard/sidebar";
 import { useAuth } from "../../context/AuthContext";
 import useDashboardData from "../../hooks/useDashboardData";
 import LoadingSpinner from "../../components/general/LoadingSpinner";
@@ -17,7 +16,6 @@ const MentorTaskPage = () => {
 
   return (
     <div className="flex">
-      <Sidebar role={role} />
       <main className="flex-1 p-8 bg-gray-100 min-h-screen">
         <AddStudentTask mentorId={mentorId} students={students} />
       </main>

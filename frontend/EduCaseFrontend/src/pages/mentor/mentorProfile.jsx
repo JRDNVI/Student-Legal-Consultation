@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import Sidebar from "../../components/dashboard/sidebar";
 import { useAuth } from "../../context/AuthContext";
 import useDashboardData from "../../hooks/useDashboardData";
 import ProfileOverview from "../../components/general/ProfileOverview";
@@ -51,7 +50,7 @@ const MentorProfilePage = () => {
   
     return (
       <>
-        <ProfileOverview role="mentor" data={data} sidebar={Sidebar} onEdit={() => setShowEdit(true)} />
+        <ProfileOverview role="mentor" data={data} onEdit={() => setShowEdit(true)} />
   
         <Modal isOpen={showEdit} onClose={() => setShowEdit(false)} title="Edit Profile">
         <div className="mb-4">

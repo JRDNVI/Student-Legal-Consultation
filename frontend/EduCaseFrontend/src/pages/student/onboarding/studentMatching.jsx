@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import OnboardingForm from "../../../components/forms/StudentOnboarding";
 
 export default function OnboardingPage() {

@@ -15,44 +15,40 @@
 --   (1, 1, 'Ongoing', NOW(), 0.00);
 
 
--- INSERT INTO solicitors (cognito_id, name, email, hourly_rate, experience_years) VALUES
--- ('sol-1', 'Alice Byrne', 'alice@lawfirm.ie', 120.00, 10),
--- ('sol-2', 'Brian O’Connell', 'brian@justice.ie', 95.00, 6),
--- ('sol-3', 'Ciara Murphy', 'ciara@legalhelp.ie', 75.00, 3);
+INSERT INTO solicitors (cognito_id, name, email, hourly_rate, experience_years) VALUES
+('sol-1', 'Alice Byrne', 'alice@lawfirm.ie', 120.00, 10),
+('sol-2', 'Brian O’Connell', 'brian@justice.ie', 95.00, 6),
+('sol-3', 'Ciara Murphy', 'ciara@legalhelp.ie', 75.00, 3);
 
--- INSERT INTO solicitor_languages (solicitor_id, language) VALUES
--- (1, 'English'), (1, 'Irish'),
--- (2, 'English'), (2, 'Spanish'),
--- (3, 'English'), (3, 'French');
+INSERT INTO solicitor_languages (solicitor_id, language) VALUES
+(1, 'English'), (1, 'Irish'),
+(2, 'English'), (2, 'Spanish'),
+(3, 'English'), (3, 'French');
 
--- INSERT INTO solicitor_communication_styles (solicitor_id, style) VALUES
--- (1, 'Email'), (1, 'Video Call'),
--- (2, 'Phone'), (2, 'Email'),
--- (3, 'In Person'), (3, 'Email');
+INSERT INTO solicitor_communication_styles (solicitor_id, style) VALUES
+(1, 'Email'), (1, 'Video Call'),
+(2, 'Phone'), (2, 'Email'),
+(3, 'In Person'), (3, 'Email');
 
--- INSERT INTO solicitor_specialisations (solicitor_id, specialization) VALUES
--- (1, 'Family Law'), (1, 'Immigration'),
--- (2, 'Criminal Law'), (2, 'Civil Rights'),
--- (3, 'Business Law'), (3, 'Intellectual Property');
+INSERT INTO solicitor_specialisations (solicitor_id, specialization) VALUES
+(1, 'Family Law'), (1, 'Immigration'),
+(2, 'Criminal Law'), (2, 'Civil Rights'),
+(3, 'Business Law'), (3, 'Intellectual Property');
 
--- INSERT INTO solicitor_availability (solicitor_id, day_of_week, time_slot) VALUES
--- (1, 'Monday', '10:00-12:00'),
--- (2, 'Wednesday', '14:00-16:00'),
--- (3, 'Friday', '09:00-11:00');
+INSERT INTO solicitor_availability (solicitor_id, day_of_week, time_slot) VALUES
+(1, 'Monday', '10:00-12:00'),
+(2, 'Wednesday', '14:00-16:00'),
+(3, 'Friday', '09:00-11:00');
 
--- INSERT INTO clients (cognito_id, name, language, communcation_style, email, budget) VALUES
--- ('cli-1', 'Jordan Coady', 'English', 'Email', 'jordan@mail.ie', 100.00),
--- ('cli-2', 'Sophie Nolan', 'Spanish', 'Phone', 'sophie@mail.ie', 90.00),
--- ('cli-3', 'Tariq Hassan', 'French', 'In Person', 'tariq@mail.ie', 110.00);
+INSERT INTO clients (cognito_id, name, language, communcation_style, email, budget) VALUES
+('cli-1', 'Jordan Coady', 'English', 'Email', 'jordan@mail.ie', 100.00),
+('cli-2', 'Sophie Nolan', 'Spanish', 'Phone', 'sophie@mail.ie', 90.00),
+('cli-3', 'Tariq Hassan', 'French', 'In Person', 'tariq@mail.ie', 110.00);
 
--- INSERT INTO client_legal_needs (client_id, legal_topic) VALUES
--- (1, 'Immigration'),
--- (2, 'Criminal Law'),
--- (3, 'Intellectual Property');
-
-
-
-
+INSERT INTO client_legal_needs (client_id, legal_topic) VALUES
+(1, 'Immigration'),
+(2, 'Criminal Law'),
+(3, 'Intellectual Property');
 
 
 -- INSERT INTO solicitors (cognito_id, name, email, password, specialty, availability, experience_years) VALUES

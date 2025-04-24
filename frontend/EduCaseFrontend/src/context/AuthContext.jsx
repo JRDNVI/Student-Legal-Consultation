@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useMemo } from 'react';
 
 const AuthContext = createContext();
 
@@ -20,11 +20,12 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     setToken(null);
     setUser(null);
+    setDashboardData(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
   };
-
-  const value = {
+  
+  const value = useMemo(() => ({
     token,
     user,
     dashboardData,
@@ -32,7 +33,8 @@ export const AuthProvider = ({ children }) => {
     userLogin,
     logout,
     isAuthenticated: !!token,
-  };
+  }), [token, user, dashboardData]);
+  
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

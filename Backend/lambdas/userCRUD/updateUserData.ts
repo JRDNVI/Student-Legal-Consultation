@@ -1,5 +1,10 @@
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
-import { getTableAccessByRoleAndType, getDbCredentials, getDbConnection, returnStatus } from "../utils";
+import { 
+  getTableAccessByRoleAndType, 
+  getDbCredentials, 
+  getDbConnection, 
+  returnStatus 
+} from "../utils";
 
 // This Lambda is used to update rows in a list of allowed tables
 // based on the user's role and permissions.

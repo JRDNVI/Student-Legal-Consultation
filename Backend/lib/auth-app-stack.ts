@@ -3,6 +3,7 @@ import { Construct } from "constructs";
 import { StringAttribute, UserPool } from "aws-cdk-lib/aws-cognito";
 import { AuthApi } from './auth-api'
 import { AppApi } from './app-stack'
+import { WebSocketAPI } from "./websocket-stack";
 
 // Finished
 
@@ -41,9 +42,15 @@ export class AuthAppStack extends cdk.Stack {
 
     const userPoolClientId = appClient.userPoolClientId;
 
+   const websocketAPI = new WebSocketAPI(this, 'WebSocket', {
+      userPoolId: userPoolId,
+      userPoolClientId: userPoolClientId
+    })
+
     const appApi = new AppApi(this, 'AppApi', {
       userPoolId: userPoolId,
       userPoolClientId: userPoolClientId,
+      messageTable: websocketAPI.messagesTable
     });
 
     new AuthApi(this, 'AuthServiceApi', {
@@ -54,3 +61,4 @@ export class AuthAppStack extends cdk.Stack {
     });
   } 
 }
+  

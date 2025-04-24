@@ -2,7 +2,6 @@ import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import useDashboardData from "../../hooks/useDashboardData";
 import LoadingSpinner from "../../components/general/LoadingSpinner";
-import Sidebar from "../../components/dashboard/sidebar";
 
 const StudentMentorPage = () => {
   const { user } = useAuth();
@@ -18,7 +17,6 @@ const StudentMentorPage = () => {
 
   return (
     <div className="flex">
-      <Sidebar role={role} />
       <main className="flex-1 bg-gray-100 min-h-screen p-10 space-y-6">
 
         <section className="bg-white rounded-2xl shadow-lg p-6">
