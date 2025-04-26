@@ -134,12 +134,12 @@ export const createPolicy = (
 
 // Education data tables and their allowed columns for add and delete operations
 export const allowedTablesAdd: Record<string, string[]> = {
-  students: ["cognito_id", "name", "email", "profile_info", "mentor_id"],
-  student_preferences: ["student_id", "area_of_study", "communication_style", "language", "mentor_rating"],
+  students: ["cognito_id", "name", "email", "profile_info", "onboarded", "mentor_id"],
+  student_preferences: ["preference_id", "student_id", "area_of_study", "communication_style", "language", "mentor_rating"],
   student_interests: ["student_id", "interest"],
   student_availability: ["student_id", "day", "time_slot"],
   student_suggested_course: ["student_id", "title", "reason"],
-  mentors: ["cognito_id", "name", "email", "availability", "skills"],
+  mentors: ["cognito_id", "name", "email", "availability", "skills", "onboarded"],
   mentor_skills: ["mentor_id", "skill"],
   mentor_expertise: ["mentor_id", "area_of_expertise", "topic_area"],
   mentor_communication_styles: ["mentor_id", "style"],
@@ -156,23 +156,24 @@ export const allowedTablesAdd: Record<string, string[]> = {
 
 
 export const allowedTablesDelete: Record<string, string[]> = {
-  students: ["student_id"],
-  student_preferences: ["preference_id"],
-  student_interests: ["interest_id"],
-  student_availability: ["availability_id"],
-  mentors: ["mentor_id"],
-  mentor_skills: ["id"],
-  mentor_expertise: ["id"],
-  mentor_communication_styles: ["id"],
-  mentor_languages: ["id"],
-  mentor_availability: ["id"],
-  meetings: ["meeting_id"],
-  tasks_student: ["task_id"],
-  assignments: ["assignment_id"],
-  student_documents: ["document_id"],
-  appointments: ["appointment_id"],
-  student_calendar: ["calendar_id"],
-  student_event: ["event_id"]
+  mentors: ["mentor_id", "cognito_id", "name", "email", "availability", "skills", "onboarded"],
+  mentor_skills: ["id", "mentor_id", "skill"],
+  mentor_expertise: ["id", "mentor_id", "topic_area", "area_of_expertise"],
+  mentor_communication_styles: ["id", "mentor_id", "style"],
+  mentor_languages: ["id", "mentor_id", "language"],
+  mentor_availability: ["id", "mentor_id", "day", "time_slot"],
+  students: ["student_id", "cognito_id", "name", "email", "profile_info", "mentor_id", "onboarded"],
+  student_preferences: ["preference_id", "student_id", "area_of_study", "communication_style", "language", "mentor_rating"],
+  student_interests: ["interest_id", "student_id", "interest"],
+  student_availability: ["availability_id", "student_id", "day", "time_slot"],
+  meetings: ["meeting_id", "student_id", "mentor_id", "status", "timeslot"],
+  tasks_student: ["task_id", "student_id", "mentor_id", "title", "deadline", "completed"],
+  assignments: ["assignment_id", "student_id", "mentor_id", "title", "deadline", "status"],
+  student_documents: ["document_id", "student_id", "file_name", "file_url", "uploaded_at"],
+  appointments: ["appointment_id", "student_id", "mentor_id", "scheduled_time", "status"],
+  student_calendar: ["calendar_id", "student_id", "event_name", "start_time", "end_time"],
+  student_event: ["event_id", "student_id", "event_title", "event_description", "event_date"]
+
 };
 
 export const getEducationDataTable: Record<string, { tables: string[]; column: string }> = {
@@ -208,15 +209,15 @@ export const getEducationDataTable: Record<string, { tables: string[]; column: s
 };
 
 
-// Legal data tables and their allowed columns for add and delete operations
+// Legal data tables and their allowed columns for add and update operations
 export const allowedLegalTablesAdd: Record<string, string[]> = {
-  solicitors: ["cognito_id", "name", "email", "hourly_rate", "experience_years"],
+  solicitors: ["cognito_id", "name", "email", "hourly_rate", "experience_years", "onboarded"],
   solicitor_languages: ["solicitor_id", "language"],
   solicitor_communication_styles: ["solicitor_id", "style"],
   solicitor_specialisations: ["solicitor_id", "specialization"],
   solicitor_availability: ["solicitor_id", "day_of_week", "time_slot"],
 
-  clients: ["cognito_id", "name", "language", "communcation_style", "budget"],
+  clients: ["cognito_id", "name", "language", "communcation_style", "budget", "onboarded"],
   client_legal_needs: ["client_id", "legal_topic"],
 
   cases: ["client_id", "solicitor_id", "status", "created_at", "total_billing"],
@@ -232,13 +233,13 @@ export const allowedLegalTablesAdd: Record<string, string[]> = {
 
 export const allowedLegalTablesDelete: Record<string, string[]> = {
   solicitors: ["solicitor_id"],
-  solicitor_languages: ["solicitor_id"],
-  solicitor_communication_styles: ["solicitor_id"],
-  solicitor_specialisations: ["solicitor_id"],
-  solicitor_availability: ["solicitor_id"],
+  solicitor_languages: ["id"],
+  solicitor_communication_styles: ["id"],
+  solicitor_specialisations: ["id"],
+  solicitor_availability: ["id"],
 
   clients: ["client_id"],
-  client_legal_needs: ["client_id"],
+  client_legal_needs: ["id"],
 
   cases: ["case_id"],
   tasks: ["task_id"],
@@ -256,6 +257,12 @@ export const getLegalDataTable: Record<string, { tables: string[]; column: strin
       "solicitors",
       "cases",
       "calendar",
+      "solicitor_languages",
+      "solicitor_communication_styles",
+      "solicitor_specialisations",
+      "solicitor_availability",
+      "clients",
+
     ],
     column: "solicitor_id",
   },
@@ -263,6 +270,8 @@ export const getLegalDataTable: Record<string, { tables: string[]; column: strin
     tables: [
       "clients",
       "cases",
+      "client_legal_needs",
+
     ],
     column: "client_id",
   }
@@ -311,6 +320,18 @@ export const extendedRoleTableJoins: Record<string, { table: string; join: strin
   ],
 
   client: [
+    {
+      table: "solicitors",
+      join: "JOIN clients ON solicitors.solicitor_id = clients.solicitor_id",
+      param: "client_id",
+      baseTable: "clients"
+    },
+    {
+      table: "billing",
+      join: "JOIN cases ON billing.case_id = cases.case_id",
+      param: "client_id",
+      baseTable: "cases"
+    },
     {
       table: "tasks",
       join: "JOIN cases ON tasks.case_id = cases.case_id",

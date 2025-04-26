@@ -3,7 +3,6 @@ import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
 import ProtectedRoute from './context/ProtectedRoute';
 import Layout from './components/layout/Layout';
-
 import LoginPage from './pages/auth/Login';
 import SignupPage from './pages/auth/signup';
 import ConfirmSignupPage from './pages/auth/confirmSignup';
@@ -23,6 +22,8 @@ import SolicitorOnboarding from './pages/solicitor/onboarding/solicitorOnboardin
 import CaseListPage from './pages/solicitor/cases';
 import CaseDetailPage from './pages/solicitor/caseDetail';
 import OnboardingPage from './pages/student/onboarding/onboardingPage';
+import ClientProfilePage from './pages/client/ClientProfile';
+import SolicitorProfilePage from './pages/solicitor/SolicitorProfile';
 
 
 // Not finsihed yet - QueryProvider needs to be implemented
@@ -57,7 +58,7 @@ function App() {
             <Route path="/signup" element={<SignupPage />} />
             <Route path="/confirmSignup" element={<ConfirmSignupPage />} />
 
-            {/* No Layout Routes w/Protected*/}
+            {/* No Layout w/Protected Routes */}
             <Route path="/onboarding" element={withAuthOnly(OnboardingPage)} />
             <Route path="/meet-mentor" element={withAuthOnly(MeetMentor)} />
             <Route path="/mentor-setup" element={withAuthOnly(MentorSetup)} />
@@ -65,7 +66,7 @@ function App() {
             <Route path="/match-solicitor" element={withAuthOnly(MeetSolicitor)} />
             <Route path="/solicitor-onboarding" element={withAuthOnly(SolicitorOnboarding)} />
 
-            {/* Use Layout Routes w/Protected */}
+            {/* Use Layout w/Protected Routes */}
             <Route path="/dashboard" element={withLayout(Dashboard)} />
             <Route path="/assignments" element={withLayout(Assignment)} />
             <Route path="/mentor" element={withLayout(Mentor)} />
@@ -74,8 +75,11 @@ function App() {
             <Route path="/mentor-profile" element={withLayout(MentorProfile)} />
             <Route path="/mentor-meetings" element={withLayout(MentorMeeting)} />
             <Route path="/mentees" element={withLayout(MentorTasks)} />
+
+            <Route path="/client-profile" element={withLayout(ClientProfilePage)} />
             <Route path="/cases" element={withLayout(CaseListPage)} />
             <Route path="/cases/:caseId" element={withLayout(CaseDetailPage)} />
+            <Route path="/solicitor-profile" element={withLayout(SolicitorProfilePage)} />
           </Routes>
         </SocketProvider>
       </AuthProvider>

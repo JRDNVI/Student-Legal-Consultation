@@ -15,8 +15,7 @@ const CaseListPage = () => {
   if (!data?.cases?.length) {
     return (
       <div className="flex">
-        <Sidebar role={role} />
-        <main className="flex-1 p-10 bg-gray-100 min-h-screen">
+        <main className="flex-1 p-10 min-h-screen">
           <h1 className="text-2xl font-bold text-purple-700 mb-6">Your Legal Cases</h1>
           <p className="text-gray-600">No legal cases found.</p>
         </main>
@@ -48,11 +47,11 @@ const CaseListPage = () => {
         }`}
       onClick={() => isClickable && Navigate(`/cases/${c.case_id}`)}
     >
-      <p><span className="font-semibold">📂 Case ID:</span> {c.case_id}</p>
-      <p><span className="font-semibold">🧑‍⚖️ Solicitor ID:</span> {c.solicitor_id}</p>
-      <p><span className="font-semibold">📅 Created:</span> {new Date(c.created_at).toLocaleDateString()}</p>
-      <p><span className="font-semibold">📌 Status:</span> {c.status}</p>
-      <p><span className="font-semibold">💰 Billing:</span> €{c.total_billing}</p>
+      <p><span className="font-semibold"> Case ID:</span> {c.case_id}</p>
+      <p><span className="font-semibold"> Solicitor ID:</span> {c.solicitor_id}</p>
+      <p><span className="font-semibold"> Created:</span> {new Date(c.created_at).toLocaleDateString()}</p>
+      <p><span className="font-semibold"> Status:</span> {c.status}</p>
+      <p><span className="font-semibold"> Billing:</span> €{c.total_billing}</p>
 
       {withActions && (
         <div className="flex gap-4 mt-4">
@@ -81,7 +80,7 @@ const CaseListPage = () => {
 
   return (
     <div className="flex">
-      <main className="flex-1 p-10 bg-gray-100 min-h-screen space-y-10">
+      <main className="flex-1  min-h-screen space-y-10">
         <div>
           <h1 className="text-3xl font-bold text-purple-700 mb-4">Active Cases</h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

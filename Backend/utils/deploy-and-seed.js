@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import {SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
+import { SecretsManagerClient, GetSecretValueCommand } from "@aws-sdk/client-secrets-manager";
 import { CloudFormationClient, DescribeStacksCommand } from "@aws-sdk/client-cloudformation";
 import mysql from 'mysql2/promise';
 import fs from 'fs/promises';
@@ -11,13 +11,13 @@ const secretName = "fyp-db-credentials";
 const region = "eu-west-1";
 const stackName = "Auth-App-API";
 const sqlFilePath = [
-  "./utils/FYP_Schema_Init.sql", 
-  "./utils/education-seed-data.sql", 
+  "./utils/FYP_Schema_Init.sql",
+  "./utils/education-seed-data.sql",
   "./utils/legal-seed-data.sql",
   // "./utils/drop-database.sql"
 ]
 
-// // //Deploy CDK stack
+// //Deploy CDK stack
 console.log("Deploying CDK stack");
 execSync('cdk deploy --require-approval never', { stdio: 'inherit' });
 
@@ -28,12 +28,12 @@ const Client = new CloudFormationClient({ region });
 const Command = new DescribeStacksCommand({ StackName: stackName });
 const Response = await Client.send(Command);
 const outputs = Response.Stacks[0].Outputs;
-const dbEndpoint = outputs.find(o => o.OutputKey.startsWith("AppApiDB")).OutputValue; 
+const dbEndpoint = outputs.find(o => o.OutputKey.startsWith("AppApiDB")).OutputValue;
 
 //Get DB credentials from Secrets Manager
 //https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/secrets-manager/
 console.log("Fetching DB credentials");
-const smClient = new SecretsManagerClient({ region }); 
+const smClient = new SecretsManagerClient({ region });
 const smCommand = new GetSecretValueCommand({ SecretId: secretName });
 const smResponse = await smClient.send(smCommand);
 const { username, password } = JSON.parse(smResponse.SecretString);

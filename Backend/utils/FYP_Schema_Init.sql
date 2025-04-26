@@ -4,7 +4,8 @@ CREATE TABLE mentors (
   name VARCHAR(100),
   email VARCHAR(255) UNIQUE,
   availability TEXT,
-  skills TEXT
+  skills TEXT,
+  onboarded BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE mentor_skills (
@@ -52,6 +53,7 @@ CREATE TABLE students (
   email VARCHAR(255) UNIQUE,
   profile_info TEXT,
   mentor_id INT, 
+  onboarded BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (mentor_id) REFERENCES mentors(mentor_id) ON DELETE SET NULL
 );
 
@@ -155,7 +157,8 @@ CREATE TABLE solicitors (
   name VARCHAR(100),
   email VARCHAR(255) UNIQUE,
   hourly_rate DECIMAL(10, 2),
-  experience_years INT
+  experience_years INT,
+  onboarded BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE solicitor_languages (
@@ -190,11 +193,14 @@ CREATE TABLE solicitor_availability (
 CREATE TABLE clients (
   client_id INT AUTO_INCREMENT PRIMARY KEY,
   cognito_id VARCHAR(255) NOT NULL UNIQUE,
+  solicitor_id INT,
   name VARCHAR(100),
   language VARCHAR(25),
   communcation_style VARCHAR(50),
   email VARCHAR(255) UNIQUE,
-  budget DECIMAL(10, 2)
+  budget DECIMAL(10, 2),
+  onboarded BOOLEAN DEFAULT FALSE,
+  FOREIGN KEY (solicitor_id) REFERENCES solicitors(solicitor_id) ON DELETE SET NULL
 );
 
 CREATE TABLE client_legal_needs (

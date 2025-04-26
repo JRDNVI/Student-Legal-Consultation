@@ -82,7 +82,9 @@ export default function Layout({ children }) {
           </div>
         </header>
 
-        <main className="flex-1 overflow-auto p-4 bg-gray-50">{children}</main>
+        <main className="flex-1 overflow-x-hidden p-4 bg-gray-50">
+          <div className="w-full mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
+        </main>
       </div>
     </div>
   );

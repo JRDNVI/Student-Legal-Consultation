@@ -30,8 +30,15 @@ const MentorCard = ({ match, studentId, showCourseForm }) => {
 
       await appApi.put("education/", payload);
       if (showCourseForm) {
-        navigate("/course-form", { state: { studentId } });
+        navigate("/onboarding", { state: { continueToCourses: true, studentId } });
       } else {
+        const updateUser = await appApi.put("education/", {
+          tableName: "students",
+          data: {
+            onboarded: true,
+          },
+          where: { student_id: studentId },
+        });
         navigate("/dashboard");
       }
     } catch (err) {

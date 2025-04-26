@@ -6,6 +6,7 @@ import Calendar from "../../components/dashboard/Calender";
 import LoadingSpinner from "../../components/general/LoadingSpinner";
 import useDashboardData from "../../hooks/useDashboardData";
 import { useMessageHistory } from "../../hooks/messageHistory";
+import SuggestedCoursesCard from "../../components/general/SuggestedCourseCard";
 
 // The dashbaord page was designed to work with any role.
 // The user data is fetched using useDashboardData hook, which is a  hook that fetches the data from the API.
@@ -17,17 +18,14 @@ export default function Dashboard() {
   const role = user["custom:role"];
 
   const { data, loading, refetch } = useDashboardData();
-  const { messages, setMessages, loading: messageLoading, error } = useMessageHistory()
-
-  if (user.onbaorded == false) {
-    user.onbaorded = true
-  }
+  const { messages, loading: messageLoading } = useMessageHistory()
 
   useEffect(() => {
     refetch();
   }, []);
 
   if (loading || messageLoading) return <LoadingSpinner title="Loading your dashboard..." />;
+  console.log("Dashboard Data:", data);
 
   console.log(messages)
 
@@ -49,35 +47,30 @@ export default function Dashboard() {
       : []
   );
 
-  console.log(user)
-  console.log(data)
-
   return (
     <main className="space-y-6">
-      <OverviewCard
-        title="Assignments"
-        data={data.assignments}
-        icon={<FaUserGraduate />}
-        role={role}
-      />
+      {role === "student" && (
+        <OverviewCard
+          title="Assignments"
+          data={data.assignments}
+          icon={<FaUserGraduate />}
+          role={role}
+        />
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {(role === "student" || role === "mentor") && (
-          <>
-            <OverviewCard
-              title="Tasks"
-              data={data.tasks_student}
-              icon={<FaTasks />}
-              role={role}
-            />
-            <OverviewCard
-              title="Meetings"
-              data={data.meetings}
-              icon={<FaCalendarAlt />}
-              role={role}
-            />
-          </>
-        )}
+        <OverviewCard
+          title="Tasks"
+          data={data.tasks_student}
+          icon={<FaTasks />}
+          role={role}
+        />
+        <OverviewCard
+          title="Meetings"
+          data={data.meetings}
+          icon={<FaCalendarAlt />}
+          role={role}
+        />
 
         {(role === "client" || role === "solicitor") && (
           <>
@@ -106,20 +99,11 @@ export default function Dashboard() {
           <Calendar events={calendarEvents} />
         </div>
       )}
-      {/* <div className="w-full overflow-x-auto">
-  <div className="min-w-full sm:min-w-0 p-4 bg-white rounded shadow inline-block">
-    <OverviewCard
-      title="Courses"
-      data={data.student_suggested_course}
-      icon={<FaBriefcase />}
-      role={role}
-    />
-  </div>
-</div> */}
-
-
-
-
+      {role === "student" && (
+        <div className="w-full">
+          <SuggestedCoursesCard courses={data.student_suggested_course} />
+        </div>
+      )}
     </main>
   );
 

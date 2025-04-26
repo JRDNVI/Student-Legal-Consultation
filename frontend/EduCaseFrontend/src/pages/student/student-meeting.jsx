@@ -7,11 +7,7 @@ import { appApi } from "../../api/api";
 const StudentMeetings = () => {
   const { user } = useAuth();
   const { data, loading, refetch } = useDashboardData(user);
-
-  if (loading) return <LoadingSpinner title="Meetings" />;
-
   const allMeetings = data.meetings || [];
-
   const studentId = data.students?.[0]?.student_id;
 
   const availableMeetings = allMeetings.filter(
@@ -43,6 +39,8 @@ const StudentMeetings = () => {
       alert("Failed to book meeting.");
     }
   };
+
+  if (loading) return <LoadingSpinner title="Meetings" />;
 
   return (
     <main className="space-y-8">
@@ -80,10 +78,38 @@ const StudentMeetings = () => {
             {bookedMeetings.map((meeting) => (
               <div
                 key={meeting.meeting_id}
-                className="bg-white rounded-xl shadow p-4"
+                className="bg-white rounded-xl shadow p-4 flex flex-col md:flex-row justify-between items-start md:items-center"
               >
-                <p><span className="font-semibold">Time:</span> {new Date(meeting.timeslot).toLocaleString()}</p>
-                <p><span className="font-semibold">Status:</span> {meeting.status}</p>
+                <div>
+                  <p><span className="font-semibold">Time:</span> {new Date(meeting.timeslot).toLocaleString()}</p>
+                  <p><span className="font-semibold">Status:</span> {meeting.status}</p>
+                </div>
+                <button
+                  onClick={async () => {
+                    const payload = {
+                      tableName: "meetings",
+                      data: {
+                        student_id: null,
+                        status: "available",
+                      },
+                      where: {
+                        meeting_id: meeting.meeting_id,
+                      },
+                    };
+
+                    try {
+                      await appApi.put("education/", payload);
+                      alert("Meeting canceled.");
+                      refetch();
+                    } catch (error) {
+                      console.error("Error canceling meeting:", error);
+                      alert("Failed to cancel meeting.");
+                    }
+                  }}
+                  className="bg-red-500 text-white px-4 py-2 rounded mt-2 md:mt-0 md:ml-4"
+                >
+                  Cancel
+                </button>
               </div>
             ))}
           </div>
@@ -91,6 +117,7 @@ const StudentMeetings = () => {
           <p className="text-gray-600 italic">You haven't booked any meetings yet.</p>
         )}
       </section>
+
     </main>
   );
 };
