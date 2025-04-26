@@ -1,5 +1,103 @@
 // The some of the values below were generated using ChatGPT
-
+export const topicOptions = [
+    {
+        label: "Computer Science",
+        options: [
+            { value: "AI", label: "AI" },
+            { value: "Machine Learning", label: "Machine Learning" },
+            { value: "Web Development", label: "Web Development" },
+            { value: "Natural Language Processing", label: "Natural Language Processing" },
+            { value: "Cybersecurity", label: "Cybersecurity" },
+            { value: "Cloud Computing", label: "Cloud Computing" },
+            { value: "Mobile App Development", label: "Mobile App Development" },
+        ],
+    },
+    {
+        label: "Software Engineering",
+        options: [
+            { value: "DevOps", label: "DevOps" },
+            { value: "Backend Development", label: "Backend Development" },
+            { value: "Frontend Development", label: "Frontend Development" },
+            { value: "Software Architecture", label: "Software Architecture" },
+            { value: "Agile Methodologies", label: "Agile Methodologies" },
+        ],
+    },
+    {
+        label: "Cybersecurity",
+        options: [
+            { value: "Pen Testing", label: "Pen Testing" },
+            { value: "Network Security", label: "Network Security" },
+            { value: "Digital Forensics", label: "Digital Forensics" },
+            { value: "Cryptography", label: "Cryptography" },
+        ],
+    },
+    {
+        label: "Biology",
+        options: [
+            { value: "Genetics", label: "Genetics" },
+            { value: "Molecular Biology", label: "Molecular Biology" },
+            { value: "Ecology", label: "Ecology" },
+            { value: "Neuroscience", label: "Neuroscience" },
+            { value: "Biotechnology", label: "Biotechnology" },
+        ],
+    },
+    {
+        label: "Mathematics",
+        options: [
+            { value: "Algebra", label: "Algebra" },
+            { value: "Calculus", label: "Calculus" },
+            { value: "Statistics", label: "Statistics" },
+            { value: "Discrete Mathematics", label: "Discrete Mathematics" },
+            { value: "Linear Algebra", label: "Linear Algebra" },
+        ],
+    },
+    {
+        label: "Physics",
+        options: [
+            { value: "Quantum Mechanics", label: "Quantum Mechanics" },
+            { value: "Classical Mechanics", label: "Classical Mechanics" },
+            { value: "Astrophysics", label: "Astrophysics" },
+            { value: "Thermodynamics", label: "Thermodynamics" },
+        ],
+    },
+    {
+        label: "Business",
+        options: [
+            { value: "Entrepreneurship", label: "Entrepreneurship" },
+            { value: "Marketing", label: "Marketing" },
+            { value: "Finance", label: "Finance" },
+            { value: "Economics", label: "Economics" },
+            { value: "Business Analytics", label: "Business Analytics" },
+        ],
+    },
+    {
+        label: "Psychology",
+        options: [
+            { value: "Clinical Psychology", label: "Clinical Psychology" },
+            { value: "Cognitive Psychology", label: "Cognitive Psychology" },
+            { value: "Developmental Psychology", label: "Developmental Psychology" },
+            { value: "Social Psychology", label: "Social Psychology" },
+        ],
+    },
+    {
+        label: "Health Sciences",
+        options: [
+            { value: "Nursing", label: "Nursing" },
+            { value: "Public Health", label: "Public Health" },
+            { value: "Pharmacology", label: "Pharmacology" },
+            { value: "Nutrition", label: "Nutrition" },
+        ],
+    },
+    {
+        label: "Arts & Humanities",
+        options: [
+            { value: "History", label: "History" },
+            { value: "Philosophy", label: "Philosophy" },
+            { value: "Literature", label: "Literature" },
+            { value: "Languages", label: "Languages" },
+        ],
+    },
+];
 export const groupedPersonalityTraits = [
     {
         label: "Emotional Traits",

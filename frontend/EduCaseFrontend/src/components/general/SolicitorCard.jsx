@@ -24,6 +24,16 @@ const SolicitorCard = ({ match, clientId }) => {
           total_billing: 0
         }
       });
+
+      await appApi.put("education/", {
+        tableName: "clients",
+        data: {
+          onboarded: 1
+        },
+        where: {
+          cognito_id: user.sub
+        }
+      });
       alert("Solicitor requested successfully!");
       Navigate("/dashboard")
     } catch (err) {

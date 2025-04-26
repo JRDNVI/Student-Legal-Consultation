@@ -1,13 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { authApi } from "../../api/api";
+import { authApi, appApi } from "../../api/api";
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import LoadingSpinner from "../../components/general/LoadingSpinner";
+import useDashboardData from "../../hooks/useDashboardData";
 
 export default function LoginPage() {
   const { userLogin, user } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [triggeredLogin, setTriggeredLogin] = useState(false);
   const Navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -19,21 +22,40 @@ export default function LoginPage() {
       });
 
       const token = response.data.token;
-      var decoded = jwtDecode(token);
-      decoded = { ...decoded, onboarded: false };
-
+      const decoded = jwtDecode(token);
       userLogin(token, decoded);
-      const role = decoded["custom:role"];
+      setTriggeredLogin(true);
 
-      if (role == "student") Navigate("/onboarding");
-      else if (role == "mentor") Navigate("/mentor-setup")
-      else if (role == "client") Navigate("/client-onboarding")
-      else Navigate("/solicitor-onboarding")
+      const dashboardRes = await appApi.get("education/");
+      const dashboard = dashboardRes.data;
+      console.log("Dashboard Data:", dashboard);
+
+      const role = decoded["custom:role"];
+      const isOnboarded = {
+        student: dashboard?.relatedData.students?.[0]?.onboarded,
+        mentor: dashboard?.relatedData.mentors?.[0]?.onboarded,
+        client: dashboard?.relatedData.clients?.[0]?.onboarded,
+        solicitor: dashboard?.relatedData.solicitors?.[0]?.onboarded,
+      };
+
+      const redirectPath = {
+        student: "/onboarding",
+        mentor: "/mentor-setup",
+        client: "/client-onboarding",
+        solicitor: "/solicitor-onboarding",
+      };
+
+      if (!isOnboarded[role]) {
+        Navigate(redirectPath[role]);
+      } else {
+        Navigate("/dashboard");
+      }
 
     } catch (err) {
       alert(err.response?.data?.message || err.message);
     }
   };
+
 
   //Current Design is from https://tailwindcss.com/plus/ui-blocks/application-ui/forms/sign-in-forms
   return (

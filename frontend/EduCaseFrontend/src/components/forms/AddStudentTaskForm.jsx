@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { appApi } from "../../api/api";
-import { useAuth } from "../../context/AuthContext";
+import useDashboardData from "../../hooks/useDashboardData";
 
 const AddStudentTask = ({ students = [], mentorId }) => {
+  const { refetch } = useDashboardData();
   const [form, setForm] = useState({
     student_id: "",
     title: "",
@@ -26,7 +27,7 @@ const AddStudentTask = ({ students = [], mentorId }) => {
           ...form
         }
       });
-      alert("Task added!");
+      refetch();
     } catch (err) {
       console.error("Error adding task:", err);
       alert("Failed to add task.");
@@ -34,66 +35,54 @@ const AddStudentTask = ({ students = [], mentorId }) => {
   };
 
   return (
-    <div className="flex">
-      <main className="flex-1 p-8 bg-gray-100 min-h-screen">
-        <div className="max-w-xl mx-auto space-y-4 bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl font-bold text-purple-700">Assign Task to Student</h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <select
-              name="student_id"
-              value={form.student_id}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            >
-              <option value="">Select Student</option>
-              {students.map((s) => (
-                <option key={s.student_id} value={s.student_id}>
-                  {s.name || s.email}
-                </option>
-              ))}
-            </select>
+    <div className="space-y-4 bg-white p-6 rounded-xl shadow-lg">
+      <h2 className="text-2xl font-bold text-purple-700">Assign Task to Student</h2>
 
-            <input
-              type="text"
-              name="title"
-              placeholder="Task Title"
-              value={form.title}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <select
+          name="student_id"
+          value={form.student_id}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          required
+        >
+          <option value="">Select Student</option>
+          {students.map((s) => (
+            <option key={s.student_id} value={s.student_id}>
+              {s.name || s.email}
+            </option>
+          ))}
+        </select>
 
-            <input
-              type="date"
-              name="deadline"
-              value={form.deadline}
-              onChange={handleChange}
-              className="w-full p-2 border rounded"
-              required
-            />
+        <input
+          type="text"
+          name="title"
+          placeholder="Task Title"
+          value={form.title}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          required
+        />
 
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                name="completed"
-                checked={form.completed}
-                onChange={handleChange}
-              />
-              <span className="text-sm">Mark as Completed</span>
-            </label>
+        <input
+          type="date"
+          name="deadline"
+          value={form.deadline}
+          onChange={handleChange}
+          className="w-full p-2 border rounded"
+          required
+        />
 
-            <button
-              type="submit"
-              className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
-            >
-              Add Task
-            </button>
-          </form>
-        </div>
-      </main>
+        <button
+          type="submit"
+          className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+        >
+          Add Task
+        </button>
+      </form>
     </div>
+
   );
 };
 

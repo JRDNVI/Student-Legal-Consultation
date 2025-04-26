@@ -3,13 +3,12 @@ import { appApi } from "../../../api/api";
 import { useAuth } from "../../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import useDashboardData from "../../../hooks/useDashboardData";
-
+import { SubmitButton, buildMultiInsertPayload, updateArrayField, addToArrayField, removeFromArrayField, AvailabilityInput } from "../../../util/FromHelper";
 //When a solicitor first signs in they will have to complete this form so basic data needed
 // for matching is added. Again the updateArray methods have to abstracted out. 
 // I used past forms and Tailwind forms to create this. There is common code I can absract out.
 
 const options = {
-  communicationStyles: ["Email", "Phone Call", "Video Call", "Text"],
   specialisations: [
     "Family Law",
     "Immigration Law",
@@ -30,7 +29,7 @@ const SolicitorOnboarding = () => {
     name: "",
     experience_years: "",
     hourly_rate: "",
-    languages: [""],
+    languages: "",
     communication_styles: [""],
     specialisations: [""],
     availability: []
@@ -40,74 +39,67 @@ const SolicitorOnboarding = () => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
-  const updateArrayField = (field, index, value, key) => {
-    const updated = [...form[field]];
-    key ? (updated[index][key] = value) : (updated[index] = value);
-    setForm((prev) => ({ ...prev, [field]: updated }));
-  };
-
-  const addToArray = (field, newItem) =>
-    setForm((prev) => ({ ...prev, [field]: [...prev[field], newItem] }));
-
-  const removeFromArray = (field, index) =>
-    setForm((prev) => {
-      const updated = [...prev[field]];
-      updated.splice(index, 1);
-      return { ...prev, [field]: updated };
-    });
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const solicitorId = data?.solicitors?.[0].solicitor_id
-    console.log(data)
+
+    const solicitorId = data?.solicitors?.[0]?.solicitor_id;
+
     try {
       const { name, experience_years, hourly_rate } = form;
 
-      const { data: solicitor } = await appApi.put("education/", {
+      await appApi.put("education/", {
         tableName: "solicitors",
         data: {
           name,
           experience_years,
           hourly_rate,
+          onboarded: 1
         },
         where: {
           cognito_id: user.sub
         }
       });
 
-
-      const payload = [
-        ...form.languages.map((language) => ({
+      const requestBody = buildMultiInsertPayload([
+        {
           tableName: "solicitor_languages",
-          data: { solicitor_id: solicitorId, language }
-        })),
-        ...form.communication_styles.map((style) => ({
+          items: form.languages
+            .split(",")
+            .map(lang => lang.trim())
+            .filter(lang => lang)
+            .map(language => ({
+              solicitor_id: solicitorId,
+              language
+            })),
+        },
+
+        {
           tableName: "solicitor_communication_styles",
-          data: { solicitor_id: solicitorId, style }
-        })),
-        ...form.specialisations.map((specialization) => ({
+          items: form.communication_styles
+            .filter(style => style.trim())
+            .map(style => ({ solicitor_id: solicitorId, style })),
+        },
+        {
           tableName: "solicitor_specialisations",
-          data: { solicitor_id: solicitorId, specialization }
-        })),
-        ...form.availability
-          .filter((a) => a.day && a.time_slot)
-          .map((a) => ({
-            tableName: "solicitor_availability",
-            data: {
+          items: form.specialisations
+            .filter(spec => spec.trim())
+            .map(specialization => ({ solicitor_id: solicitorId, specialization })),
+        },
+        {
+          tableName: "solicitor_availability",
+          items: form.availability
+            .filter(a => a.day && a.time_slot)
+            .map(a => ({
               solicitor_id: solicitorId,
               day_of_week: a.day,
               time_slot: a.time_slot
-            }
-          }))
-      ];
+            })),
+        }
+      ]);
 
-      await appApi.post("education/", {
-        multiInsert: true,
-        payload
-      });
-
-      alert("Solicitor profile created successfully!");
+      await appApi.post("education/", requestBody);
       navigate("/dashboard");
+
     } catch (err) {
       console.error(err);
       alert("Error submitting form");
@@ -117,9 +109,13 @@ const SolicitorOnboarding = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-2xl mx-auto p-6 bg-white shadow rounded-xl space-y-4"
-    >
-      <h2 className="text-3xl font-bold text-purple-700">Solicitor Onboarding</h2>
+      className="max-w-2xl mx-auto p-6 bg-white shadow rounded-xl space-y-4">
+      <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 shadow-sm mb-4">
+        <h2 className="text-lg font-semibold text-purple-700 mb-1">Getting Started</h2>
+        <p className="text-sm text-gray-600">
+          Fill out your details so we can connect you with clients who suit your expertise.
+        </p>
+      </div>
 
       <input
         placeholder="Name"
@@ -145,94 +141,67 @@ const SolicitorOnboarding = () => {
         required
       />
 
-      {["languages", "communication_styles", "specialisations"].map((field) => (
-        <div key={field}>
-          <label className="font-semibold capitalize">{field.replace("_", " ")}</label>
-          {form[field].map((val, index) => (
-            <div key={index} className="flex gap-2 mb-2">
-              {(field === "specialisations" || field === "communication_styles") ? (
-                <select
-                  value={val}
-                  onChange={(e) => updateArrayField(field, index, e.target.value)}
-                  className="w-full p-2 border rounded"
-                >
-                  <option value="">Select {field.slice(0, -1)}</option>
-                  {options[
-                    field === "specialisations" ? "specialisations" : "communicationStyles"
-                  ].map((opt) => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  type="text"
-                  value={val}
-                  onChange={(e) => updateArrayField(field, index, e.target.value)}
-                  placeholder={`Enter ${field.slice(0, -1)}`}
-                  className="w-full p-2 border rounded"
-                />
-              )}
-              <button
-                type="button"
-                onClick={() => removeFromArray(field, index)}
-                className="text-red-500"
-              >
-                ✕
-              </button>
-            </div>
-          ))}
-          <button
-            type="button"
-            onClick={() => addToArray(field, "")}
-            className="text-sm text-blue-600 hover:underline"
-          >
-            + Add {field.slice(0, -1)}
-          </button>
-        </div>
-      ))}
+      <div>
+        <label className="block mb-1 font-medium">Preferred Language(s)</label>
+        <input
+          type="text"
+          placeholder="e.g., English, Spanish"
+          value={form.languages}
+          onChange={(e) => updateField("languages", e.target.value)}
+          className="w-full p-2 border rounded"
+          required
+        />
+      </div>
+
 
       <div>
-        <label className="font-semibold">Availability</label>
-        {form.availability.map((slot, index) => (
-          <div key={index} className="flex gap-2 items-center mb-2">
+        <label className="font-semibold capitalize mb-2 block">Specialisations</label>
+        {form.specialisations.map((val, index) => (
+          <div key={index} className="flex gap-2 mb-2">
             <select
-              value={slot.day}
-              onChange={(e) => updateArrayField("availability", index, e.target.value, "day")}
-              className="p-2 border rounded"
+              value={val}
+              onChange={(e) => updateArrayField(setForm, "specialisations", index, e.target.value)}
+              className="w-full p-2 border rounded"
             >
-              <option value="">Day</option>
-              {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((day) => (
-                <option key={day} value={day}>{day}</option>
+              <option value="">Select Specialisation</option>
+              {options.specialisations.map((opt) => (
+                <option key={opt} value={opt}>
+                  {opt}
+                </option>
               ))}
             </select>
-            <input
-              type="text"
-              placeholder="Time slot (e.g. 10:00-12:00)"
-              value={slot.time_slot}
-              onChange={(e) => updateArrayField("availability", index, e.target.value, "time_slot")}
-              className="flex-1 p-2 border rounded"
-            />
+
             <button
               type="button"
-              onClick={() => removeFromArray("availability", index)}
+              onClick={() => removeFromArrayField(setForm, "specialisations", index)}
               className="text-red-500"
             >
               ✕
             </button>
           </div>
         ))}
+
         <button
           type="button"
-          onClick={() => addToArray("availability", { day: "", time_slot: "" })}
+          onClick={() => addToArrayField(setForm, "specialisations", "")}
           className="text-sm text-blue-600 hover:underline"
         >
-          + Add Availability
+          + Add Specialisation
         </button>
       </div>
 
-      <button type="submit" className="bg-purple-600 text-white px-6 py-2 rounded hover:bg-purple-700">
-        Submit
-      </button>
+
+      <div>
+
+        <AvailabilityInput
+          availability={form.availability}
+          onChange={(index, field, value) => updateArrayField(setForm, "availability", index, value, field)}
+          onAdd={() => addToArrayField(setForm, "availability", { day: "", time_slot: "" })}
+          onRemove={(index) => removeFromArrayField(setForm, "availability", index)}
+        />
+      </div>
+
+      <SubmitButton />
     </form>
   );
 };

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { appApi } from "../../api/api";
 import { useAuth } from "../../context/AuthContext";
+import useDashboardData from "../../hooks/useDashboardData";
 import { useNavigate } from "react-router-dom";
+import { SubmitButton, buildMultiInsertPayload, updateArrayField, addToArrayField, removeFromArrayField, handleChange, CommunicationStyle } from "../../util/FromHelper";
 
 const legalOptions = [
   "Family Law",
@@ -19,6 +21,7 @@ const legalOptions = [
 // the same methods.
 
 const ClientOnboarding = () => {
+  const { data } = useDashboardData();
   const { user } = useAuth();
   const Navigate = useNavigate();
 
@@ -31,31 +34,7 @@ const ClientOnboarding = () => {
     availability: []
   });
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const updateArrayField = (field, index, value, key) => {
-    setForm((prev) => {
-      const updated = [...prev[field]];
-      if (key) updated[index][key] = value;
-      else updated[index] = value;
-      return { ...prev, [field]: updated };
-    });
-  };
-
-  const addToArrayField = (field, newItem) => {
-    setForm((prev) => ({ ...prev, [field]: [...prev[field], newItem] }));
-  };
-
-  const removeFromArrayField = (field, index) => {
-    setForm((prev) => {
-      const updated = [...prev[field]];
-      updated.splice(index, 1);
-      return { ...prev, [field]: updated };
-    });
-  };
+  const handleChangec = handleChange(setForm);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -77,27 +56,23 @@ const ClientOnboarding = () => {
         }
       });
 
-      const clientId = client.insertId;
+      const clientId = data.clients[0].client_id;
 
-      const payload = [
-        ...form.legal_needs
-          .filter((need) => need.trim())
-          .map((legal_topic) => ({
-            tableName: "client_legal_needs",
-            data: { client_id: clientId, legal_topic }
-          })),
-        ...form.availability
-          .filter((a) => a.day && a.time_slot)
-          .map((a) => ({
-            tableName: "solicitor_availability",
-            data: { solicitor_id: clientId, day_of_week: a.day, time_slot: a.time_slot }
-          }))
-      ];
+      const payload = buildMultiInsertPayload([
+        {
+          tableName: "client_legal_needs",
+          items: form.legal_needs
+            .filter(need => need.trim())
+            .map(legal_topic => ({
+              client_id: clientId,
+              legal_topic,
+            })),
+        }
+      ]);
 
-      await appApi.post("education/", {
-        multiInsert: true,
-        payload
-      });
+      console.log("Payload:", payload);
+
+      await appApi.post("education/", payload);
 
       alert("Client onboarded successfully!");
       Navigate("/match-solicitor");
@@ -108,68 +83,44 @@ const ClientOnboarding = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white shadow-xl rounded-2xl p-6 space-y-6 max-w-2xl mx-auto">
-      <h1 className="text-3xl font-semibold text-purple-700">Client Onboarding</h1>
+    <form onSubmit={handleSubmit} className="space-y-6 ">
+      <div className="bg-purple-50 border border-purple-200 rounded-xl p-4 shadow-sm mb-4">
+        <h2 className="text-lg font-semibold text-purple-700 mb-1">Getting Started</h2>
+        <p className="text-sm text-gray-600">
+          Fill out your preferences so we can connect you with a mentor who suits your needs.
+        </p>
+      </div>
 
-      <input name="name" value={form.name} onChange={handleChange} placeholder="Your Name" required className="w-full p-2 border rounded-xl" />
-
-      <input name="language" value={form.language} onChange={handleChange} placeholder="Preferred Language(s)" required className="w-full p-2 border rounded-xl" />
-
-      <select name="communication_style" value={form.communication_style} onChange={handleChange} required className="w-full p-2 border rounded-xl">
-        <option value="">Preferred Communication Style</option>
-        <option value="Email">Email</option>
-        <option value="Phone Call">Phone Call</option>
-        <option value="Video Call">Video Call</option>
-      </select>
-
-      <input name="budget" type="number" value={form.budget} onChange={handleChange} placeholder="Your Budget (€)" required className="w-full p-2 border rounded-xl" />
+      <input name="name" value={form.name} onChange={handleChangec} placeholder="Your Name" required className="w-full p-2 border rounded-xl" />
+      <input name="language" value={form.language} onChange={handleChangec} placeholder="Preferred Language(s)" required className="w-full p-2 border rounded-xl" />
+      <input name="budget" type="number" value={form.budget} onChange={handleChangec} placeholder="Your Budget (€)" required className="w-full p-2 border rounded-xl" />
 
       <div>
         <label className="block font-medium mb-1">Legal Needs</label>
         {form.legal_needs.map((need, index) => (
           <div key={index} className="flex gap-2 mb-2">
-            <select value={need} onChange={(e) => updateArrayField("legal_needs", index, e.target.value)} className="w-full p-2 border rounded-xl">
+            <select value={need} onChange={(e) => updateArrayField(setForm, "legal_needs", index, e.target.value)} className="w-full p-2 border rounded-xl">
               <option value="">Select Legal Area</option>
               {legalOptions.map((opt) => (
                 <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
             {form.legal_needs.length > 1 && (
-              <button type="button" onClick={() => removeFromArrayField("legal_needs", index)} className="text-red-600 hover:underline">✕</button>
+              <button type="button" onClick={() => removeFromArrayField(setForm, "legal_needs", index)} className="text-red-600 hover:underline">✕</button>
             )}
           </div>
         ))}
-        <button type="button" onClick={() => addToArrayField("legal_needs", "")} className="text-sm text-blue-600 hover:underline">
+        <button type="button" onClick={() => addToArrayField(setForm, "legal_needs", "")} className="text-sm text-blue-600 hover:underline">
           + Add Another Legal Need
         </button>
       </div>
+      <CommunicationStyle
+        value={form.communication_style}
+        name={"communication_style"}
+        onChange={handleChangec}
+      />
 
-      <div>
-        <label className="block font-medium mb-1">Availability</label>
-        {form.availability.map((slot, index) => (
-          <div key={index} className="flex gap-2 mb-2 items-center">
-            <select value={slot.day} onChange={(e) => updateArrayField("availability", index, e.target.value, "day")} className="border rounded-xl p-2">
-              <option value="">Day</option>
-              {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map((d) => (
-                <option key={d} value={d}>{d}</option>
-              ))}
-            </select>
-            <input type="text" placeholder="Time Slot (e.g., 10:00 - 12:00)" value={slot.time_slot}
-              onChange={(e) => updateArrayField("availability", index, e.target.value, "time_slot")}
-              className="flex-1 border rounded-xl p-2" />
-            <button type="button" onClick={() => removeFromArrayField("availability", index)} className="text-red-600 hover:underline">✕</button>
-          </div>
-        ))}
-        <button type="button" onClick={() => addToArrayField("availability", { day: "", time_slot: "" })} className="text-sm text-blue-600 hover:underline">
-          + Add Availability
-        </button>
-      </div>
-
-      <div className="flex justify-end">
-        <button type="submit" className="bg-purple-600 text-white px-6 py-2 rounded-xl hover:bg-purple-700">
-          Submit
-        </button>
-      </div>
+      <SubmitButton />
     </form>
   );
 };

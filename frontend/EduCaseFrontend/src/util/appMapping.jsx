@@ -9,7 +9,6 @@ export const fieldMap = {
   },
   mentor: {
     tasks: ["title", "deadline", "completed"],
-    //assignments: ["title", "status", "due_date"],SS
     meetings: ["timeslot", "status"],
   },
   solicitor: {
@@ -92,22 +91,67 @@ export const renderExplanation = (key, value) => {
 
 export const userFields = {
   mentor: [
-    { label: "Name", key: "name" },
-    { label: "Email", key: "email" },
-    { label: "Availability", key: "availability" },
+    { label: "Name", key: "mentor_name", source: "mentors", subKey: "name" },
+    { label: "Email", key: "mentor_email", source: "mentors", subKey: "email" },
     { label: "Skills", key: "mentor_skills", isArray: true, subKey: "skill" },
-    { label: "Expertise", key: "mentor_expertise", isArray: true, format: (item) => `${item.topic_area} → ${item.area_of_expertise}` },
+    { label: "Expertise", key: "mentor_expertise", isArray: true, subKey: "area_of_expertise", uniqueKey: "aoe" },
+    { label: "Topic Area", key: "mentor_expertise", isArray: true, subKey: "topic_area", uniqueKey: "ta" },
     { label: "Communication Styles", key: "mentor_communication_styles", isArray: true, subKey: "style" },
     { label: "Languages", key: "mentor_languages", isArray: true, subKey: "language" }
   ],
   student: [
-    { label: "Name", key: "name" },
-    { label: "Email", key: "email" },
-    { label: "Interests", key: "student_interests", isArray: true, subKey: "interest" },
-    { label: "Availability", key: "student_availability", isArray: true, format: (item) => `${item.day} (${item.time_slot})` },
-    { label: "Preferences", key: "student_preferences", isArray: true, format: (item) => `${item.area_of_study}, ${item.language}, ${item.communication_style}` }
+
+    { label: "Interests", key: "student_interests", source: "student_interests", isArray: true, subKey: "interest", uniqueKey: "interests" },
+    { label: "Area of Study", key: "student_preferences", source: "student_preferences", isObject: true, subKey: "area_of_study", uniqueKey: "aos" },
+    { label: "Language", key: "student_preferences", source: "student_preferences", isObject: true, subKey: "language", uniqueKey: "lang" },
+    { label: "Communication Style", key: "student_preferences", source: "student_preferences", isObject: true, subKey: "communication_style", uniqueKey: "comm" },
+
   ],
+  client: [
+    { label: "Language", key: "client_language", source: "clients", subKey: "language" },
+    { label: "Communication Style", key: "client_communication_style", source: "clients", subKey: "communcation_style" },
+    { label: "Budget", key: "client_budget", source: "clients", subKey: "budget", uniqueKey: "budget" },
+    { label: "Legal Needs", key: "client_legal_needs", source: "client_legal_needs", isArray: true, subKey: "legal_topic" }
+  ],
+
+  solicitor: [
+    { label: "Hourly Rate (€)", key: "hourly_rate", source: "solicitors", subKey: "hourly_rate", },
+    { label: "Experience (Years)", key: "experience", source: "solicitors", subKey: "experience_years" },
+    { label: "Languages", key: "solicitor_languages", isArray: true, subKey: "language" },
+    { label: "Communication Styles", key: "solicitor_communication_styles", isArray: true, subKey: "style" },
+    { label: "Specialisations", key: "solicitor_specialisations", isArray: true, subKey: "specialization" },
+    { label: "Availability", key: "solicitor_availability", isArray: true, subKey: "day_of_week" }
+  ]
+
 }
+
+export const tableIdMap = {
+  student_interests: "interest_id",
+  student_availability: "availability_id",
+  student_preferences: "preference_id",
+
+  mentor_skills: "id",
+  mentor_expertise: "id",
+  mentor_communication_styles: "id",
+  mentor_languages: "id",
+  mentor_availability: "id",
+
+  clients: "client_id",
+  client_legal_needs: "id",
+
+  solicitors: "solicitor_id",
+  solicitor_languages: "id",
+  solicitor_communication_styles: "id",
+  solicitor_specialisations: "id",
+  solicitor_availability: "id",
+
+  cases: "case_id",
+  tasks: "task_id",
+  messages: "message_id",
+  notes: "note_id",
+  documents: "document_id"
+};
+
 
 export const pathMap = {
   "/dashboard": "Dashboard",
@@ -140,13 +184,15 @@ export const items = {
   ],
   client: [
     { icon: <FaHome />, label: "Dashboard", path: "/dashboard" },
-    { icon: <FaBriefcase />, label: "My Cases", path: "/cases" },
+    { icon: <FaBriefcase />, label: "My Cases", path: "/client-cases" },
     { icon: <FaCalendarAlt />, label: "Appointments", path: "/appointments" },
+    { icon: <FaUserFriends />, label: "Profile", path: "/client-profile" }
   ],
   solicitor: [
     { icon: <FaHome />, label: "Dashboard", path: "/dashboard" },
     { icon: <FaBriefcase />, label: "All Cases", path: "/cases" },
     { icon: <FaGavel />, label: "Court Schedule", path: "/court-schedule" },
     { icon: <FaCalendarAlt />, label: "Calendar", path: "/calendar" },
+    { icon: <FaUserFriends />, label: "Profile", path: "/solicitor-profile" }
   ],
 };

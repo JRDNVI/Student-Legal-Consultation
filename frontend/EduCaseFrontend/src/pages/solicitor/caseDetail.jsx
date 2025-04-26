@@ -11,7 +11,6 @@ const CaseDetailPage = () => {
   const { caseId } = useParams();
   const { user } = useAuth();
   const { data, loading, refetch } = useDashboardData(user);
-  const role = user["custom:role"];
 
   const [selectedFile, setSelectedFile] = useState(null);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -50,17 +49,16 @@ const CaseDetailPage = () => {
 
   return (
     <div className="flex">
-      <Sidebar role={role} />
 
-      <main className="flex-1 bg-gray-100 min-h-screen p-10 space-y-6">
+      <main className="flex-1 min-h-screen p-10 space-y-6">
         <section className="bg-white p-6 rounded-xl shadow border border-gray-200 space-y-2">
           <h1 className="text-3xl font-bold text-purple-700">Case Details</h1>
-          <p>📂 <strong>Case ID:</strong> {legalCase.case_id}</p>
-          <p>🧑 <strong>Client ID:</strong> {legalCase.client_id}</p>
-          <p>👨‍⚖️ <strong>Solicitor ID:</strong> {legalCase.solicitor_id}</p>
-          <p>📌 <strong>Status:</strong> {legalCase.status}</p>
-          <p>📅 <strong>Created:</strong> {new Date(legalCase.created_at).toLocaleString()}</p>
-          <p>💰 <strong>Total Billing:</strong> €{legalCase.total_billing}</p>
+          <p> <strong>Case ID:</strong> {legalCase.case_id}</p>
+          <p> <strong>Client ID:</strong> {legalCase.client_id}</p>
+          <p> <strong>Solicitor ID:</strong> {legalCase.solicitor_id}</p>
+          <p> <strong>Status:</strong> {legalCase.status}</p>
+          <p> <strong>Created:</strong> {new Date(legalCase.created_at).toLocaleString()}</p>
+          <p> <strong>Total Billing:</strong> €{legalCase.total_billing}</p>
         </section>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
