@@ -58,41 +58,43 @@ export default function Dashboard() {
         />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <OverviewCard
-          title="Tasks"
-          data={data.tasks_student}
-          icon={<FaTasks />}
-          role={role}
-        />
-        <OverviewCard
-          title="Meetings"
-          data={data.meetings}
-          icon={<FaCalendarAlt />}
-          role={role}
-        />
+      {(role === "mentor" || role === "student") && (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <OverviewCard
+            title="Tasks"
+            data={data.tasks_student}
+            icon={<FaTasks />}
+            role={role}
+          />
+          <OverviewCard
+            title="Meetings"
+            data={data.meetings}
+            icon={<FaCalendarAlt />}
+            role={role}
+          />
+        </div>
+      )}
 
-        {(role === "client" || role === "solicitor") && (
-          <>
-            <OverviewCard
-              title="Cases"
-              data={data.cases}
-              icon={<FaBriefcase />}
-              role={role}
-            />
-            <OverviewCard
-              title="Tasks"
-              data={
-                role === "client"
-                  ? data.tasks?.filter((task) => task.recipient === "Client")
-                  : data.tasks
-              }
-              icon={<FaTasks />}
-              role={role}
-            />
-          </>
-        )}
-      </div>
+      {(role === "client" || role === "solicitor") && (
+        <>
+          <OverviewCard
+            title="Cases"
+            data={data.cases}
+            icon={<FaBriefcase />}
+            role={role}
+          />
+          <OverviewCard
+            title="Tasks"
+            data={
+              role === "client"
+                ? data.tasks?.filter((task) => task.recipient === "Client")
+                : data.tasks
+            }
+            icon={<FaTasks />}
+            role={role}
+          />
+        </>
+      )}
 
       {calendarEvents.length > 0 && (
         <div className="w-full">

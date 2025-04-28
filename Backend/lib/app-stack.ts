@@ -7,6 +7,7 @@ import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as secretsmanager from "aws-cdk-lib/aws-secretsmanager";
 import * as apig from "aws-cdk-lib/aws-apigateway";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
+import * as s3 from "aws-cdk-lib/aws-s3";
 // Unfinished
 
 type AppApiProps = {
@@ -77,6 +78,16 @@ export class AppApi extends Construct {
       deletionProtection: false,
     });
 
+    const uploadsBucket = new s3.Bucket(this, "UploadsBucket", {
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      autoDeleteObjects: true,
+      cors: [{
+        allowedMethods: [s3.HttpMethods.PUT, s3.HttpMethods.POST, s3.HttpMethods.DELETE],
+        allowedOrigins: ["*"],
+        allowedHeaders: ["*"],
+      }],
+    });
+
     this.dbEndpoint = dbInstance.dbInstanceEndpointAddress;
     this.dbSecret = dbCredentialsSecret;
 
@@ -85,8 +96,6 @@ export class AppApi extends Construct {
       "OpenAISecret",
       "prod/openai"
     );
-
-
 
     const appCommonFnProps = {
       architecture: lambda.Architecture.ARM_64,
@@ -154,6 +163,25 @@ export class AppApi extends Construct {
       entry: `${__dirname}/../lambdas/OpenAI/getCourseSuggestions.ts`
     })
 
+    const getPresignedUrlFn = new lambdanode.NodejsFunction(this, "getPresignedUrlFn", {
+      ...appCommonFnProps,
+      entry: `${__dirname}/../lambdas/s3/uploadFile.ts`,
+      environment: {
+        ...appCommonFnProps.environment,
+        BUCKET_NAME: uploadsBucket.bucketName,
+      }
+    });
+
+    const viewFileFn = new lambdanode.NodejsFunction(this, "viewFileFn", {
+      ...appCommonFnProps,
+      entry: `${__dirname}/../lambdas/s3/viewFile.ts`,
+      environment: {
+        ...appCommonFnProps.environment,
+        BUCKET_NAME: uploadsBucket.bucketName,
+      }
+    });
+
+
 
     const requestAuthorizer = new apig.RequestAuthorizer(
       this,
@@ -186,6 +214,9 @@ export class AppApi extends Construct {
     dbCredentialsSecret.grantRead(matchClientFn)
     props.messageTable.grantReadWriteData(getHistoryFn)
     openAISecret.grantRead(getCourseSuggestions);
+    uploadsBucket.grantPut(getPresignedUrlFn);
+    uploadsBucket.grantRead(viewFileFn);
+
 
     const educationEndpoint = appApi.root.addResource("education");
 
@@ -239,6 +270,19 @@ export class AppApi extends Construct {
       authorizationType: apig.AuthorizationType.CUSTOM,
     });
 
+    const uploadEndpoint = educationEndpoint.addResource("upload");
+
+    uploadEndpoint.addMethod("POST", new apig.LambdaIntegration(getPresignedUrlFn, { proxy: true }), {
+      // authorizer: requestAuthorizer,
+      // authorizationType: apig.AuthorizationType.CUSTOM,
+    });
+
+    const viewFileEndpoint = educationEndpoint.addResource("view-file");
+
+    viewFileEndpoint.addMethod("POST", new apig.LambdaIntegration(viewFileFn, { proxy: true }), {
+      // authorizer: requestAuthorizer,
+      // authorizationType: apig.AuthorizationType.CUSTOM,
+    });
 
     new cdk.CfnOutput(this, "DBEndpoint", {
       value: dbInstance.dbInstanceEndpointAddress,

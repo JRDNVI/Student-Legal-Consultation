@@ -31,7 +31,7 @@ export const SocketProvider = ({ children }) => {
     if (!token) return;
 
     const socket = new WebSocket(
-      `wss://n1se50fxok.execute-api.eu-west-1.amazonaws.com/prod?token=${token}`
+      `wss://jicecmrg5k.execute-api.eu-west-1.amazonaws.com/prod?token=${token}`
     );
 
     socketRef.current = socket;

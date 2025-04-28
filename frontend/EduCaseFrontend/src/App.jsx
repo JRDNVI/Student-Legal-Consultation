@@ -24,6 +24,7 @@ import CaseDetailPage from './pages/solicitor/caseDetail';
 import OnboardingPage from './pages/student/onboarding/onboardingPage';
 import ClientProfilePage from './pages/client/ClientProfile';
 import SolicitorProfilePage from './pages/solicitor/SolicitorProfile';
+import ClientCasePage from './pages/client/clientCaseDetails';
 
 
 // Not finsihed yet - QueryProvider needs to be implemented
@@ -80,6 +81,9 @@ function App() {
             <Route path="/cases" element={withLayout(CaseListPage)} />
             <Route path="/cases/:caseId" element={withLayout(CaseDetailPage)} />
             <Route path="/solicitor-profile" element={withLayout(SolicitorProfilePage)} />
+            <Route path="/client-cases" element={withLayout(ClientCasePage)} />
+
+            {/* Catch-all route */}
           </Routes>
         </SocketProvider>
       </AuthProvider>

@@ -1,12 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import useDashboardData from "../../hooks/useDashboardData";
 import LoadingSpinner from "../../components/general/LoadingSpinner";
 import { useMessageHistory } from "../../hooks/messageHistory";
+import { uploadFileAndGetS3Key } from "../../util/upload/uploadFiles";
+import ViewFileButton from "../../components/general/ViewFileButton";
 
 const StudentMentorPage = () => {
   const { data, loading } = useDashboardData();
   const { messages, loading: messagesLoading } = useMessageHistory();
   const currentUserEmail = data?.students?.[0]?.email;
+
+  const [selectedFiles, setSelectedFiles] = useState({});
 
   if (loading || messagesLoading) return <LoadingSpinner title="Loading Mentor Page" />;
   if (!data.mentors?.length) {
@@ -20,19 +24,30 @@ const StudentMentorPage = () => {
     ? messages
     : messages[mentorEmail] || [];
 
+  const uploadFile = async (file, taskId) => {
+    try {
+      const s3Key = await uploadFileAndGetS3Key(
+        "tasks_student",
+        file,
+        "student",
+        data.students[0].student_id,
+        taskId
+      );
+      console.log("File uploaded successfully. S3 Key:", s3Key);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
   return (
-    <div className="flex flex-col lg:flex-row bg-gray-50 min-h-screen p-6 gap-6">
+    <div className="flex flex-col bg-gray-50 min-h-screen p-6 gap-6">
       <div className="flex-1 flex flex-col gap-6">
         <section className="bg-white rounded-3xl shadow-md p-8">
-
-
           <div className="flex items-center gap-6 flex-wrap">
             <div className="flex-1 min-w-0">
               <p className="truncate"><span className="font-semibold">Name:</span> {mentor.name || "N/A"}</p>
               <p className="truncate"><span className="font-semibold">Email:</span> {mentor.email}</p>
             </div>
-
-
             <div className="w-24 h-24 flex-shrink-0">
               <img
                 src={mentor.photoUrl || `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(mentor.name || "Mentor")}`}
@@ -41,6 +56,7 @@ const StudentMentorPage = () => {
               />
             </div>
           </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
             {[
               { title: "Skills", items: data.mentor_skills, render: (s) => s.skill },
@@ -78,8 +94,7 @@ const StudentMentorPage = () => {
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
                       <h3 className="text-lg font-bold text-gray-900">{task.title}</h3>
                       <span
-                        className={`mt-2 md:mt-0 px-3 py-1 text-xs font-semibold rounded-full ${task.completed ? "bg-green-200 text-green-800" : "bg-yellow-200 text-yellow-800"
-                          }`}
+                        className={`mt-2 md:mt-0 px-3 py-1 text-xs font-semibold rounded-full ${task.completed ? "bg-green-200 text-green-800" : "bg-yellow-200 text-yellow-800"}`}
                       >
                         {task.completed ? "Completed" : "Pending"}
                       </span>
@@ -91,51 +106,65 @@ const StudentMentorPage = () => {
                       </p>
                     )}
 
-                    <form onSubmit={null} className="flex flex-col sm:flex-row sm:items-center gap-3 mt-2">
-                      <input
-                        type="file"
-                        name="file"
-                        className="flex-1 text-sm border-gray-300 rounded-lg shadow-sm p-2 focus:outline-purple-500"
-                        required
-                      />
-                      <button
-                        type="submit"
-                        className="bg-purple-600 hover:bg-purple-700 text-white text-sm px-5 py-2 rounded-lg transition"
+                    {task.filename ? (
+                      <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                        <ViewFileButton s3Key={task.s3_key} filename={task.filename} />
+                      </div>
+                    ) : (
+                      <form
+                        onSubmit={(e) => {
+                          e.preventDefault();
+                          if (selectedFiles[task.task_id]) {
+                            uploadFile(selectedFiles[task.task_id], task.task_id);
+                          }
+                        }}
+                        className="flex flex-col sm:flex-row sm:items-center gap-3 mt-2"
                       >
-                        Upload
-                      </button>
-                    </form>
+                        <input
+                          type="file"
+                          name="file"
+                          className="flex-1 text-sm border-gray-300 rounded-lg shadow-sm p-2 focus:outline-purple-500"
+                          required
+                          onChange={(e) => setSelectedFiles({ ...selectedFiles, [task.task_id]: e.target.files[0] })}
+                        />
+                        <button
+                          type="submit"
+                          className="bg-purple-600 hover:bg-purple-700 text-white text-sm px-5 py-2 rounded-lg transition"
+                        >
+                          Upload
+                        </button>
+                      </form>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
           )}
         </section>
+        <aside className="bg-white rounded-3xl shadow-md p-6 flex flex-col w-full h-[200px] overflow-y-auto">
+          <h2 className="text-xl font-bold text-purple-700 mb-4">💬 Message History</h2>
+          <div className="overflow-y-auto space-y-4">
+            {messageList.length === 0 ? (
+              <p className="text-gray-500 italic text-sm">No messages yet</p>
+            ) : (
+              messageList.map((msg, idx) => {
+                const isSender = msg.sender === currentUserEmail;
+                return (
+                  <div
+                    key={idx}
+                    className={`text-sm p-3 rounded-lg max-w-[85%] break-words ${isSender ? "bg-purple-100 self-end text-right" : "bg-gray-100 self-start text-left"}`}
+                  >
+                    <p className="text-gray-800">{msg.message}</p>
+                    <p className="text-gray-400 text-xs mt-1">{new Date(msg.timestamp).toLocaleString()}</p>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </aside>
       </div>
 
-      {/* RIGHT SIDE: Messages */}
-      <aside className=" lg:w-[350px] bg-white rounded-3xl shadow-md p-6 flex flex-col max-h-[800px]">
-        <h2 className="text-xl font-bold text-purple-700 mb-4">💬 Message History</h2>
-        <div className="overflow-y-auto space-y-4 ">
-          {messageList.length === 0 ? (
-            <p className="text-gray-500 italic text-sm">No messages yet</p>
-          ) : (
-            messageList.map((msg, idx) => {
-              const isSender = msg.sender === currentUserEmail;
-              return (
-                <div
-                  key={idx}
-                  className={`text-sm p-3 rounded-lg max-w-[85%] break-words ${isSender ? "bg-purple-100 self-end text-right" : "bg-gray-100 self-start text-left"
-                    }`}
-                >
-                  <p className="text-gray-800">{msg.message}</p>
-                  <p className="text-gray-400 text-xs mt-1">{new Date(msg.timestamp).toLocaleString()}</p>
-                </div>
-              );
-            })
-          )}
-        </div>
-      </aside>
+
     </div>
   );
 };
