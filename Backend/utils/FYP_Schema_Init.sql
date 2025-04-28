@@ -106,6 +106,9 @@ CREATE TABLE tasks_student (
   student_id INT,
   mentor_id INT,
   title VARCHAR(255),
+  filename VARCHAR(255),
+  s3_key TEXT,
+  uploaded_at TIMESTAMP DEFAULT NULL,
   deadline DATE,
   completed BOOLEAN DEFAULT FALSE,
   FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE,
@@ -128,7 +131,7 @@ CREATE TABLE student_documents (
   document_id INT AUTO_INCREMENT PRIMARY KEY,
   assignment_id INT,
   filename VARCHAR(255),
-  url TEXT,
+  s3_key TEXT,
   uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (assignment_id) REFERENCES assignments(assignment_id) ON DELETE CASCADE
 );
@@ -138,13 +141,6 @@ CREATE TABLE appointments (
   subject VARCHAR(16),
   date DATETIME,
   status ENUM('Scheduled', 'Completed', 'Canceled'),
-  student_id INT,
-  FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
-);
-
-CREATE TABLE student_calendar (
-  calendar_id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(32),
   student_id INT,
   FOREIGN KEY (student_id) REFERENCES students(student_id) ON DELETE CASCADE
 );
@@ -231,41 +227,13 @@ CREATE TABLE tasks (
   FOREIGN KEY (case_id) REFERENCES cases(case_id) ON DELETE CASCADE
 );
 
-CREATE TABLE documents (
+CREATE TABLE case_documents (
   document_id INT AUTO_INCREMENT PRIMARY KEY,
   case_id INT,
   filename VARCHAR(255),
-  url TEXT,
+  s3_url TEXT,
   uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (case_id) REFERENCES cases(case_id) ON DELETE CASCADE
-);
-
-CREATE TABLE messages (
-  message_id INT AUTO_INCREMENT PRIMARY KEY,
-  case_id INT,
-  sender_id INT,
-  recipient_id INT,
-  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  content TEXT,
-  FOREIGN KEY (case_id) REFERENCES cases(case_id) ON DELETE CASCADE
-);
-
-CREATE TABLE calendar (
-  calendar_id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(32),
-  solicitor_id INT,
-  FOREIGN KEY (solicitor_id) REFERENCES solicitors(solicitor_id) ON DELETE CASCADE
-);
-
-CREATE TABLE event (
-  event_id INT AUTO_INCREMENT PRIMARY KEY,
-  title VARCHAR(32),
-  description VARCHAR(255),
-  type VARCHAR(16),
-  creation_date DATETIME,
-  due_date DATETIME,
-  calendar_id INT,
-  FOREIGN KEY (calendar_id) REFERENCES calendar(calendar_id) ON DELETE CASCADE
 );
 
 CREATE TABLE solicitor_cases (

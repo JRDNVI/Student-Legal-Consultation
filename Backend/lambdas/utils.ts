@@ -139,6 +139,10 @@ export const allowedTablesAdd: Record<string, string[]> = {
   student_interests: ["student_id", "interest"],
   student_availability: ["student_id", "day", "time_slot"],
   student_suggested_course: ["student_id", "title", "reason"],
+  tasks_student: ["task_id", "student_id", "mentor_id", "filename", "s3_key", "uploaded_at", "title", "deadline", "completed"],
+  assignments: ["title", "description", "status", "grade", "due_date", "mentor_id", "student_id"],
+  student_documents: ["document_id", "assignment_id", "filename", "s3_key", "uploaded_at"],
+
   mentors: ["cognito_id", "name", "email", "availability", "skills", "onboarded"],
   mentor_skills: ["mentor_id", "skill"],
   mentor_expertise: ["mentor_id", "area_of_expertise", "topic_area"],
@@ -146,12 +150,8 @@ export const allowedTablesAdd: Record<string, string[]> = {
   mentor_languages: ["mentor_id", "language"],
   mentor_availability: ["mentor_id", "day", "time_slot"],
   meetings: ["student_id", "mentor_id", "timeslot", "status"],
-  tasks_student: ["student_id", "mentor_id", "title", "deadline", "completed"],
-  assignments: ["title", "description", "status", "grade", "due_date", "mentor_id", "student_id"],
-  student_documents: ["assignment_id", "filename", "url", "uploaded_at"],
   appointments: ["subject", "date", "status", "student_id"],
-  student_calendar: ["name", "student_id"],
-  student_event: ["title", "description", "type", "creation_date", "due_date", "calendar_id"]
+
 };
 
 
@@ -162,17 +162,16 @@ export const allowedTablesDelete: Record<string, string[]> = {
   mentor_communication_styles: ["id", "mentor_id", "style"],
   mentor_languages: ["id", "mentor_id", "language"],
   mentor_availability: ["id", "mentor_id", "day", "time_slot"],
+
   students: ["student_id", "cognito_id", "name", "email", "profile_info", "mentor_id", "onboarded"],
   student_preferences: ["preference_id", "student_id", "area_of_study", "communication_style", "language", "mentor_rating"],
   student_interests: ["interest_id", "student_id", "interest"],
   student_availability: ["availability_id", "student_id", "day", "time_slot"],
   meetings: ["meeting_id", "student_id", "mentor_id", "status", "timeslot"],
-  tasks_student: ["task_id", "student_id", "mentor_id", "title", "deadline", "completed"],
+  tasks_student: ["task_id", "student_id", "mentor_id", "filename", "s3_key", "uploaded_at", "title", "deadline", "completed"],
   assignments: ["assignment_id", "student_id", "mentor_id", "title", "deadline", "status"],
-  student_documents: ["document_id", "student_id", "file_name", "file_url", "uploaded_at"],
+  student_documents: ["document_id", "assignment_id", "filename", "s3_url", "uploaded_at"],
   appointments: ["appointment_id", "student_id", "mentor_id", "scheduled_time", "status"],
-  student_calendar: ["calendar_id", "student_id", "event_name", "start_time", "end_time"],
-  student_event: ["event_id", "student_id", "event_title", "event_description", "event_date"]
 
 };
 
@@ -222,9 +221,7 @@ export const allowedLegalTablesAdd: Record<string, string[]> = {
 
   cases: ["client_id", "solicitor_id", "status", "created_at", "total_billing"],
   tasks: ["case_id", "title", "due_date", "completed", "recipient"],
-  documents: ["case_id", "filename", "url", "uploaded_at"],
-  messages: ["case_id", "sender_id", "recipient_id", "timestamp", "content"],
-  calendar: ["name", "solicitor_id"],
+  case_documents: ["case_id", "filename", "s3_url", "uploaded_at"],
   event: ["title", "description", "type", "creation_date", "due_date", "calendar_id"],
   solicitor_cases: ["solicitor_id", "case_id"],
   billing: ["case_id", "amount_due", "amount_paid", "billing_status", "billing_date"],
@@ -243,7 +240,7 @@ export const allowedLegalTablesDelete: Record<string, string[]> = {
 
   cases: ["case_id"],
   tasks: ["task_id"],
-  documents: ["document_id"],
+  case_documents: ["document_id"],
   messages: ["message_id"],
   calendar: ["calendar_id"],
   event: ["event_id"],
@@ -256,7 +253,6 @@ export const getLegalDataTable: Record<string, { tables: string[]; column: strin
     tables: [
       "solicitors",
       "cases",
-      "calendar",
       "solicitor_languages",
       "solicitor_communication_styles",
       "solicitor_specialisations",
@@ -339,8 +335,8 @@ export const extendedRoleTableJoins: Record<string, { table: string; join: strin
       baseTable: "cases"
     },
     {
-      table: "documents",
-      join: "JOIN cases ON documents.case_id = cases.case_id",
+      table: "case_documents",
+      join: "JOIN cases ON case_documents.case_id = cases.case_id",
       param: "client_id",
       baseTable: "cases"
     },
@@ -350,12 +346,6 @@ export const extendedRoleTableJoins: Record<string, { table: string; join: strin
       param: "client_id",
       baseTable: "cases"
     },
-    {
-      table: "messages",
-      join: "JOIN cases ON messages.case_id = cases.case_id",
-      param: "client_id",
-      baseTable: "cases"
-    }
   ],
 
   solicitor: [
@@ -366,20 +356,14 @@ export const extendedRoleTableJoins: Record<string, { table: string; join: strin
       baseTable: "cases"
     },
     {
-      table: "documents",
-      join: "JOIN cases ON documents.case_id = cases.case_id",
-      param: "solicitor_id",
+      table: "case_documents",
+      join: "JOIN cases ON case_documents.case_id = cases.case_id",
+      param: "client_id",
       baseTable: "cases"
     },
     {
       table: "notes",
       join: "JOIN cases ON notes.case_id = cases.case_id",
-      param: "solicitor_id",
-      baseTable: "cases"
-    },
-    {
-      table: "messages",
-      join: "JOIN cases ON messages.case_id = cases.case_id",
       param: "solicitor_id",
       baseTable: "cases"
     },

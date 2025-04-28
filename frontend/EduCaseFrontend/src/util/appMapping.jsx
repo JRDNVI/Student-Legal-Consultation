@@ -166,6 +166,7 @@ export const pathMap = {
   "/appointments": "Appointments",
   "/court-schedule": "Court Schedule",
   "/calendar": "Calendar",
+  "/client-cases": "Your Case",
 };
 
 export const items = {
