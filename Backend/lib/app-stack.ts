@@ -83,8 +83,11 @@ export class AppApi extends Construct {
       autoDeleteObjects: true,
       cors: [{
         allowedMethods: [s3.HttpMethods.PUT, s3.HttpMethods.POST, s3.HttpMethods.DELETE],
-        allowedOrigins: ["*"],
-        allowedHeaders: ["*"],
+        allowedOrigins: [
+          'http://localhost:3000',
+          'https://educase-jc.web.app'
+        ],
+        allowedHeaders: ["OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
       }],
     });
 

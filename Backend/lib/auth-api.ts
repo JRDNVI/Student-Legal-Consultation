@@ -45,7 +45,10 @@ export class AuthApi extends Construct {
       description: "Authentication Service RestApi",
       endpointTypes: [apig.EndpointType.REGIONAL],
       defaultCorsPreflightOptions: {
-        allowOrigins: ['http://localhost:3000'],
+        allowOrigins: [
+          'http://localhost:3000',
+          'https://educase-jc.web.app'
+        ],
         allowMethods: ["OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
         allowHeaders: ['Content-Type', 'Authorization'],
       },
