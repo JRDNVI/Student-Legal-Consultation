@@ -17,11 +17,26 @@ export default function useDashboardData() {
       setDashboardData(response.data.relatedData);
       setLocalData(response.data.relatedData);
     } catch (err) {
-      console.error("Dashboard fetch error:", err);
+      console.error("Dashboard fetch error, trying cache:", err);
+
+      // Fallback to cache if the user is offline.
+      try {
+        const cache = await caches.open('dashboard-api-cache');
+        const cachedResponse = await cache.match(
+          'https://fted6gfo0m.execute-api.eu-west-1.amazonaws.com/dev/education/'
+        );
+        if (cachedResponse) {
+          const cachedData = await cachedResponse.json();
+          setLocalData(cachedData.relatedData || {});
+        }
+      } catch (cacheError) {
+        console.error("Failed to load dashboard data from cache:", cacheError);
+      }
     } finally {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     if (!dashboardData) fetchData();

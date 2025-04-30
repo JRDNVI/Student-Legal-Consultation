@@ -12,6 +12,7 @@ import { ExpirationPlugin } from 'workbox-expiration';
 import { precacheAndRoute, createHandlerBoundToURL } from 'workbox-precaching';
 import { registerRoute } from 'workbox-routing';
 import { StaleWhileRevalidate } from 'workbox-strategies';
+import { NetworkFirst } from 'workbox-strategies';
 
 clientsClaim();
 
@@ -43,8 +44,24 @@ registerRoute(
 
     return true;
   },
-  createHandlerBoundToURL(process.env.PUBLIC_URL + '/index.html')
+  createHandlerBoundToURL('https://educase-jc.web.app/index.html')
 );
+
+registerRoute(
+  ({ url }) =>
+    url.origin === 'https://fted6gfo0m.execute-api.eu-west-1.amazonaws.com' &&
+    url.pathname.startsWith('/dev/education'),
+  new NetworkFirst({
+    cacheName: 'dashboard-api-cache',
+    plugins: [
+      new ExpirationPlugin({
+        maxEntries: 10,
+        maxAgeSeconds: 5 * 60,
+      }),
+    ],
+  })
+);
+
 
 // An example runtime caching route for requests that aren't handled by the
 // precache, in this case same-origin .png requests like those from in public/

@@ -13,6 +13,13 @@ export default function LoginPage() {
   const [triggeredLogin, setTriggeredLogin] = useState(false);
   const Navigate = useNavigate();
 
+  useEffect(() => {
+    if (user) {
+      Navigate("/dashboard");
+    }
+  }, [user]);
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
