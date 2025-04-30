@@ -30,13 +30,14 @@ DROP TABLE IF EXISTS
   billing,
   notes,
   solicitor_cases, 
-  event,
+  case_events,
   calendar,
   messages,
   documents,
   tasks,
   cases,
   clients,
+  case_documents,
   solicitors;
 
 SET FOREIGN_KEY_CHECKS = 1;

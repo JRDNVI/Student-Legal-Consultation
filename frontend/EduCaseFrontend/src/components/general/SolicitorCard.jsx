@@ -28,6 +28,18 @@ const SolicitorCard = ({ match, clientId }) => {
       await appApi.put("education/", {
         tableName: "clients",
         data: {
+          solicitor_id: profile?.solicitor_id,
+        },
+        where: {
+          client_id: clientId
+        }
+      });
+
+      console.log(profile)
+
+      await appApi.put("education/", {
+        tableName: "clients",
+        data: {
           onboarded: 1
         },
         where: {

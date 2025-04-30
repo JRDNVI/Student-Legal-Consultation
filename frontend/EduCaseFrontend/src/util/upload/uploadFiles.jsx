@@ -52,7 +52,7 @@ export async function uploadFileAndGetS3Key(table_name, file, role, user_id, ite
 
 
 export const fetchPresignedViewUrl = async (s3Key) => {
-    const res = await fetch('https://g7sly3svf3.execute-api.eu-west-1.amazonaws.com/dev/education/view-file', {
+    const res = await fetch('https://tbowetur40.execute-api.eu-west-1.amazonaws.com/dev/education/view-file', {
         method: "POST",
         body: JSON.stringify({
             key: s3Key,

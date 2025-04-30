@@ -186,6 +186,7 @@ CREATE TABLE solicitor_availability (
   FOREIGN KEY (solicitor_id) REFERENCES solicitors(solicitor_id) ON DELETE CASCADE
 );
 
+
 CREATE TABLE clients (
   client_id INT AUTO_INCREMENT PRIMARY KEY,
   cognito_id VARCHAR(255) NOT NULL UNIQUE,
@@ -216,6 +217,20 @@ CREATE TABLE cases (
   FOREIGN KEY (client_id) REFERENCES clients(client_id) ON DELETE CASCADE,
   FOREIGN KEY (solicitor_id) REFERENCES solicitors(solicitor_id) ON DELETE CASCADE
 );
+
+CREATE TABLE case_events (
+  event_id INT AUTO_INCREMENT PRIMARY KEY,
+  case_id INT,
+  title VARCHAR(100),
+  description TEXT,
+  start_time DATETIME,
+  end_time DATETIME,
+  event_type VARCHAR(50), 
+  created_by VARCHAR(255), 
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (case_id) REFERENCES cases(case_id) ON DELETE CASCADE
+);
+
 
 CREATE TABLE tasks (
   task_id INT AUTO_INCREMENT PRIMARY KEY,

@@ -34,6 +34,7 @@
     "constructs": "^10.4.2",
     "jsonwebtoken": "^9.0.2",
     "jwk-to-pem": "^2.0.7",
-    "mysql2": "^3.14.0"
+    "mysql2": "^3.14.0",
+    "recharts": "^2.15.3"
   }
 }

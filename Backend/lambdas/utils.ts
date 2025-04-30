@@ -216,16 +216,16 @@ export const allowedLegalTablesAdd: Record<string, string[]> = {
   solicitor_specialisations: ["solicitor_id", "specialization"],
   solicitor_availability: ["solicitor_id", "day_of_week", "time_slot"],
 
-  clients: ["cognito_id", "name", "language", "communcation_style", "budget", "onboarded"],
+  clients: ["cognito_id", "name", "language", "communcation_style", "budget", "onboarded", "solicitor_id"],
   client_legal_needs: ["client_id", "legal_topic"],
 
   cases: ["client_id", "solicitor_id", "status", "created_at", "total_billing"],
   tasks: ["case_id", "title", "due_date", "completed", "recipient"],
   case_documents: ["case_id", "filename", "s3_url", "uploaded_at"],
-  event: ["title", "description", "type", "creation_date", "due_date", "calendar_id"],
   solicitor_cases: ["solicitor_id", "case_id"],
   billing: ["case_id", "amount_due", "amount_paid", "billing_status", "billing_date"],
   notes: ["case_id", "note_name", "note_type", "creation_date", "content"],
+  case_events: ["case_id", "title", "description", "event_type", "start_time", "end_time", "created_by"],
 };
 
 export const allowedLegalTablesDelete: Record<string, string[]> = {
@@ -243,9 +243,9 @@ export const allowedLegalTablesDelete: Record<string, string[]> = {
   case_documents: ["document_id"],
   messages: ["message_id"],
   calendar: ["calendar_id"],
-  event: ["event_id"],
   billing: ["billing_id"],
-  notes: ["note_id"]
+  notes: ["note_id"],
+  case_events: ["event_id"]
 }
 
 export const getLegalDataTable: Record<string, { tables: string[]; column: string }> = {
@@ -323,12 +323,6 @@ export const extendedRoleTableJoins: Record<string, { table: string; join: strin
       baseTable: "clients"
     },
     {
-      table: "billing",
-      join: "JOIN cases ON billing.case_id = cases.case_id",
-      param: "client_id",
-      baseTable: "cases"
-    },
-    {
       table: "tasks",
       join: "JOIN cases ON tasks.case_id = cases.case_id",
       param: "client_id",
@@ -346,6 +340,19 @@ export const extendedRoleTableJoins: Record<string, { table: string; join: strin
       param: "client_id",
       baseTable: "cases"
     },
+    {
+      table: "billing",
+      join: "JOIN cases ON billing.case_id = cases.case_id",
+      param: "client_id",
+      baseTable: "cases"
+    },
+    {
+      table: "case_events",
+      join: "JOIN cases ON case_events.case_id = cases.case_id",
+      param: "client_id",
+      baseTable: "cases"
+    }
+
   ],
 
   solicitor: [
@@ -372,7 +379,14 @@ export const extendedRoleTableJoins: Record<string, { table: string; join: strin
       join: "JOIN cases ON billing.case_id = cases.case_id",
       param: "solicitor_id",
       baseTable: "cases"
+    },
+    {
+      table: "case_events",
+      join: "JOIN cases ON case_events.case_id = cases.case_id",
+      param: "solicitor_id",
+      baseTable: "cases"
     }
+
   ]
 };
 

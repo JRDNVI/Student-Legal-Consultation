@@ -133,10 +133,27 @@ export default function MentorProfileDataForm() {
         </div>
         <div>
           <label className="block mb-1 font-medium">Preferred Language(s)</label>
-          <input name="language" value={form.language} onChange={handleChangec} className="w-full border border-gray-300 rounded-xl p-2"
-            placeholder="e.g., English, Spanish" required />
-        </div>
-        <div>
+          {form.languages.map((language, index) => (
+            <div key={index} className="flex gap-2 mb-2">
+              <input
+                type="text"
+                value={language}
+                onChange={(e) => updateArrayField(setForm, "languages", index, e.target.value)}
+                placeholder={`Language ${index + 1}`}
+                className="flex-1 border rounded-xl p-2"
+                required
+              />
+              {form.languages.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeFromArrayField(setForm, "languages", index)}
+                  className="text-red-500 text-sm hover:underline"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          ))}
           <button
             type="button"
             onClick={() => addToArrayField(setForm, "languages", "")}

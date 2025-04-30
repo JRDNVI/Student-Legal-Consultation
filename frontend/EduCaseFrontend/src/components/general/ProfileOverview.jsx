@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { userFields } from "../../util/appMapping";
+import { FaPlus } from "react-icons/fa";
 
 
 const ProfileOverview = ({ role, data, onEdit }) => {
@@ -34,7 +35,7 @@ const ProfileOverview = ({ role, data, onEdit }) => {
             onClick={onEdit}
             className="absolute top-4 right-4 bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
           >
-            Edit Profile
+            <FaPlus />
           </button>
         </div>
 
