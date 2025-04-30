@@ -1,4 +1,4 @@
-import { FaHome, FaUserGraduate, FaTasks, FaCalendarAlt, FaBriefcase, FaGavel, FaPersonBooth, FaUserFriends } from "react-icons/fa";
+import { FaHome, FaUserGraduate, FaTasks, FaCalendarAlt, FaBriefcase, FaGavel, FaPersonBooth, FaUserFriends, FaMoneyBill } from "react-icons/fa";
 
 export const fieldMap = {
   student: {
@@ -167,6 +167,12 @@ export const pathMap = {
   "/court-schedule": "Court Schedule",
   "/calendar": "Calendar",
   "/client-cases": "Your Case",
+  "/client-profile": "Client Profile",
+  "/billing": "Billing",
+  "/solicitor-profile": "Solicitor Profile",
+  "/solicitor-calendar": "Solicitor Calendar",
+  "/client-billing": "Client Billing",
+  "cases/:caseId": "Case Details",
 };
 
 export const items = {
@@ -186,14 +192,14 @@ export const items = {
   client: [
     { icon: <FaHome />, label: "Dashboard", path: "/dashboard" },
     { icon: <FaBriefcase />, label: "My Cases", path: "/client-cases" },
-    { icon: <FaCalendarAlt />, label: "Appointments", path: "/appointments" },
-    { icon: <FaUserFriends />, label: "Profile", path: "/client-profile" }
+    { icon: <FaMoneyBill />, label: "Billing", path: "/client-billing" },
+    { icon: <FaUserFriends />, label: "Profile", path: "/client-profile" },
   ],
   solicitor: [
     { icon: <FaHome />, label: "Dashboard", path: "/dashboard" },
     { icon: <FaBriefcase />, label: "All Cases", path: "/cases" },
-    { icon: <FaGavel />, label: "Court Schedule", path: "/court-schedule" },
-    { icon: <FaCalendarAlt />, label: "Calendar", path: "/calendar" },
+    { icon: <FaMoneyBill />, label: "Billing", path: "/billing" },
+    { icon: <FaCalendarAlt />, label: "Calendar", path: "/solicitor-calendar" },
     { icon: <FaUserFriends />, label: "Profile", path: "/solicitor-profile" }
   ],
 };

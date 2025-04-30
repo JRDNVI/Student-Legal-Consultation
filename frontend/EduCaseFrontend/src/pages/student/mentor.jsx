@@ -40,7 +40,7 @@ const StudentMentorPage = () => {
   };
 
   return (
-    <div className="flex flex-col bg-gray-50 min-h-screen p-6 gap-6">
+    <main className="space-y-6">
       <div className="flex-1 flex flex-col gap-6">
         <section className="bg-white rounded-3xl shadow-md p-8">
           <div className="flex items-center gap-6 flex-wrap">
@@ -165,7 +165,7 @@ const StudentMentorPage = () => {
       </div>
 
 
-    </div>
+    </main>
   );
 };
 

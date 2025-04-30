@@ -16,8 +16,6 @@ export default function Layout({ children }) {
   const [collapsed, setCollapsed] = useState(false);
 
 
-
-
   const navItems = items[role] || [];
   const currentPath = location.pathname;
   const pageTitle = pathMap[currentPath] || "My App";

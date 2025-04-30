@@ -51,7 +51,11 @@ export const handler: APIGatewayProxyHandlerV2 = async (event: any) => {
       const values = keys.map((k) => data[k]);
       const sql = `INSERT INTO ${tableName} (${cols}) VALUES (${placeholders})`;
 
-      await connection.execute(sql, values);
+      console.log("[SQL]", sql, values);
+
+
+      const test = await connection.execute(sql, values);
+      console.log("[RESULT]", test);
     }
 
     await connection.end();

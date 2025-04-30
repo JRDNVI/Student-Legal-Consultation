@@ -25,6 +25,9 @@ import OnboardingPage from './pages/student/onboarding/onboardingPage';
 import ClientProfilePage from './pages/client/ClientProfile';
 import SolicitorProfilePage from './pages/solicitor/SolicitorProfile';
 import ClientCasePage from './pages/client/clientCaseDetails';
+import BillingPage from './pages/solicitor/billingPage';
+import SolicitorCalendarPage from './pages/solicitor/calandar';
+import ClientBillingPage from './pages/client/ClientBillingPage';
 
 
 // Not finsihed yet - QueryProvider needs to be implemented
@@ -82,6 +85,9 @@ function App() {
             <Route path="/cases/:caseId" element={withLayout(CaseDetailPage)} />
             <Route path="/solicitor-profile" element={withLayout(SolicitorProfilePage)} />
             <Route path="/client-cases" element={withLayout(ClientCasePage)} />
+            <Route path="/billing" element={withLayout(BillingPage)} />
+            <Route path="/solicitor-calendar" element={withLayout(SolicitorCalendarPage)} />
+            <Route path="/client-billing" element={withLayout(ClientBillingPage)} />
 
             {/* Catch-all route */}
           </Routes>

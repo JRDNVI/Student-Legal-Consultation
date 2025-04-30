@@ -12,6 +12,7 @@ const StudentOnboarding = ({ both }) => {
   const [selectedAreaOfStudy, setSelectedAreaOfStudy] = useState(null);
 
   const [form, setForm] = useState({
+    name: "",
     area_of_study: "",
     communication_style: "",
     language: "",
@@ -48,6 +49,15 @@ const StudentOnboarding = ({ both }) => {
 
     try {
       await appApi.post("education/", requestBody);
+      await appApi.put("education/", {
+        tableName: "students",
+        data: {
+          name: form.name,
+        },
+        where: {
+          student_id: studentId
+        },
+      });
       Navigate("/meet-mentor", { state: { fullOnboarding: both } });
     } catch (err) {
       console.error("Error submitting onboarding form:", err.response?.data || err.message);
@@ -63,6 +73,11 @@ const StudentOnboarding = ({ both }) => {
         <p className="text-sm text-gray-600">
           Fill out your preferences so we can connect you with a mentor who suits your needs.
         </p>
+      </div>
+      <div className="mb-4">
+        <label htmlFor="name" className="block mb-1 font-medium">Full Name</label>
+        <input id="name" name="name" value={form.name} onChange={handleChangec} className="w-full border border-gray-300 rounded-xl p-2"
+          placeholder="e.g., Jordan Coady" required />
       </div>
 
       <TopicAreaSelector

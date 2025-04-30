@@ -7,11 +7,11 @@
 import axios from "axios";
 
 export const authApi = axios.create({
-  baseURL: "https://gwqcr8orkl.execute-api.eu-west-1.amazonaws.com/prod/",
+  baseURL: "https://qb4jo3otc0.execute-api.eu-west-1.amazonaws.com/prod/",
 });
 
 export const appApi = axios.create({
-  baseURL: "https://fted6gfo0m.execute-api.eu-west-1.amazonaws.com/dev/",
+  baseURL: "https://tbowetur40.execute-api.eu-west-1.amazonaws.com/dev/",
 });
 
 appApi.interceptors.request.use((config) => {
