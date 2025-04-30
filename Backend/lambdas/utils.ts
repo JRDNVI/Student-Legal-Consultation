@@ -431,7 +431,7 @@ export const getDbCredentials = async () => {
 };
 
 export const corsHeaders = {
-  "Access-Control-Allow-Origin": "http://localhost:3000", //This will change
+  "Access-Control-Allow-Origin": "https://educase-jc.web.app", //This will change
   "Access-Control-Allow-Headers": "Content-Type",
   "Access-Control-Allow-Methods": "OPTIONS,POST",
 };

@@ -88,7 +88,7 @@ export default function AssignmentPage() {
           className="bg-purple-600 text-white px-4 py-2 rounded flex items-center gap-2"
           onClick={() => openModal()}
         >
-          <FaPlus /> Add Assignment
+          <FaPlus />
         </button>
       </div>
 

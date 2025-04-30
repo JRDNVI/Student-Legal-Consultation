@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import { FaHome, FaUserGraduate, FaTasks, FaCalendarAlt, FaBriefcase, FaGavel, FaSignOutAlt, FaMale, FaPersonBooth, FaUserFriends, FaBell, FaEnvelope } from "react-icons/fa";
+import { FaSignOutAlt, FaBell, FaEnvelope, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import { useSocket } from "../../context/SocketContext";
 import MessagePanel from "../messaging/messagePanel";
@@ -13,6 +13,8 @@ export default function Layout({ children }) {
   const role = user["custom:role"];
   const { unread, markAsRead } = useSocket();
   const [showMessagePanel, setShowMessagePanel] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
+
 
 
 
@@ -28,10 +30,12 @@ export default function Layout({ children }) {
   };
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <aside className="w-48 bg-white shadow-md h-screen p-4 flex flex-col justify-between">
+    <div className="flex h-screen">
+      <aside className={`${collapsed ? "w-16" : "w-48"} bg-white shadow-md h-screen p-4 flex flex-col justify-between transition-all duration-300`}>
         <div>
-          <h2 className="text-2xl font-bold mb-10 capitalize">{role} Dashboard</h2>
+          {!collapsed && (
+            <h2 className="text-2xl font-bold mb-10 capitalize">{role} Dashboard</h2>
+          )}
           <nav className="flex flex-col gap-4">
             {navItems.map((item, index) => {
               const isActive = location.pathname === item.path;
@@ -43,20 +47,31 @@ export default function Layout({ children }) {
                     }`}
                 >
                   <span>{item.icon}</span>
-                  <span>{item.label}</span>
+                  {!collapsed && <span>{item.label}</span>}
                 </Link>
               );
             })}
           </nav>
         </div>
 
-        <button
-          onClick={logout}
-          className="flex items-center justify-center gap-2 mt-10 text-sm text-gray-500 hover:text-red-500 transition-colors duration-200"
-        >
-          <FaSignOutAlt />
-          Sign Out
-        </button>
+        <div className="flex flex-col items-center gap-4 mt-auto">
+          <button
+            onClick={logout}
+            className="flex items-center justify-center gap-2 text-sm text-gray-500 hover:text-red-500 transition-colors duration-200"
+          >
+            <FaSignOutAlt className="text-lg" />
+            {!collapsed && <span>Sign Out</span>}
+          </button>
+
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="text-gray-500 hover:text-purple-600 transition"
+          >
+            {collapsed ? <FaArrowRight /> : <FaArrowLeft />}
+          </button>
+        </div>
+
+
       </aside>
 
       <div className="flex flex-col flex-1">

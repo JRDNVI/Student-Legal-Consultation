@@ -82,13 +82,24 @@ export class AppApi extends Construct {
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       autoDeleteObjects: true,
       cors: [{
-        allowedMethods: [s3.HttpMethods.PUT, s3.HttpMethods.POST, s3.HttpMethods.DELETE],
+        allowedMethods: [
+          s3.HttpMethods.PUT,
+          s3.HttpMethods.POST,
+          s3.HttpMethods.DELETE,
+          s3.HttpMethods.GET,
+        ],
         allowedOrigins: [
           'http://localhost:3000',
           'https://educase-jc.web.app'
         ],
-        allowedHeaders: ["OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
+        allowedHeaders: [
+          "Content-Type",
+          "Authorization"
+        ],
+
+        maxAge: 3000
       }],
+
     });
 
     this.dbEndpoint = dbInstance.dbInstanceEndpointAddress;
@@ -205,7 +216,10 @@ export class AppApi extends Construct {
         allowHeaders: ["Content-Type", "X-Amz-Date", "Authorization"],
         allowMethods: ["OPTIONS", "GET", "POST", "PUT", "PATCH", "DELETE"],
         allowCredentials: true,
-        allowOrigins: ["*"],
+        allowOrigins: [
+          "http://localhost:3000",
+          "https://educase-jc.web.app",
+        ],
       },
     });
 
