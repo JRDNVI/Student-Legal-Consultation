@@ -19,7 +19,7 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
-    uses: .github/workflows/build.yml@test
+    uses: ./.github/workflows/build.yml@test
     secrets: inherit
 
   deploy:
