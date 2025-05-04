@@ -1,19 +1,25 @@
 name: Build
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  sonarqube:
-    name: SonarQube
-    runs-on: windows-latest
+  build:
+    name: Build
+    runs-on: actions-runner
     steps:
       - uses: actions/checkout@v4
+      - name: build
+        run: |
+            npm ci
+            npm run build
+      - uses: actions/upload-artifact@v4
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v5
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          name: build-${{ github.run_number }}
+          path: |
+            dist
+            *firebase            
+           

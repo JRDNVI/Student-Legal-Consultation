@@ -1,0 +1,36 @@
+name: Build
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  sonarqube:
+    name: SonarQube
+    runs-on: actions-runner
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v5
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  build:
+    uses: .github/workflows/build.yml@test
+    secrets: inherit
+
+  deploy:
+    name: Firebase Deploy
+    runs-on: actions-runner
+    needs: [build, sonarqube]
+    steps:
+      - name: artifact checkout
+        uses: actions/download-artifact@v4
+        with:
+          name: build-${{ github.run_number }}
+      - name: Firebase Deploy
+        run: |
+          firebase deploy
